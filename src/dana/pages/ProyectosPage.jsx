@@ -4,6 +4,11 @@ const ProyectosPage = () => {
   return (
     <>
         <h1>Proyectos pager</h1>
+        <h1>Proyectos pager</h1>
+        <h1>Proyectos pager</h1>
+        <h1>Proyectos pager</h1>
+        <h1>Proyectos pager</h1>
+        <h1>Proyectos pager</h1>
     </>
   )
 }

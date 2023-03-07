@@ -9,14 +9,14 @@ export const DanaRoutes = () => {
   return (
     <>
     <Navbar/>
-    
-        <Routes>
-            {/* <Route path='home' element={ <HomeScreem/>}/> */}
+      <div className='container mx-auto py-40 px-50 text-center'>
+      <Routes>
+            <Route path='menu' element={ <HomeScreem/>}/>
             <Route path='proyectos' element={ <ProyectosPage/>}/>
             <Route path='registros' element={ <RegistrosPage/>}/>
             <Route path='/' element={<Navigate to='home' />}/>
-        </Routes> 
-    
+        </Routes>
+      </div>
     </>
   )
 }

@@ -9,8 +9,9 @@ export const DanaRoutes = () => {
   return (
     <>
     <Navbar/>
+    
         <Routes>
-            <Route path='home' element={ <HomeScreem/>}/>
+            {/* <Route path='home' element={ <HomeScreem/>}/> */}
             <Route path='proyectos' element={ <ProyectosPage/>}/>
             <Route path='registros' element={ <RegistrosPage/>}/>
             <Route path='/' element={<Navigate to='home' />}/>

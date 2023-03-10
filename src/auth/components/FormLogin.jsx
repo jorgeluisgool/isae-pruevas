@@ -6,7 +6,7 @@ export const FormLogin = () => {
     const navigate = useNavigate();
 
     const onLogin = () => {
-        navigate('/', {
+        navigate('/menu', {
             replace: true
         })
     }
@@ -35,7 +35,7 @@ export const FormLogin = () => {
             type='password'
         />
         </div>
-        <div className='mt-8 flex justify-between items-center'>
+        {/* <div className='mt-8 flex justify-between items-center'>
             <div>
                 <input
                     type='checkbox'
@@ -45,7 +45,7 @@ export const FormLogin = () => {
             </div>
             <button className='font-medium text-base text-violet-500'>Has olvidado tu contraseña</button>
 
-        </div>
+        </div> */}
         <div className='mt-8 flex flex-col gap-y-4'>
             <button 
             className='active:scale-[.98] transition-all py-3 rounded-xl bg-sky-500 hover:bg-sky-700 text-white text-lg font-bold'

@@ -17,8 +17,8 @@ export const Navbar = () => {
             <div onClick={()=>setOpen(!open)} className='text-4xl absolute right-9 top-6 cursor-pointer text-slate-50 md:hidden'>
                 <ion-icon name={open ? 'close':'menu'}></ion-icon>
             </div>
-            <ul className={`md:flex md:items-center md:pb-0 pb-12 absolute md:static bg-sky-700 md:z-auto z-[-1] left-40 w-full md:w-auto md:pl-0 pl-9 transition-all duration-500 ease-in ${open ? 'top-20 opacity-100':'top-[-490px]'} md:opacity-100 opacity-100`}>
-                <li className='md:ml-8 text-xl md:my-0 my-7'>
+            <ul className={`md:flex md:items-center md:pb-0 pb-4 absolute md:static bg-sky-700 md:z-auto z-[-1] left-40 w-full md:w-auto md:pl-0 pl-9 transition-all duration-500 ease-in ${open ? 'top-20 opacity-100':'top-[-490px]'} md:opacity-100 opacity-100`}>
+                <li className='md:ml-8 text-xl md:my-0 my-0'>
                 <NavLink className='text-slate-50 hover:text-gray-400 duration-500 md:ml-8 text-xl md:my-0 my-7' to='/proyectos'>
                     Proyectos
                 </NavLink>
@@ -72,7 +72,7 @@ export const Navbar = () => {
                 </NavLink>
                 </li>
                 <button className='bg-indigo-600 text-white font-[Poppins] py-2 px-6 rounded md:ml.8 hover:bg-indigo-400 duration-500'>
-                    Cerrar seción
+                    Cerrar sesión
                 </button>
             </ul>
         </div>

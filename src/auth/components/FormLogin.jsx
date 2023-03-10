@@ -1,6 +1,16 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom'
 
 export const FormLogin = () => {
+
+    const navigate = useNavigate();
+
+    const onLogin = () => {
+        navigate('/', {
+            replace: true
+        })
+    }
+
   return (
         <>
         <div className='bg-slate-50 px-10 py-20 rounded-3xl border-2 border-sky-500'>
@@ -37,7 +47,12 @@ export const FormLogin = () => {
 
         </div>
         <div className='mt-8 flex flex-col gap-y-4'>
-            <button className='active:scale-[.98] transition-all py-3 rounded-xl bg-sky-500 hover:bg-sky-700 text-white text-lg font-bold'>Iniciar seción</button>
+            <button 
+            className='active:scale-[.98] transition-all py-3 rounded-xl bg-sky-500 hover:bg-sky-700 text-white text-lg font-bold'
+            onClick={ onLogin}
+            >
+                Iniciar seción
+            </button>
 
         </div> 
             

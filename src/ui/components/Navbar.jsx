@@ -1,8 +1,21 @@
 import React, { useState } from 'react'
-import { Link, NavLink } from 'react-router-dom'
+import { Link, NavLink, useNavigate } from 'react-router-dom'
 
 export const Navbar = () => {
+
+    // funcionamiento del estado del Menu 
     let [open,setOpen]=useState(false);
+
+    //Hoock para Cerrrar Sesión
+    const navigate = useNavigate();
+
+    //Funcion Boton Cerrar sesión
+    const onLogout = () => {
+        navigate('/login', {
+            replace: true
+        });
+    } 
+
   return (
     <>
     <div className='z-10 shadow-md w-full fixed top-0 left-0'>
@@ -71,7 +84,10 @@ export const Navbar = () => {
                     Duplicados
                 </NavLink>
                 </li>
-                <button className='bg-indigo-600 text-white font-[Poppins] py-2 px-6 rounded md:ml.8 hover:bg-indigo-400 duration-500'>
+                <button 
+                className='bg-indigo-600 text-white font-[Poppins] py-2 px-6 rounded md:ml.8 hover:bg-indigo-400 duration-500'
+                onClick={onLogout}
+                >
                     Cerrar sesión
                 </button>
             </ul>

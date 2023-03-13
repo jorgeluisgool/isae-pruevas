@@ -57,7 +57,7 @@ export const FormLogin = () => {
                     <button 
                     type='submit'
                     className='active:scale-[.98] transition-all py-3 rounded-xl bg-sky-500 hover:bg-sky-700 text-white text-lg font-bold'
-                    onClick={ onLogin}
+                    
                     >
                         Iniciar seción
                     </button>

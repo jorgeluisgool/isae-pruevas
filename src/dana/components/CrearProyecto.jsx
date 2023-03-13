@@ -6,16 +6,19 @@ import { Button } from 'primereact/button';
 import { Dropdown } from 'primereact/dropdown'
 
 export const CrearProyecto = () => {
-    const [tipoProyecto, settipoProyecto] = useState('')
-    const tipoProyectos = [
-        { name: 'MIGRACIONES', code: 'MIG' },
-        { name: 'INVENTARIO', code: 'INV' },
-        { name: 'MANTENIMIENTO', code: 'MANT' },
-        { name: 'OTROS', code: 'OTR' },
-    ];
+    
+    const [proyecto, setProyecto] = useState('');
+    const [tipo, setTipo] = useState('');
+
+    const handleSubmit = () => {
+        e.preventDefault();
+        console.log(proyecto, tipo);
+    }
+
     return (
         <>
-                <div className='bg-slate-50 m-5 px-8 py-5 rounded-3xl border-2 border-sky-500'>
+            <form onSubmit={handleSubmit}>
+            <div className='bg-slate-50 m-5 px-8 py-5 rounded-3xl border-2 border-sky-500'>
                     <label className="text-lg font-medium">
                         Registrar Proyecto
                     </label>
@@ -31,6 +34,8 @@ export const CrearProyecto = () => {
                             type='text'
                             placeholder='Proyecto'
                             name='proyecto'
+                            value={proyecto}
+                            onChange={(e)=> setProyecto(e.target.value)}
                         />
                     </div>
                     <div className="mt-8 flex flex-col gap-y-4 w-full lg:w-1/4">
@@ -38,6 +43,8 @@ export const CrearProyecto = () => {
                             <select
                                 className="w-full border-2 border-gray-100 rounded-xl p-4 mt-1 bg-transparet"
                                 name="tipo"
+                                value={proyecto}
+                            onChange={(e)=> setTipo(e.target.value)}
                             >
                                 <option value="migraciones">MIGRACIONES</option>
                                 <option value="inventario">INVENTARIO</option>
@@ -51,6 +58,9 @@ export const CrearProyecto = () => {
                         </Button>
                     </div>
                 </div>
+
+            </form>
+                
         </>
     )
 }

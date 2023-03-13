@@ -1,19 +1,28 @@
-import React from 'react'
+import React, { useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 export const FormLogin = () => {
 
+    //Hook use Navigate
     const navigate = useNavigate();
 
-    const onLogin = () => {
+    //Estados de los Imput para formulario controlado
+    const [usuario, setUsuario] = useState('');
+    const [contrasena, setContrasena] = useState('');
+
+    const onLogin = (e) => {
+        e.preventDefault();
+        console.log(usuario, contrasena);
+
+        //Validar los datos
+
+
+        //enviar los datos
+
+        //Navegar al menu al hacer click
         navigate('/menu', {
             replace: true
         })
-    }
-
-    //Funcion Submit del formulario
-    const handleSumit = () => {
-        console.log('me diste un clickk')
     }
 
   return (
@@ -23,24 +32,27 @@ export const FormLogin = () => {
                 <img src="src/assets/logo_ISAe.png" alt="Your Company"/>
             </div>
             <p className='font-medium text-lg text-gray-500'>Bienvenido de nuevo</p>
-            <form onSubmit={handleSumit}>
+            
             <div className='mt-4'>
                 <label className='text-lg font-medium'>Usuario</label>
+                <form onSubmit={onLogin}>
                 <input 
-                className='w-full border-2 border-gray-100 rounded-xl p-4 mt-1 bg-transparet'
-                type='text'
-                placeholder='Ingrese su Usuario'
-                name='usuario'
+                    className='w-full border-2 border-gray-100 rounded-xl p-4 mt-1 bg-transparet'
+                    type='text'
+                    placeholder='Ingrese su Usuario'
+                    name='usuario'
+                    value={usuario}
+                    onChange={(e) => setUsuario(e.target.value)}
                 />
-                <div>
-                    <label className='text-lg font-medium'>Contraseña</label>
-                    <input 
+                <label className='text-lg font-medium'>Contraseña</label>
+                <input 
                     className='w-full border-2 border-gray-100 rounded-xl p-4 mt-1 bg-transparet'
                     placeholder='Ingrese su contraseña'
                     type='password'
                     name='contrasena'
-                    />
-                </div>
+                    value={contrasena}
+                    onChange={(e) => setContrasena(e.target.value)}
+                />
                 <div className='mt-8 flex flex-col gap-y-4'>
                     <button 
                     type='submit'
@@ -49,10 +61,9 @@ export const FormLogin = () => {
                     >
                         Iniciar seción
                     </button>
-                </div>   
-            </div> 
-            </form>
-            
+                </div> 
+                </form>  
+            </div>   
         </div>
         </>
   )

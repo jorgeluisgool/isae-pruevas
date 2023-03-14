@@ -9,7 +9,7 @@ export const DanaRoutes = () => {
   return (
     <>
     <Navbar/>
-      <div className='container mx-auto pt-20'>
+      <div className='pt-20 bg-[#E2E2E2]'>
       <Routes>
             <Route path='menu' element={ <HomeScreem/>}/>
             <Route path='proyectos' element={ <ProyectosPage/>}/>

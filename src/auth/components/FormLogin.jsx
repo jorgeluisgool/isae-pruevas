@@ -27,14 +27,14 @@ export const FormLogin = () => {
 
   return (
         <>
-        <div className='bg-slate-50 px-10 py-20 rounded-3xl border-2 border-sky-500'>
+        <div className='bg-slate-50 px-10 py-20 rounded-3xl border-2 border-[#245A95]'>
             <div className='w-40 h-40 mx-auto pt-8'>
                 <img src="src/assets/logo_ISAe.png" alt="Your Company"/>
             </div>
             <p className='font-medium text-lg text-gray-500'>Bienvenido de nuevo</p>
             
             <div className='mt-4'>
-                <label className='text-lg font-medium'>Usuario</label>
+                <label className='text-lg text-[#245A95] font-medium'>Usuario</label>
                 <form onSubmit={onLogin}>
                 <input 
                     className='w-full border-2 border-gray-100 rounded-xl p-4 mt-1 bg-transparet'
@@ -44,7 +44,7 @@ export const FormLogin = () => {
                     value={usuario}
                     onChange={(e) => setUsuario(e.target.value)}
                 />
-                <label className='text-lg font-medium'>Contraseña</label>
+                <label className='text-lg text-[#245A95] font-medium'>Contraseña</label>
                 <input 
                     className='w-full border-2 border-gray-100 rounded-xl p-4 mt-1 bg-transparet'
                     placeholder='Ingrese su contraseña'
@@ -56,7 +56,7 @@ export const FormLogin = () => {
                 <div className='mt-8 flex flex-col gap-y-4'>
                     <button 
                     type='submit'
-                    className='active:scale-[.98] transition-all py-3 rounded-xl bg-sky-500 hover:bg-sky-700 text-white text-lg font-bold'
+                    className='active:scale-[.98] transition-all py-3 rounded-xl bg-[#245A95] hover:bg-sky-600 text-white text-lg font-bold'
                     
                     >
                         Iniciar seción

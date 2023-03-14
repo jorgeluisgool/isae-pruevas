@@ -14,12 +14,12 @@ export const CrearProyecto = () => {
     return (
         <>
             <form onSubmit={handleSubmit}>
-            <div className='bg-slate-50 m-5 px-8 py-5 rounded-3xl border-2 border-sky-500'>
+            <div className='bg-slate-50 m-5 px-8 py-5 rounded-3xl border-2 border-[#245A95]'>
                     <label className="text-lg font-medium">
                         Registrar Proyecto
                     </label>
                     <div className="mt-8 flex flex-col gap-y-4">
-                        <Button className="active:scale-[.98] transition-all py-3 rounded-xl bg-sky-500 hover:bg-sky-700 text-white text-lg font-bold">
+                        <Button className="active:scale-[.98] transition-all py-3 rounded-xl bg-[#245A95] hover:bg-sky-700 text-white text-lg font-bold">
                             <ion-icon name="document-outline" />
                         </Button>
                     </div>
@@ -49,7 +49,7 @@ export const CrearProyecto = () => {
                             </select>
                     </div>
                     <div className="mt-8 flex flex-col gap-y-4">
-                        <Button className="active:scale-[.98] transition-all py-3 rounded-xl bg-sky-500 hover:bg-sky-700 text-white text-lg font-bold">
+                        <Button className="active:scale-[.98] transition-all py-3 rounded-xl bg-[#245A95] hover:bg-sky-600 text-white text-lg font-bold">
                             Cargar Campos
                         </Button>
                     </div>

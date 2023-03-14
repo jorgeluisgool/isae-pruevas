@@ -5,7 +5,7 @@ import { BotonMenu } from '../components/BotonMenu'
 export const HomeScreem = () => {
   return (
     <>
-    <div className="grid grid-cols-2 sm:grid-cols-3 gap-20 pt-40">
+    <div className="grid grid-cols-2 sm:grid-cols-3 gap-20 pt-20">
       <div className="place-self-center ...">
         <Link to='/Proyectos'>
           <BotonMenu titulo='PROYECTOS' icono='archive-outline'/>

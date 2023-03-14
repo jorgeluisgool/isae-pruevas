@@ -9,13 +9,16 @@ export const FormLogin = () => {
     //Estados de los Imput para formulario controlado
     const [usuario, setUsuario] = useState('');
     const [contrasena, setContrasena] = useState('');
+    const [errorUsuario, setErrorUsuario] = useState("");
+    const [errorPassword, setErrorPassword] = useState("");
 
     const onLogin = (e) => {
         e.preventDefault();
         console.log(usuario, contrasena);
 
-        //Validar los datos
-
+    //Validar los datos
+    if (!errorUsuario.trim()) return setErrorUsuario("Este campo es obligatorio")
+    if (!errorPassword.trim()) return setErrorPassword("Contraseña obligatoria")
 
         //enviar los datos
 
@@ -44,6 +47,9 @@ export const FormLogin = () => {
                     value={usuario}
                     onChange={(e) => setUsuario(e.target.value)}
                 />
+                {
+                    errorUsuario !== "" && <p className='text-red-700 w-full'>{errorUsuario}</p>
+                }
                 <label className='text-lg text-[#245A95] font-medium'>Contraseña</label>
                 <input 
                     className='w-full border-2 border-gray-100 rounded-xl p-4 mt-1 bg-transparet'
@@ -53,6 +59,9 @@ export const FormLogin = () => {
                     value={contrasena}
                     onChange={(e) => setContrasena(e.target.value)}
                 />
+                {
+                    errorPassword !== "" && <p className='text-red-700 w-full'>{errorPassword}</p>
+                }
                 <div className='mt-8 flex flex-col gap-y-4'>
                     <button 
                     type='submit'

@@ -1,16 +1,12 @@
 import { useState } from "react";
-
-import { Card } from 'primereact/card';
-import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
-import { Dropdown } from 'primereact/dropdown'
 
 export const CrearProyecto = () => {
     
     const [proyecto, setProyecto] = useState('');
     const [tipo, setTipo] = useState('');
 
-    const handleSubmit = () => {
+    const handleSubmit = (e) => {
         e.preventDefault();
         console.log(proyecto, tipo);
     }

@@ -20,7 +20,7 @@ export const useFetchProjects = ()=>{
     useEffect(() => {
         getProyectos()
           .then(proyectos => {
-            console.log('Cargando datos...');
+            // console.log('Cargando datos...');
             setState({
                 data: acomodarDatos(proyectos),
                 loading: false

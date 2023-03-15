@@ -1,10 +1,13 @@
+
 import { useState } from "react";
-import { Button } from 'primereact/button';
+import * as XLSX from "xlsx"
 
 export const CrearProyecto = () => {
     
     const [proyecto, setProyecto] = useState('');
     const [tipo, setTipo] = useState('');
+
+    const [excelData, setExcelData] = useState([]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -16,13 +19,18 @@ export const CrearProyecto = () => {
         const reader = new FileReader();
       
         reader.onload = function (event) {
-          const content = event.target.result;
-          console.log(content);
+            const content = event.target.result;
+            const workbook = XLSX.read(content, { type: 'binary' });
+            const sheetName = workbook.SheetNames[0];
+            const sheet = workbook.Sheets[sheetName];
+            const data = XLSX.utils.sheet_to_json(sheet);
+            console.log(data);
+            setExcelData(data);
+            // console.log(excelData.);
         };
       
         reader.readAsBinaryString(file);
       }
-      
 
     return (
         <>
@@ -63,8 +71,9 @@ export const CrearProyecto = () => {
                     </div>
                     <div className="mt-8 flex flex-col gap-y-4">
                         <input 
-                            className="active:scale-[.98] transition-all py-3 rounded-xl bg-[#245A95] hover:bg-sky-600 text-white text-lg font-bold" 
-                            type="File" 
+                            className="form-input border border-gray-300 bg-white text-gray-900 w-full py-2 px-3 rounded-lg shadow-sm focus:outline-none focus:border-blue-500 focus:shadow-outline-blue" 
+                            type="file" 
+                            name="agregarArchivo"
                             accept="application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                             onChange={handleFileUpload}
                         />
@@ -73,6 +82,7 @@ export const CrearProyecto = () => {
                             Cargar Campos
                         </Button> */}
                     </div>
+                    
                 </div>
 
             </form>

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 export const FormLogin = () => {
@@ -10,15 +10,13 @@ export const FormLogin = () => {
     const [usuario, setUsuario] = useState('');
     const [contrasena, setContrasena] = useState('');
     const [errorUsuario, setErrorUsuario] = useState("");
-    const [errorPassword, setErrorPassword] = useState("");
 
     const onLogin = (e) => {
         e.preventDefault();
         console.log(usuario, contrasena);
 
     //Validar los datos
-    if (!errorUsuario.trim()) return setErrorUsuario("Este campo es obligatorio")
-    if (!errorPassword.trim()) return setErrorPassword("Contraseña obligatoria")
+    if (!errorUsuario.trim()) return setErrorUsuario("Todos los campos son obligatorios")
 
         //enviar los datos
 
@@ -47,9 +45,7 @@ export const FormLogin = () => {
                     value={usuario}
                     onChange={(e) => setUsuario(e.target.value)}
                 />
-                {
-                    errorUsuario !== "" && <p className='text-red-700 w-full'>{errorUsuario}</p>
-                }
+                
                 <label className='text-lg text-[#245A95] font-medium'>Contraseña</label>
                 <input 
                     className='w-full border-2 border-gray-100 rounded-xl p-4 mt-1 bg-transparet'
@@ -59,10 +55,13 @@ export const FormLogin = () => {
                     value={contrasena}
                     onChange={(e) => setContrasena(e.target.value)}
                 />
-                {
-                    errorPassword !== "" && <p className='text-red-700 w-full'>{errorPassword}</p>
-                }
                 <div className='mt-8 flex flex-col gap-y-4'>
+                {
+                    errorUsuario !== "" && 
+                    <p className='text-red-700 w-full'>
+                        {errorUsuario}
+                    </p>
+                }
                     <button 
                     type='submit'
                     className='active:scale-[.98] transition-all py-3 rounded-xl bg-[#245A95] hover:bg-sky-600 text-white text-lg font-bold'

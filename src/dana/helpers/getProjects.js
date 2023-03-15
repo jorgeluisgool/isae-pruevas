@@ -9,6 +9,7 @@ export const getProyectos = async ()=>{
     }
     const resp = await fetch(url,options);
     const data = await resp.json();
+    // console.log(data);
 
     return data;
 }

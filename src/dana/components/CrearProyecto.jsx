@@ -8,8 +8,21 @@ export const CrearProyecto = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log(proyecto, tipo);
+        console.log(proyecto, tipo);        
     }
+
+    function handleFileUpload(event) {
+        const file = event.target.files[0];
+        const reader = new FileReader();
+      
+        reader.onload = function (event) {
+          const content = event.target.result;
+          console.log(content);
+        };
+      
+        reader.readAsBinaryString(file);
+      }
+      
 
     return (
         <>
@@ -19,9 +32,9 @@ export const CrearProyecto = () => {
                         Registrar Proyecto
                     </label>
                     <div className="mt-8 flex flex-col gap-y-4">
-                        <Button className="active:scale-[.98] transition-all py-3 rounded-xl bg-[#245A95] hover:bg-sky-700 text-white text-lg font-bold">
+                        <button className="active:scale-[.98] transition-all py-3 rounded-xl bg-[#245A95] hover:bg-sky-700 text-white text-lg font-bold">
                             <ion-icon name="document-outline" />
-                        </Button>
+                        </button>
                     </div>
                     <div className="mt-8 flex flex-col gap-y-4 w-full lg:w-1/4">
                         <label htmlFor="text-lg font-medium">Proyecto</label>
@@ -49,9 +62,16 @@ export const CrearProyecto = () => {
                             </select>
                     </div>
                     <div className="mt-8 flex flex-col gap-y-4">
-                        <Button className="active:scale-[.98] transition-all py-3 rounded-xl bg-[#245A95] hover:bg-sky-600 text-white text-lg font-bold">
+                        <input 
+                            className="active:scale-[.98] transition-all py-3 rounded-xl bg-[#245A95] hover:bg-sky-600 text-white text-lg font-bold" 
+                            type="File" 
+                            accept="application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                            onChange={handleFileUpload}
+                        />
+            
+                        {/* <Button className="active:scale-[.98] transition-all py-3 rounded-xl bg-[#245A95] hover:bg-sky-600 text-white text-lg font-bold" type="file">
                             Cargar Campos
-                        </Button>
+                        </Button> */}
                     </div>
                 </div>
 

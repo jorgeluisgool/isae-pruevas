@@ -18,7 +18,7 @@ const ProyectosPage = () => {
         <>
         <h1 className="p-5 text-lg font-bold">Proyectos</h1>
             <CrearProyecto />
-            <div className="container">
+            <div className="m-12 container mx-auto">
             {loading ? <SkeletonTabla headers={headers}/> :  <TablaCRUD tipoDatos={"PROYECTOS"} listaDatos = {proyectos} headers = {headers} editar = {false} eliminar = {true} seleccionMultiple = {false} />}
             </div> 
         </>

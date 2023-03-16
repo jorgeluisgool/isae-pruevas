@@ -22,7 +22,7 @@ export const Navbar = () => {
         <div className='md:flex items-center justify-between bg-[#245A95] py-4 md:px-10 px-7'>
             <div className='font-bold text-2xl cursor-pointer flex items-center font-[Poppins] text-gray-800'>
                 <Link to='/menu'>
-                <span className='text-gray-800 hover:text-gray-400 duration-500 text-3xl text-slate-50 mr-1 pt-2'>
+                <span className='hover:text-gray-400 duration-500 text-3xl text-slate-50 mr-1 pt-2'>
                 <ion-icon name="home-outline"></ion-icon>
                 </span>
                 </Link> 
@@ -37,23 +37,23 @@ export const Navbar = () => {
                 </NavLink>
                 </li>
                 
-                <li className='md:ml-8 text-xl md:my-0 my-7'>
+                {/* <li className='md:ml-8 text-xl md:my-0 my-7'>
                 <NavLink className='text-slate-50 hover:text-gray-400 duration-500 md:ml-8 text-xl md:my-0 my-7' to='/'>
                     Usuarios
                 </NavLink>
-                </li>
+                </li> */}
 
-                <li className='md:ml-8 text-xl md:my-0 my-7'>
+                {/* <li className='md:ml-8 text-xl md:my-0 my-7'>
                 <NavLink className='text-slate-50 hover:text-gray-400 duration-500 md:ml-8 text-xl md:my-0 my-7' to='/'>
                     Catalogo
                 </NavLink>
-                </li>
+                </li> */}
 
-                <li className='md:ml-8 text-xl md:my-0 my-7'>
+                {/* <li className='md:ml-8 text-xl md:my-0 my-7'>
                 <NavLink className='text-slate-50 hover:text-gray-400 duration-500 md:ml-8 text-xl md:my-0 my-7' to='/'>
                     Asignaciones
                 </NavLink>
-                </li>
+                </li> */}
 
                 <li className='md:ml-8 text-xl md:my-0 my-7'>
                 <NavLink className='text-slate-50 hover:text-gray-400 duration-500 md:ml-8 text-xl md:my-0 my-7' to='/registros'>
@@ -61,31 +61,31 @@ export const Navbar = () => {
                 </NavLink>
                 </li>
 
-                <li className='md:ml-8 text-xl md:my-0 my-7'>
+                {/* <li className='md:ml-8 text-xl md:my-0 my-7'>
                 <NavLink className='text-slate-50 hover:text-gray-400 duration-500 md:ml-8 text-xl md:my-0 my-7' to='/'>
                     Asistencia
                 </NavLink>
-                </li>
+                </li> */}
 
-                <li className='md:ml-8 text-xl md:my-0 my-7'>
+                {/* <li className='md:ml-8 text-xl md:my-0 my-7'>
                 <NavLink className='text-slate-50 hover:text-gray-400 duration-500 md:ml-8 text-xl md:my-0 my-7' to='/'>
                     Dashborad
                 </NavLink>
-                </li>
+                </li> */}
                 
-                <li className='md:ml-8 text-xl md:my-0 my-7'>
+                {/* <li className='md:ml-8 text-xl md:my-0 my-7'>
                 <NavLink className='text-slate-50 hover:text-gray-400 duration-500 md:ml-8 text-xl md:my-0 my-7' to='/'>
                     Balance
                 </NavLink>
-                </li>
+                </li> */}
 
-                <li className='md:ml-8 text-xl md:my-0 my-7'>
+                {/* <li className='md:ml-8 text-xl md:my-0 my-7'>
                 <NavLink className='text-slate-50 hover:text-gray-400 duration-500 md:ml-8 text-xl md:my-0 my-7' to='/'>
                     Duplicados
                 </NavLink>
-                </li>
+                </li> */}
                 <button 
-                className='bg-indigo-600 text-white font-[Poppins] py-2 px-6 rounded md:ml.8 hover:bg-indigo-400 duration-500'
+                className='active:scale-[.98] transition-all bg-white text-[#245A95] font-[Poppins] py-2 px-6 rounded md:ml.8 hover:bg-slate-300 duration-500 text-lg font-bold'
                 onClick={onLogout}
                 >
                     Cerrar sesión

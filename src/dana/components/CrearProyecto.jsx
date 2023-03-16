@@ -34,20 +34,20 @@ export const CrearProyecto = () => {
 
     return (
         <>
-            <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit}>
             <div className='bg-slate-50 m-5 px-8 py-5 rounded-3xl border-2 border-[#245A95]'>
-                    <label className="text-lg font-medium">
-                        Registrar Proyecto
-                    </label>
+                <label className="text-lg font-medium">
+                    Registrar Proyecto
+                </label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     <div className="mt-8 flex flex-col gap-y-4">
                         <button className="active:scale-[.98] transition-all py-3 rounded-xl bg-[#245A95] hover:bg-sky-700 text-white text-lg font-bold">
                             <ion-icon name="document-outline" />
                         </button>
                     </div>
-                    <div className="mt-8 flex flex-col gap-y-4 w-full lg:w-1/4">
-                        <label htmlFor="text-lg font-medium">Proyecto</label>
+                    <div className="mt-8 flex flex-col gap-y-4 w-full">
                         <input 
-                            className='w-full border-2 border-gray-100 rounded-xl p-4 mt-1 bg-transparet'
+                            className='w-full border-2 border-gray-300 rounded-xl py-3 bg-transparet'
                             type='text'
                             placeholder='Proyecto'
                             name='proyecto'
@@ -55,10 +55,9 @@ export const CrearProyecto = () => {
                             onChange={(e)=> setProyecto(e.target.value)}
                         />
                     </div>
-                    <div className="mt-8 flex flex-col gap-y-4 w-full lg:w-1/4">
-                            <label htmlFor="text-lg font-medium">Tipo de Proyecto</label>
+                    <div className="mt-8 flex flex-col gap-y-4">
                             <select
-                                className="w-full border-2 border-gray-100 rounded-xl p-4 mt-1 bg-transparet"
+                                className="border-2 border-gray-300 rounded-xl py-3 bg-transparet"
                                 name="tipo"
                                 value={proyecto}
                             onChange={(e)=> setTipo(e.target.value)}
@@ -82,6 +81,8 @@ export const CrearProyecto = () => {
                             Cargar Campos
                         </Button> */}
                     </div>
+                    </div>
+                    
                     
                 </div>
 

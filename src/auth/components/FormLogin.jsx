@@ -28,7 +28,7 @@ export const FormLogin = () => {
 
   return (
         <>
-        <div className='bg-slate-50 px-10 py-20 rounded-3xl border-2 border-[#245A95]'>
+        <div className='m-12 bg-slate-50 px-10 py-20 rounded-3xl border-2 border-[#245A95]'>
             <div className='w-40 h-40 mx-auto pt-8'>
                 <img src="src/assets/logo_ISAe.png" alt="Your Company"/>
             </div>

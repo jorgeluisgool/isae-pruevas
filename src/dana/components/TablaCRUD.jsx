@@ -92,7 +92,7 @@ export const TablaCRUD = ({ listaDatos = [], headers = [], tipoDatos = '', edita
     );
 
     return (
-        <Card className="mt-10">
+        <Card className="m-8 ">
             <div className="datatable-crud-demo">
                 {/* <Toast ref={toast} /> */}
 

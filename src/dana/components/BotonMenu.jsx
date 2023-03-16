@@ -27,11 +27,10 @@ export const BotonMenu = ({titulo, icono}) => {
   
   return (
     <>
-        <div className='hover:scale-[1.4] bg-[#245A95] w-20 h-20 object-cover rounded-full border border-sky-700 text-center pt-2'>
+        <div className='hover:scale-[1.3] bg-[#245A95] w-24 h-24 object-cover rounded-full border border-sky-700 text-center pt-4'>
           <span className='hover:text-gray-400 duration-500 text-6xl text-slate-50'>
             <ion-icon name={icono}></ion-icon>
           </span>
-          <p className='pt-4 text-center'>{titulo}</p>
         </div>
       
     </>      

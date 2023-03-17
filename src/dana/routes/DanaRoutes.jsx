@@ -9,7 +9,7 @@ export const DanaRoutes = () => {
   return (
     <>
     <Navbar/>
-      <div className='bg-[#E2E2E2] pt-20 h-full'>
+      <div className='min-h-screen bg-[#E2E2E2] pt-20'>
       <Routes>
             <Route path='menu' element={ <HomeScreem/>}/>
             <Route path='proyectos' element={ <ProyectosPage/>}/>

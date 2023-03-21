@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import axios from 'axios';
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 export const FormLogin = () => {
@@ -11,19 +12,72 @@ export const FormLogin = () => {
     const [contrasena, setContrasena] = useState('');
     const [errorUsuario, setErrorUsuario] = useState("");
 
+    // const getUsers = async () => {
+    //     try{
+    //         const url = "https://www.danae.com.mx:8443/web-0.0.1-SNAPSHOT/obtener/usuario"
+    //         const response = await axios.post(url);
+    //         console.log(response) 
+    //     } catch (error) {
+    //         console.error(error);
+    //     }
+    // }
+
+    const getValidation = async (user) =>{
+
+        const url =`https://www.danae.com.mx:8443/web-0.0.1-SNAPSHOT/obtener/usuario`;
+        const options = {
+            method: "POST",
+            cache: "no-cache",
+            headers: {
+                "content-type": "application/json; charset=UTF-8"
+            },
+            body: JSON.stringify(user)
+        };
+    
+        const data = await fetch(url,options).then((resp)=>{
+            return resp.json();
+        }
+        ).catch((resp)=>{
+            console.log('Error al ejecutar la consulta', resp);
+            return undefined;
+        });
+        // const resp = await fetch(url,options);
+        
+        // const data = await resp.json();
+        
+        return data;
+    }
+
     const onLogin = (e) => {
         e.preventDefault();
-        console.log(usuario, contrasena);
+        // console.log(usuario, contrasena);
+        
+        //Validar los datos
+    if (
+        usuario == "" && contrasena == ""
+    ){
 
-    //Validar los datos
-    if (!errorUsuario.trim()) return setErrorUsuario("Todos los campos son obligatorios")
+        return setErrorUsuario("Todos los campos son obligatorios")
+    }else {
+        setErrorUsuario("")
+    }
 
-        //enviar los datos
-
+        //enviar los datos y
         //Navegar al menu al hacer click
-        navigate('/menu', {
-            replace: true
-        })
+        getValidation({
+            usuario: usuario,
+            pass: contrasena
+        }).then(resp => {
+            console.log(resp);
+            if (resp.length > 0) {
+                
+                navigate('/menu', {
+                    replace: true
+                })
+            }else{
+                console.log("usuario o contraseña incorrectos")
+            }
+        });
     }
 
   return (
@@ -44,6 +98,7 @@ export const FormLogin = () => {
                     name='usuario'
                     value={usuario}
                     onChange={(e) => setUsuario(e.target.value)}
+                    
                 />
                 
                 <label className='text-lg text-[#245A95] font-medium'>Contraseña</label>
@@ -69,6 +124,8 @@ export const FormLogin = () => {
                     >
                         Iniciar seción
                     </button>
+
+                    <button onClick={getValidation}>data</button>
                 </div> 
                 </form>  
             </div>   

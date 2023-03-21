@@ -15,7 +15,7 @@ export const HomeScreem = ({titulo}) => {
         </div>
       </div>
       <div className="place-self-center ...">
-        <Link to='/'>
+        <Link to='/menu'>
           <BotonMenu titulo='USUARIOS' icono='person-add-outline'/>
         </Link>
         <div className='pt-5'>

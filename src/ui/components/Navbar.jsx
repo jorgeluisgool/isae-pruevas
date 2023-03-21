@@ -27,11 +27,11 @@ export const Navbar = () => {
                 </span>
                 </Link> 
             </div>
-            <div onClick={()=>setOpen(!open)} className='text-4xl absolute right-9 top-6 cursor-pointer text-slate-50 md:hidden'>
+            <div onClick={()=>setOpen(!open)} className='text-4xl absolute right-9 top-6 cursor-pointer text-slate-50 lg:hidden'>
                 <ion-icon name={open ? 'close':'menu'}></ion-icon>
             </div>
             <ul className={`md:flex md:items-center md:pb-0 pb-4 absolute md:static bg-[#245A95] md:z-auto z-[-1] left-40 w-full md:w-auto md:pl-0 pl-9 transition-all duration-500 ease-in ${open ? 'top-20 opacity-100':'top-[-490px]'} md:opacity-100 opacity-100`}>
-                <li className='md:ml-8 text-xl md:my-0 my-0'>
+                <li className='md:ml-8 text-xl md:my-0 my-5'>
                 <NavLink className='text-slate-50 hover:text-gray-400 duration-500 md:ml-8 text-xl md:my-0 my-7' to='/proyectos'>
                     Proyectos
                 </NavLink>
@@ -85,7 +85,7 @@ export const Navbar = () => {
                 </NavLink>
                 </li> */}
                 <button 
-                className='active:scale-[.98] transition-all bg-white text-[#245A95] font-[Poppins] py-2 px-6 rounded md:ml.8 hover:bg-slate-300 duration-500 text-lg font-bold'
+                className='bg-white text-[#245A95] font-[Poppins] py-2 px-6 rounded md:ml-6 hover:bg-slate-300 duration-500 font-bold'
                 onClick={onLogout}
                 >
                     Cerrar sesión

@@ -1,6 +1,7 @@
 import React from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { Navbar } from '../../ui/components/Navbar'
+import CamposProyectoPage from '../pages/CamposProyectoPage'
 import { HomeScreem } from '../pages/HomeScreem'
 import ProyectosPage from '../pages/ProyectosPage'
 import { RegistrosPage } from '../pages/RegistrosPage'
@@ -13,6 +14,7 @@ export const DanaRoutes = () => {
       <Routes>
             <Route path='menu' element={ <HomeScreem/>}/>
             <Route path='proyectos' element={ <ProyectosPage/>}/>
+            <Route path='camposproyecto' element={ <CamposProyectoPage/>}/>
             <Route path='registros' element={ <RegistrosPage/>}/>
             <Route path='/' element={<Navigate to='login'/>}/>
         </Routes>

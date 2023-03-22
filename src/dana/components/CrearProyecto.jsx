@@ -70,7 +70,13 @@ export const CrearProyecto = () => {
                     </div>
                     <div className="mt-8 flex flex-col gap-y-4">
                         <input 
-                            className="form-input border border-gray-300 bg-white text-gray-900 w-full py-2 px-3 rounded-lg shadow-sm focus:outline-none focus:border-blue-500 focus:shadow-outline-blue" 
+                            className="block w-full text-sm text-gray-500
+                            file:mr-4 file:py-2 file:px-4
+                            file:rounded-md file:border-0
+                            file:text-sm file:font-semibold
+                            file:bg-[#245A95] file:text-white
+                            hover:file:bg-sky-700
+                            form-input border border-gray-300 bg-whit py-2 px-3 rounded-lg shadow-sm focus:outline-none focus:border-blue-500 focus:shadow-outline-blue" 
                             type="file" 
                             name="agregarArchivo"
                             accept="application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"

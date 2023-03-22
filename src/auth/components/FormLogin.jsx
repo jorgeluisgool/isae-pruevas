@@ -124,8 +124,6 @@ export const FormLogin = () => {
                     >
                         Iniciar seción
                     </button>
-
-                    <button onClick={getValidation}>data</button>
                 </div> 
                 </form>  
             </div>   

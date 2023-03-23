@@ -9,7 +9,7 @@ export const LoginPage = () => {
         <FormLogin />
       </div>
       <div className='hidden lg:flex h-full w-1/2 items-center justify-center bg-[#245A95]'>
-        <div className='w-auto h-auto mx-auto animate-spin'>
+        <div className='w-auto h-auto mx-auto motion-safe:animate-spin'>
         <img className="" src="src/assets/isae.png" alt="Your Company"/>
         </div>
       </div> 

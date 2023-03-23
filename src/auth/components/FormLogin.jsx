@@ -122,7 +122,7 @@ export const FormLogin = () => {
                     className='active:scale-[.98] transition-all py-3 rounded-xl bg-[#245A95] hover:bg-sky-600 text-white text-lg font-bold'
                     
                     >
-                        Iniciar seción
+                        Iniciar sesión
                     </button>
                 </div> 
                 </form>  

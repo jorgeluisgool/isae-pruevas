@@ -16,8 +16,11 @@ const AcordionCampos = ({acordionEstate, setAcordionEstate}) => {
         {...draggableProvided.draggableProps}
         ref={draggableProvided.innerRef}
         {...draggableProvided.dragHandleProps}
-        className="hs-accordion-group bg-slate-50 px-5 py-3 rounded-2xl border-2 border-[#245A95]"
+        className="hs-accordion-group bg-slate-50 px-5 py-3 my-2 rounded-2xl border-2 border-[#245A95]"
       >
+        <span className='absolute right-8 text-2xl text-[#245A95]'>
+        <ion-icon name="reorder-three-outline"></ion-icon>
+        </span>
          <div className="hs-accordion active" id="hs-basic-nested-heading-one">
            <button onClick={() => setShow(!show)} className="hs-accordion-toggle hs-accordion-active:text-blue-600 py-3 inline-flex items-center gap-x-3 w-full font-semibold text-left text-gray-800 transition hover:text-gray-500 dark:hs-accordion-active:text-blue-500 dark:text-gray-200 dark:hover:text-gray-400" aria-controls="hs-basic-nested-collapse-one">
               <div className={`text-2xl text-[#245A95] ${show ? "rotate-180" : ""}`}>
@@ -32,7 +35,7 @@ const AcordionCampos = ({acordionEstate, setAcordionEstate}) => {
               <div className="bg-[#E2E2E2] rounded hs-accordion active" id="hs-basic-nested-sub-heading-one">
                 <button onClick={() => setShowSub(!showSub)} className="rounded border-2 border-slate-300 p-2 hs-accordion-toggle hs-accordion-active:text-blue-600 py-3 inline-flex items-center gap-x-3 w-full font-semibold text-left text-gray-800 transition hover:text-gray-500 dark:hs-accordion-active:text-blue-500 dark:text-gray-200 dark:hover:text-gray-400" aria-controls="hs-basic-nested-sub-collapse-one">
                   {acordion.subtitulo}
-                  <div className={`text-2xl text-[#245A95] p-2 absolute right-9 ${showSub ? "rotate-180" : ""}`}>
+                  <div className={`text-2xl text-[#245A95] p-2 absolute right-12 ${showSub ? "rotate-180" : ""}`}>
                   <ion-icon name="chevron-down"></ion-icon>
                   </div>
                 </button>
@@ -147,7 +150,9 @@ const AcordionCampos = ({acordionEstate, setAcordionEstate}) => {
            </div>
          </div>
            )}
+           
         </div>
+        
       </div> 
       )}
       </Draggable>

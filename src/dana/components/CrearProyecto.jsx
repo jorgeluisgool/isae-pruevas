@@ -14,7 +14,7 @@ export const CrearProyecto = () => {
         console.log(proyecto, tipo);        
     }
 
-    function handleFileUpload(event) {
+    const handleFileUpload = (event) => {
         const file = event.target.files[0];
         const reader = new FileReader();
       

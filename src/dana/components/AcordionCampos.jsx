@@ -1,19 +1,29 @@
 import React, { useState } from 'react'
+import { Draggable } from 'react-beautiful-dnd';
 
-const AcordionCampos = ({titulo, subTitulo}) => {
+
+const AcordionCampos = ({acordionEstate, setAcordionEstate}) => {
 
   const [show, setShow] = useState(false);
   const [showSub, setShowSub] = useState(false);
 
   return (
     <>
-      <div className="hs-accordion-group bg-slate-50 m-4 px-5 py-3 rounded-2xl border-2 border-[#245A95]">
+    {acordionEstate.map((acordion, index) => (
+    <Draggable key={acordion.id} draggableId={acordion.id} index={index}>
+    {(draggableProvided) => ( 
+      <div 
+        {...draggableProvided.draggableProps}
+        ref={draggableProvided.innerRef}
+        {...draggableProvided.dragHandleProps}
+        className="hs-accordion-group bg-slate-50 px-5 py-3 rounded-2xl border-2 border-[#245A95]"
+      >
          <div className="hs-accordion active" id="hs-basic-nested-heading-one">
            <button onClick={() => setShow(!show)} className="hs-accordion-toggle hs-accordion-active:text-blue-600 py-3 inline-flex items-center gap-x-3 w-full font-semibold text-left text-gray-800 transition hover:text-gray-500 dark:hs-accordion-active:text-blue-500 dark:text-gray-200 dark:hover:text-gray-400" aria-controls="hs-basic-nested-collapse-one">
               <div className={`text-2xl text-[#245A95] ${show ? "rotate-180" : ""}`}>
               <ion-icon name="chevron-down"></ion-icon>
               </div>
-                {titulo}
+                {acordion.titulo}
            </button>
            
            {show && (
@@ -21,7 +31,7 @@ const AcordionCampos = ({titulo, subTitulo}) => {
             <div className="hs-accordion-group pl-6">
               <div className="bg-[#E2E2E2] rounded hs-accordion active" id="hs-basic-nested-sub-heading-one">
                 <button onClick={() => setShowSub(!showSub)} className="rounded border-2 border-slate-300 p-2 hs-accordion-toggle hs-accordion-active:text-blue-600 py-3 inline-flex items-center gap-x-3 w-full font-semibold text-left text-gray-800 transition hover:text-gray-500 dark:hs-accordion-active:text-blue-500 dark:text-gray-200 dark:hover:text-gray-400" aria-controls="hs-basic-nested-sub-collapse-one">
-                  {subTitulo}
+                  {acordion.subtitulo}
                   <div className={`text-2xl text-[#245A95] p-2 absolute right-9 ${showSub ? "rotate-180" : ""}`}>
                   <ion-icon name="chevron-down"></ion-icon>
                   </div>
@@ -139,6 +149,9 @@ const AcordionCampos = ({titulo, subTitulo}) => {
            )}
         </div>
       </div> 
+      )}
+      </Draggable>
+      ))}
     </>
   )
 }

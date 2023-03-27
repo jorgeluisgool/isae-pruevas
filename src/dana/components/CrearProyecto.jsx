@@ -2,35 +2,36 @@
 import { useState } from "react";
 import * as XLSX from "xlsx"
 
-export const CrearProyecto = () => {
+export const CrearProyecto = ({excelData, handleFileUpload}) => {
     
     const [proyecto, setProyecto] = useState('');
     const [tipo, setTipo] = useState('');
 
-    const [excelData, setExcelData] = useState([]);
+    // const [excelData, setExcelData] = useState([]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log(proyecto, tipo);        
+        console.log(proyecto, tipo); 
+        console.log(excelData);     
     }
 
-    const handleFileUpload = (event) => {
-        const file = event.target.files[0];
-        const reader = new FileReader();
+    // const handleFileUpload = (event) => {
+    //     const file = event.target.files[0];
+    //     const reader = new FileReader();
       
-        reader.onload = function (event) {
-            const content = event.target.result;
-            const workbook = XLSX.read(content, { type: 'binary' });
-            const sheetName = workbook.SheetNames[0];
-            const sheet = workbook.Sheets[sheetName];
-            const data = XLSX.utils.sheet_to_json(sheet);
-            console.log(data);
-            setExcelData(data);
-            // console.log(excelData.);
-        };
+    //     reader.onload = function (event) {
+    //         const content = event.target.result;
+    //         const workbook = XLSX.read(content, { type: 'binary' });
+    //         const sheetName = workbook.SheetNames[0];
+    //         const sheet = workbook.Sheets[sheetName];
+    //         const data = XLSX.utils.sheet_to_json(sheet);
+    //         console.log(data);
+    //         setExcelData(data);
+    //         // console.log(excelData.);
+    //     };
       
-        reader.readAsBinaryString(file);
-      }
+    //     reader.readAsBinaryString(file);
+    // }
 
     return (
         <>

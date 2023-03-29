@@ -1,82 +1,96 @@
 import React, { useEffect, useState } from 'react'
 import {DragDropContext, Droppable, Draggable} from 'react-beautiful-dnd'
 
-export const StrictModeDroppable = ({ children, ...props }) => {
-    const [enabled, setEnabled] = useState(false);
+const EjemploDragDrop = () => {
+    const [items, setItems] = useState ([
+        { id: 'item-1', content: 'Item 1' },
+        { id: 'item-2', content: 'Item 2' },
+        { id: 'item-3', content: 'Item 3' }
+      ]);
 
-    useEffect(() => {
-        const animation = requestAnimationFrame(() => setEnabled(true));
+  const onDragEnd = (result) => {
 
-        return () => {
-            cancelAnimationFrame(animation);
-            setEnabled(false);
-        };
-    }, []);
+    const reorder = (list, starIndex, endIndex) => {
+        const result = [...list];
+        const [removed] = result.splice(starIndex, 1);
+        result.splice(endIndex, 0, removed)  
+        return result;
+    };
 
-    if (!enabled) {
-        return null;
-    }
 
-    return <Droppable {...props}>{children}</Droppable>;
+    const {source, destination} = result;
+      if (!destination) {
+        return;
+      }
+      if (
+        source.index === destination.index && 
+        source.droppableId === destination.droppableId) {
+        return;
+      }
+
+      setItems(prevAcordion => reorder(prevAcordion, source.index, destination.index))
+      console.log(result)
+  };
+  
+
+const StrictModeDroppable = ({ children, ...props }) => {
+     const [enabled, setEnabled] = useState(false);
+
+     useEffect(() => {
+         const animation = requestAnimationFrame(() => setEnabled(true));
+
+         return () => {
+             cancelAnimationFrame(animation);
+             setEnabled(false);
+         };
+     }, []);
+
+     if (!enabled) {
+         return null;
+     }
+
+     return <Droppable {...props}>{children}</Droppable>;
 };
 
-
-const initialTaks = [
-    {
-        id: "1",
-        text: 'react'
-    },
-    {
-        id: '2',
-        text: 'html'
-    },
-    {
-        id: '3',
-        text: 'aws'
-    },
-    {
-        id: '4',
-        text: 'javascript'
-    },
-]
-
-const EjemploDragDrop = () => {
     
-    
-    const [tasks, setTasks] = useState(initialTaks);
+    // const [tasks, setTasks] = useState(initialTaks);
   return (
-    // <DragDropContext onDragEnd={(result) => console.log(result)}>
-        <div className=''>
-            <h1>EjemploDragDrop</h1>
-            <StrictModeDroppable droppableId='tasks'>
-                {(droppableProvided) => (
-                    <ul 
-                        {...droppableProvided.droppableProps}
-                        ref={droppableProvided.innerRef}
-                        className=''
-                    >
-                        {tasks.map((task, index) => (
-                        <Draggable key={task.id} draggableId={task.id} index={index}>
-                            {(draggableProvided) => ( 
-                            <li 
-                                {...draggableProvided.draggableProps}
-                                ref={draggableProvided.innerRef}
-                                {...draggableProvided.dragHandleProps}
-                                className='bg-red-500 m-2 text-white'
-                            >
-                                {task.text}
-                            </li>
-                            )}
-                        </Draggable>
-                    ))}
-                    {droppableProvided.placeholder}  
-                </ul>
-                )}
-            </StrictModeDroppable>
+    <DragDropContext onDragEnd={onDragEnd}>
+    <Droppable droppableId="droppable-1">
+      {(provided) => (
+        <div className='m-6 border-2 border-[#bd2f2f]' {...provided.droppableProps} ref={provided.innerRef}>
+          {items.map((item, index) => (
+            <Draggable key={item.id} draggableId={item.id} index={index}>
+              {(provided) => (
+                <div className='m-6 border-2 border-[#bdb82f]' ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+                  {item.content}
+                  {index === 1 && ( // Verificar si este es el segundo elemento principal
+                    <StrictModeDroppable droppableId="droppable-2">
+                      {(provided) => (
+                        <div className='m-4 border-2 border-[#39bd2f]' {...provided.droppableProps} ref={provided.innerRef}>
+                          {items.map((item, index) => (
+                            <Draggable key={item.id} draggableId={item.id} index={index}>
+                              {(provided) => (
+                                <div className='m-4 border-2 border-[#4b2fbd]' ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+                                  {item.content}
+                                </div>
+                              )}
+                            </Draggable>
+                          ))}
+                          {provided.placeholder}
+                        </div>
+                      )}
+                    </StrictModeDroppable>
+                  )}
+                </div>
+              )}
+            </Draggable>
+          ))}
+          {provided.placeholder}
         </div>
-    // </DragDropContext>
-    
-    
+      )}
+    </Droppable>
+  </DragDropContext>
   )
 }
 

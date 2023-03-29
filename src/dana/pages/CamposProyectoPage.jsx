@@ -11,7 +11,7 @@ const initialAcordion = [
   {
       id: '2',
       titulo: 'DATOS PERSONALES',
-      subtitulo: ''
+      subtitulo: 'AAA'
   },
   {
       id: '3',
@@ -19,6 +19,8 @@ const initialAcordion = [
       subtitulo: 'TÍTULO FIRMA'
   },
 ]
+
+
 
 // función que hace funcionar el Droppable //
 export const StrictModeDroppable = ({ children, ...props }) => {
@@ -48,7 +50,6 @@ const reorder = (list, starIndex, endIndex) => {
   return result;
 };
 
-
 const CamposProyectoPage = () => {
 
   const [acordionEstate, setAcordionEstate] = useState(initialAcordion);
@@ -74,9 +75,9 @@ const CamposProyectoPage = () => {
       {(droppableProvided) => (
         <div {...droppableProvided.droppableProps}
         ref={droppableProvided.innerRef}
-        className='mx-2 min-h-[15rem] flex flex-col bg-white border shadow-sm rounded-xl dark:bg-gray-800 dark:border-gray-700 dark:shadow-slate-700/[.7]'
+        className='drop-shadow-md mx-2 min-h-[15rem] flex flex-col bg-white border rounded-xl dark:bg-gray-800 dark:border-gray-700 dark:shadow-slate-700/[.7]'
       >
-          <div className='flex flex-auto flex-col p-4 md:p-5'>
+          <div className='drop-shadow-lg flex flex-auto flex-col p-4 md:p-5'>
             <AcordionCampos acordionEstate={acordionEstate} setAcordionEstate={setAcordionEstate}/>
           </div>
           {droppableProvided.placeholder}

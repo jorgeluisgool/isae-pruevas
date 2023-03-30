@@ -18,9 +18,17 @@ const initialAcordion = [
       titulo: 'FIRMAS',
       subtitulo: 'TÍTULO FIRMA'
   },
+  {
+    id: '4',
+    titulo: 'OTRO',
+    subtitulo: '1234'
+  },
+  {
+    id: '5',
+    titulo: 'EJEMPLO',
+    subtitulo: 'LLLLL'
+  },
 ]
-
-
 
 // función que hace funcionar el Droppable //
 export const StrictModeDroppable = ({ children, ...props }) => {
@@ -42,7 +50,7 @@ export const StrictModeDroppable = ({ children, ...props }) => {
   return <Droppable {...props}>{children}</Droppable>;
 };
 
-// función que reordena la lista
+// función que reordena la lista al hacer drog and drop
 const reorder = (list, starIndex, endIndex) => {
   const result = [...list];
   const [removed] = result.splice(starIndex, 1);

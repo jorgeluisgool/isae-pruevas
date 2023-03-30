@@ -5,7 +5,15 @@ const arrayejemplo = [{ id: 'elemento1', content: 'Elemento 1' },{ id: 'elemento
 
 const AcordionSubCampos = ({acordionEstate, index}) => {
 
-    const [showSub, setShowSub] = useState(false);
+    const [showSub, setShowSub] = useState(null);
+
+    const toggleShow = (index) => {
+      if (index === showSub) {
+        setShowSub(null)
+      } else {
+        setShowSub(index)
+      }
+    }
   return (
     <>  
     { arrayejemplo.map((acor, index) => (
@@ -20,7 +28,7 @@ const AcordionSubCampos = ({acordionEstate, index}) => {
         aria-labelledby="hs-basic-nested-heading-one"
         >
               <div className="bg-[#e2e2e2] rounded hs-accordion">
-                <div onClick={() => setShowSub(!showSub)} className="rounded border-2 border-slate-300 p-6 hs-accordion-toggle hs-accordion-active:text-blue-600 py-3 inline-flex items-center gap-x-3 w-full font-semibold text-left text-gray-800 transition hover:text-gray-500 dark:hs-accordion-active:text-blue-500 dark:text-gray-200 dark:hover:text-gray-400" aria-controls="hs-basic-nested-sub-collapse-one">
+                <div onClick={() => toggleShow(index)} className="rounded border-2 border-slate-300 p-6 hs-accordion-toggle hs-accordion-active:text-blue-600 py-3 inline-flex items-center gap-x-3 w-full font-semibold text-left text-gray-800 transition hover:text-gray-500 dark:hs-accordion-active:text-blue-500 dark:text-gray-200 dark:hover:text-gray-400" aria-controls="hs-basic-nested-sub-collapse-one">
                 <div className={`text-2xl text-[#245A95] p-2 right-12 ${showSub ? "rotate-180" : ""}`}>
                   <ion-icon name="chevron-down"></ion-icon>
                   </div>
@@ -28,7 +36,7 @@ const AcordionSubCampos = ({acordionEstate, index}) => {
                   
                 </div>
                 {
-                  showSub && (
+                  showSub === index && (
                     <div id="hs-basic-nested-sub-collapse-one" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-4 border-2 border-slate-100 hs-accordion-content w-full overflow-hidden transition-[height] duration-500" aria-labelledby="hs-basic-nested-sub-heading-one">
                       <div className='mt-2 flex flex-col gap-y-4'>
                         <span>Tipo campo:</span>

@@ -24,21 +24,58 @@ export const StrictModeDroppable = ({ children, ...props }) => {
 
 const AcordionCampos = ({acordionEstate, setAcordionEstate}) => {
 
+  // estado para abrir y cerrar el acordion principal
   const [show, setShow] = useState(null);
 
+  // Funcion para abrir y cerrar el acordion principal
   const toggleShow = (index) => {
     if (index === show) {
-      setShow(index)
+      setShow(null)
     } else {
       setShow(index)
     }
   }
 
-  const reorder = (list, starIndex, endIndex) => {
-    const result = [...list];
-    const [removed] = result.splice(starIndex, 1);
-    result.splice(endIndex, 0, removed)  
-    return result;
+  const onDragEnd = (result) => {
+    const { source, destination } = result;
+
+    // If dropped outside of a droppable, do nothing
+    if (!destination) {
+      return;
+    }
+
+    // If dropped within the same droppable
+    if (source.droppableId === destination.droppableId) {
+      if (source.droppableId === 'droppable-1') {
+        const newItems1 = Array.from(items1);
+        const [removed] = newItems1.splice(source.index, 1);
+        newItems1.splice(destination.index, 0, removed);
+        setItems1(newItems1);
+      } else if (source.droppableId === 'droppable-2') {
+        const newItems2 = Array.from(items2);
+        const [removed] = newItems2.splice(source.index, 1);
+        newItems2.splice(destination.index, 0, removed);
+        setItems2(newItems2);
+      }
+    }
+
+    // If dropped between two droppables
+    if (source.droppableId !== destination.droppableId) {
+      const newItems1 = Array.from(items1);
+      const newItems2 = Array.from(items2);
+
+      const [removed] = source.droppableId === 'droppable-1' ? newItems1.splice(source.index, 1) : newItems2.splice(source.index, 1);
+
+      if (destination.droppableId === 'droppable-1') {
+        newItems1.splice(destination.index, 0, removed);
+        setItems1(newItems1);
+        setItems2(newItems2);
+      } else if (destination.droppableId === 'droppable-2') {
+        newItems2.splice(destination.index, 0, removed);
+        setItems1(newItems1);
+        setItems2(newItems2);
+      }
+    }
   };
 
   return (
@@ -53,12 +90,12 @@ const AcordionCampos = ({acordionEstate, setAcordionEstate}) => {
         className="hs-accordion-group bg-slate-50 px-5 py-3 my-2 rounded-2xl border-2 border-[#245A95]"
       >
         <DragDropContext onDragEnd={(result) => {
-      console.log(result)
-    }}>
-        <StrictModeDroppable droppableId='camposProyectosSub'>
+          console.log(result)
+        }}>
+        <StrictModeDroppable droppableId={acordionData.titulo}>
           {(droppableSubProvided) => (
-        <div className='border-2 border-[#bd2f2f]' {...droppableSubProvided.droppableProps} ref={droppableSubProvided.innerRef}>
-          <span className='absolute right-8 text-2xl text-[#7e2495]'>
+        <div className='' {...droppableSubProvided.droppableProps} ref={droppableSubProvided.innerRef}>
+          <span className='absolute right-8 text-2xl text-[#245A95]'>
           <ion-icon name="reorder-three-outline"></ion-icon>
           </span>
            <div className="hs-accordion active" id="hs-basic-nested-heading-one">
@@ -73,7 +110,7 @@ const AcordionCampos = ({acordionEstate, setAcordionEstate}) => {
                 <AcordionSubCampos acordionData={acordionData} acordionEstate={acordionEstate} index={index}/>  
              )} 
           </div>
-          {<div/>}
+          {droppableSubProvided.placeholder}
         </div>
         )}
         </StrictModeDroppable>

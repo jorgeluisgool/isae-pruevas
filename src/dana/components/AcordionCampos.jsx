@@ -3,8 +3,13 @@ import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 // import { StrictModeDroppable } from '../pages/CamposProyectoPage';
 import AcordionSubCampos from './AcordionSubCampos';
 
+const arrayejemplo = [{ id: 'elemento1', content: 'Elemento 1' },{ id: 'elemento2', content: 'Elemento 2' }]
+
+
 export const StrictModeDroppable = ({ children, ...props }) => {
   const [enabled, setEnabled] = useState(false);
+
+  
 
   useEffect(() => {
       const animation = requestAnimationFrame(() => setEnabled(true));
@@ -24,6 +29,8 @@ export const StrictModeDroppable = ({ children, ...props }) => {
 
 const AcordionCampos = ({acordionEstate, setAcordionEstate}) => {
 
+  const [arregloSub, setarregloSub] = useState(arrayejemplo);
+
   // estado para abrir y cerrar el acordion principal
   const [show, setShow] = useState(null);
 
@@ -37,45 +44,16 @@ const AcordionCampos = ({acordionEstate, setAcordionEstate}) => {
   }
 
   const onDragEnd = (result) => {
-    const { source, destination } = result;
-
-    // If dropped outside of a droppable, do nothing
-    if (!destination) {
+    if (!result.destination) {
       return;
     }
 
-    // If dropped within the same droppable
-    if (source.droppableId === destination.droppableId) {
-      if (source.droppableId === 'droppable-1') {
-        const newItems1 = Array.from(items1);
-        const [removed] = newItems1.splice(source.index, 1);
-        newItems1.splice(destination.index, 0, removed);
-        setItems1(newItems1);
-      } else if (source.droppableId === 'droppable-2') {
-        const newItems2 = Array.from(items2);
-        const [removed] = newItems2.splice(source.index, 1);
-        newItems2.splice(destination.index, 0, removed);
-        setItems2(newItems2);
-      }
-    }
+    const itemsCopy = Array.from(arregloSub);
+    const [reorderedItem] = itemsCopy.splice(result.source.index, 1);
+    itemsCopy.splice(result.destination.index, 0, reorderedItem);
 
-    // If dropped between two droppables
-    if (source.droppableId !== destination.droppableId) {
-      const newItems1 = Array.from(items1);
-      const newItems2 = Array.from(items2);
-
-      const [removed] = source.droppableId === 'droppable-1' ? newItems1.splice(source.index, 1) : newItems2.splice(source.index, 1);
-
-      if (destination.droppableId === 'droppable-1') {
-        newItems1.splice(destination.index, 0, removed);
-        setItems1(newItems1);
-        setItems2(newItems2);
-      } else if (destination.droppableId === 'droppable-2') {
-        newItems2.splice(destination.index, 0, removed);
-        setItems1(newItems1);
-        setItems2(newItems2);
-      }
-    }
+    setarregloSub(itemsCopy);
+    console.log(result);
   };
 
   return (
@@ -89,9 +67,7 @@ const AcordionCampos = ({acordionEstate, setAcordionEstate}) => {
         ref={draggableProvided.innerRef}
         className="hs-accordion-group bg-slate-50 px-5 py-3 my-2 rounded-2xl border-2 border-[#245A95]"
       >
-        <DragDropContext onDragEnd={(result) => {
-          console.log(result)
-        }}>
+        <DragDropContext onDragEnd={onDragEnd}>
         <StrictModeDroppable droppableId={acordionData.titulo}>
           {(droppableSubProvided) => (
         <div className='' {...droppableSubProvided.droppableProps} ref={droppableSubProvided.innerRef}>
@@ -107,7 +83,7 @@ const AcordionCampos = ({acordionEstate, setAcordionEstate}) => {
              </div>
 
              {show === index && (  
-                <AcordionSubCampos acordionData={acordionData} acordionEstate={acordionEstate} index={index}/>  
+                <AcordionSubCampos arregloSub={arregloSub} setarregloSub={setarregloSub} acordionData={acordionData} acordionEstate={acordionEstate} index={index}/>  
              )} 
           </div>
           {droppableSubProvided.placeholder}

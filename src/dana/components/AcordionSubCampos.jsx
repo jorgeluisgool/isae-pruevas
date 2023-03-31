@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import { Draggable } from 'react-beautiful-dnd';
 
-const arrayejemplo = [{ id: 'elemento1', content: 'Elemento 1' },{ id: 'elemento2', content: 'Elemento 2' }]
 
-const AcordionSubCampos = ({acordionEstate, index}) => {
+
+const AcordionSubCampos = ({arregloSub, setarregloSub, acordionEstate, index}) => {
 
     const [showSub, setShowSub] = useState(null);
 
@@ -16,7 +16,7 @@ const AcordionSubCampos = ({acordionEstate, index}) => {
     }
   return (
     <>  
-    { arrayejemplo.map((acor, index) => (
+    { arregloSub.map((acor, index) => (
         <Draggable key={acor.id} draggableId={acor.id} index={index}>
         {(draggableProvidedSub) => (
         <div 

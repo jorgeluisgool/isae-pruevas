@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import AcordionCampos from '../components/AcordionCampos'
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
+import { useContext } from 'react';
+import { ExampleContex } from '../context/ExampleContext';
 
+
+// ESTADO INICIAL DEL ACORDION
 const initialAcordion = [
   {
       id: "1",
@@ -58,8 +62,12 @@ const reorder = (list, starIndex, endIndex) => {
   return result;
 };
 
+/// COMPONETE ///
 const CamposProyectoPage = () => {
 
+  const example = useContext(ExampleContex);
+
+  // State del Acordion
   const [acordionEstate, setAcordionEstate] = useState(initialAcordion);
 
   return (
@@ -74,24 +82,24 @@ const CamposProyectoPage = () => {
         source.droppableId === destination.droppableId) {
         return;
       }
-
       setAcordionEstate(prevAcordion => reorder(prevAcordion, source.index, destination.index))
       console.log(result)
     }}>
-      <h1 className="p-5 text-2xl font-black">Campos proyecto: </h1>
-      <StrictModeDroppable droppableId='camposProyectos'>
-      {(droppableProvided) => (
-        <div {...droppableProvided.droppableProps}
-        ref={droppableProvided.innerRef}
-        className='drop-shadow-md mx-2 min-h-[15rem] flex flex-col bg-white border rounded-xl dark:bg-gray-800 dark:border-gray-700 dark:shadow-slate-700/[.7]'
-      >
-          <div className='drop-shadow-lg flex flex-auto flex-col p-4 md:p-5'>
-            <AcordionCampos acordionEstate={acordionEstate} setAcordionEstate={setAcordionEstate}/>
-          </div>
-          {droppableProvided.placeholder}
-        </div>
-        )}
-      </StrictModeDroppable>  
+        <h1 className="p-5 text-2xl font-black">Campos proyecto: {example.dataCrearProyecto}</h1>
+        <StrictModeDroppable droppableId='camposProyectos'>
+          {(droppableProvided) => (
+            <div 
+              {...droppableProvided.droppableProps}
+              ref={droppableProvided.innerRef}
+              className='drop-shadow-md mx-2 min-h-[15rem] flex flex-col bg-white border rounded-xl dark:bg-gray-800 dark:border-gray-700 dark:shadow-slate-700/[.7]'
+            >
+              <div className='drop-shadow-lg flex flex-auto flex-col p-4 md:p-5'>
+                <AcordionCampos acordionEstate={acordionEstate} setAcordionEstate={setAcordionEstate}/>
+              </div>
+            {droppableProvided.placeholder}
+            </div>
+          )}
+        </StrictModeDroppable>  
       </DragDropContext>
     </>
   )

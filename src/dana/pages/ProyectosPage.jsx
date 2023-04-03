@@ -3,7 +3,6 @@ import { CrearProyecto } from "../components/CrearProyecto";
 import { SkeletonTabla } from "../components/SkeletonTabla";
 import { TablaCRUD } from "../components/TablaCRUD";
 import * as XLSX from "xlsx"
-
 import { useFetchProjects } from "../hooks/useFetchProjects";
 import { useState } from "react";
 
@@ -23,11 +22,11 @@ const ProyectosPage = () => {
         const data = XLSX.utils.sheet_to_json(sheet);
         console.log(data);
         setExcelData(data);
-        // console.log(excelData.);
+        console.log(excelData);
     };
   
     reader.readAsBinaryString(file);
-}
+  }
 
   const { data: proyectos, loading } = useFetchProjects();
     const headers = [

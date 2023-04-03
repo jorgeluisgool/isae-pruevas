@@ -1,37 +1,20 @@
-
 import { useState } from "react";
-import * as XLSX from "xlsx"
+import { Navigate } from "react-router-dom";
 
 export const CrearProyecto = ({excelData, handleFileUpload}) => {
     
     const [proyecto, setProyecto] = useState('');
     const [tipo, setTipo] = useState('');
 
-    // const [excelData, setExcelData] = useState([]);
-
     const handleSubmit = (e) => {
         e.preventDefault();
+
+        // Navigate ('/camposproyecto', {
+        //     replace: true
+        // })
         console.log(proyecto, tipo); 
         console.log(excelData);     
     }
-
-    // const handleFileUpload = (event) => {
-    //     const file = event.target.files[0];
-    //     const reader = new FileReader();
-      
-    //     reader.onload = function (event) {
-    //         const content = event.target.result;
-    //         const workbook = XLSX.read(content, { type: 'binary' });
-    //         const sheetName = workbook.SheetNames[0];
-    //         const sheet = workbook.Sheets[sheetName];
-    //         const data = XLSX.utils.sheet_to_json(sheet);
-    //         console.log(data);
-    //         setExcelData(data);
-    //         // console.log(excelData.);
-    //     };
-      
-    //     reader.readAsBinaryString(file);
-    // }
 
     return (
         <>
@@ -83,14 +66,16 @@ export const CrearProyecto = ({excelData, handleFileUpload}) => {
                             accept="application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                             onChange={handleFileUpload}
                         />
-            
-                        {/* <Button className="active:scale-[.98] transition-all py-3 rounded-xl bg-[#245A95] hover:bg-sky-600 text-white text-lg font-bold" type="file">
-                            Cargar Campos
-                        </Button> */}
-                    </div>
                     </div>
                     
-                    
+                    </div>
+                    <div className="flex">
+                        <button
+                          type="submit"
+                          className="ml-auto w-14 h-14 object-cover active:scale-[.98] py-3 bg-[#245A95] hover:bg-sky-700 text-white text-2xl font-bold inline-block rounded-full bg-primary p-2 uppercase leading-normal shadow-md transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] mt-4">
+                          <ion-icon name="arrow-forward"></ion-icon>
+                        </button>
+                    </div>
                 </div>
 
             </form>

@@ -4,10 +4,12 @@ import { SkeletonTabla } from "../components/SkeletonTabla";
 import { TablaCRUD } from "../components/TablaCRUD";
 import * as XLSX from "xlsx"
 import { useFetchProjects } from "../hooks/useFetchProjects";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { ExampleContex } from "../context/ExampleContext";
 
 const ProyectosPage = () => {
 
+  const { dataArchivoExcel, setDataArchivoExcel } = useContext(ExampleContex);
   const [excelData, setExcelData] = useState([]);
 
   const handleFileUpload = (event) => {
@@ -21,8 +23,7 @@ const ProyectosPage = () => {
         const sheet = workbook.Sheets[sheetName];
         const data = XLSX.utils.sheet_to_json(sheet);
         console.log(data);
-        setExcelData(data);
-        console.log(excelData);
+        setDataArchivoExcel(data);
     };
   
     reader.readAsBinaryString(file);
@@ -38,7 +39,7 @@ const ProyectosPage = () => {
   return (
         <>
         <h1 className="p-5 text-2xl font-black">Proyectos</h1>
-            <CrearProyecto excelData={excelData} handleFileUpload={handleFileUpload}/>
+            <CrearProyecto handleFileUpload={handleFileUpload}/>
             <div className="m-12 container mx-auto">
             {loading ? <SkeletonTabla headers={headers}/> :  <TablaCRUD tipoDatos={"PROYECTOS"} listaDatos = {proyectos} headers = {headers} editar = {false} eliminar = {true} seleccionMultiple = {false} />}
             </div> 

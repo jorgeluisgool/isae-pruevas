@@ -5,12 +5,18 @@ export const ExampleContex = createContext({});
 
 export default function ExampleContexProvider({children}) {
 
-    const [dataCrearProyecto, setDataCrearProyecto] = useState('Aqui va el nombre del proyecto');
+    const [dataCrearProyecto, setDataCrearProyecto] = useState('');
+
+    const [dataArchivoExcel, setDataArchivoExcel] = useState([]);
 
     return (
-        <ExampleContex.Provider value={{dataCrearProyecto, setDataCrearProyecto}}>
+        <ExampleContex.Provider value={{
+            dataCrearProyecto, 
+            setDataCrearProyecto,
+            dataArchivoExcel,
+            setDataArchivoExcel
+        }}>
             {children}
         </ExampleContex.Provider>
     )
-
 }

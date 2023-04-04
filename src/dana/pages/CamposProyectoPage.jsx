@@ -85,7 +85,7 @@ const CamposProyectoPage = () => {
       setAcordionEstate(prevAcordion => reorder(prevAcordion, source.index, destination.index))
       console.log(result)
     }}>
-        <h1 className="p-5 text-2xl font-black">Campos proyecto: {example.dataCrearProyecto}</h1>
+        <h1 className="p-5 text-2xl font-black">Campos proyecto: { <span className='text-[#245A95]'>{example.dataCrearProyecto}</span> }</h1>
         <StrictModeDroppable droppableId='camposProyectos'>
           {(droppableProvided) => (
             <div 

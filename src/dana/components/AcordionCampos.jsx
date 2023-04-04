@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import AcordionSubCampos from './AcordionSubCampos';
+import { ExampleContex } from '../context/ExampleContext';
 
 // Arreglo del Sub acordion
 const arrayejemplo = [{ id: 'elemento1', content: 'Elemento 1' },{ id: 'elemento2', content: 'Elemento 2' }]
@@ -27,6 +28,9 @@ export const StrictModeDroppable = ({ children, ...props }) => {
 
 /// COMPONENTE ///
 const AcordionCampos = ({acordionEstate, setAcordionEstate}) => {
+
+  const { dataArchivoExcel, setDataArchivoExcel } = useContext(ExampleContex);
+  console.log(dataArchivoExcel);
 
   // Estado del sub acordion
   const [arregloSub, setArregloSub] = useState(arrayejemplo);

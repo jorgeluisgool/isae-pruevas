@@ -13,6 +13,11 @@ const initialAcordion = [
       subtitulo: 'FOLIO'
   },
   {
+      id: "6",
+      titulo: 'DATOS DEL REGISTRO',
+      subtitulo: 'bbbb'
+  },
+  {
       id: '2',
       titulo: 'DATOS PERSONALES',
       subtitulo: 'AAA'

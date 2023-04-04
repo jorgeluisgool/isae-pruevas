@@ -85,7 +85,7 @@ export const Navbar = () => {
                 </NavLink>
                 </li> */}
                 <button 
-                className='bg-white text-[#245A95] font-[Poppins] py-2 px-6 rounded md:ml-6 hover:bg-slate-300 duration-500 font-bold'
+                className='bg-[#245A95] text-white border border-white hover:bg-white hover:text-[#245A95] shadow-md font-[Poppins] py-2 px-6 rounded md:ml-6 duration-500 font-bold'
                 onClick={onLogout}
                 >
                     Cerrar sesión

@@ -63,8 +63,8 @@ const AcordionCampos = ({acordionEstate, setAcordionEstate}) => {
 
   return (
     <>
-    {acordionEstate.map((acordionData, index) => (
-      <Draggable key={acordionData.id} draggableId={acordionData.id} index={index}>
+    {dataArchivoExcel.map((acordionData, index) => (
+      <Draggable key={acordionData.campo} draggableId={acordionData.campo} index={index}>
         {(draggableProvided) => ( 
           <div 
             {...draggableProvided.draggableProps}
@@ -73,7 +73,7 @@ const AcordionCampos = ({acordionEstate, setAcordionEstate}) => {
             className="hs-accordion-group bg-slate-50 px-5 py-3 my-2 rounded-2xl border-2 border-[#245A95]"
           >
             <DragDropContext onDragEnd={onDragEnd}>
-              <StrictModeDroppable droppableId={acordionData.titulo}>
+              <StrictModeDroppable droppableId={acordionData.campo}>
                 {(droppableSubProvided) => (
                 <div className='' {...droppableSubProvided.droppableProps} ref={droppableSubProvided.innerRef}>
                   <span className='absolute right-8 text-2xl text-[#245A95]'>
@@ -84,7 +84,7 @@ const AcordionCampos = ({acordionEstate, setAcordionEstate}) => {
                        <div className={`text-2xl text-[#245A95] ${show === index? "rotate-180" : ""}`}>
                        <ion-icon name="chevron-down"></ion-icon>
                        </div>
-                         {acordionData.titulo}
+                         {acordionData.agrupacion}
                     </div>
 
                       {show === index && (  

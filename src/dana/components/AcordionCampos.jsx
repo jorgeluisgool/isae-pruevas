@@ -61,10 +61,28 @@ const AcordionCampos = ({acordionEstate, setAcordionEstate}) => {
     console.log(result);
   };
 
+
+
+
+  // const agrupacionesMostradas = {};
+
+  // const elementosJSX = dataArchivoExcel.map((objeto) => {
+  //   if (agrupacionesMostradas[objeto.agrupacion]) {
+  //     return null; // La agrupación ya ha sido mostrada, no mostrarla de nuevo
+  //   } else {
+  //     agrupacionesMostradas[objeto.agrupacion] = true; // Marcar la agrupación como mostrada
+  //     return <div key={objeto.agrupacion}>{objeto.agrupacion}</div>; // Mostrar la agrupación
+  //   }
+  // });
+  const agrupaciones = dataArchivoExcel
+    .map((item) => item.agrupacion)
+    .filter((value, index, self) => self.indexOf(value) === index);
+
   return (
     <>
-    {dataArchivoExcel.map((acordionData, index) => (
-      <Draggable key={acordionData.campo} draggableId={acordionData.campo} index={index}>
+    
+    {agrupaciones.map((acordionData, index) => (
+      <Draggable key={acordionData} draggableId={acordionData} index={index}>
         {(draggableProvided) => ( 
           <div 
             {...draggableProvided.draggableProps}
@@ -73,7 +91,7 @@ const AcordionCampos = ({acordionEstate, setAcordionEstate}) => {
             className="hs-accordion-group bg-slate-50 px-5 py-3 my-2 rounded-2xl border-2 border-[#245A95]"
           >
             <DragDropContext onDragEnd={onDragEnd}>
-              <StrictModeDroppable droppableId={acordionData.campo}>
+              <StrictModeDroppable droppableId={acordionData}>
                 {(droppableSubProvided) => (
                 <div className='' {...droppableSubProvided.droppableProps} ref={droppableSubProvided.innerRef}>
                   <span className='absolute right-8 text-2xl text-[#245A95]'>
@@ -84,7 +102,7 @@ const AcordionCampos = ({acordionEstate, setAcordionEstate}) => {
                        <div className={`text-2xl text-[#245A95] ${show === index? "rotate-180" : ""}`}>
                        <ion-icon name="chevron-down"></ion-icon>
                        </div>
-                         {acordionData.agrupacion}
+                         {acordionData}
                     </div>
 
                       {show === index && (  

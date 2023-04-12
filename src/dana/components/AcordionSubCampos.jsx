@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Draggable } from 'react-beautiful-dnd';
 
 /// COMPONETES ///
-const AcordionSubCampos = ({arregloSub, setArregloSub, acordionEstate, index}) => {
+const AcordionSubCampos = ({acordionData, arreglo2, arregloSub, setArregloSub, acordionEstate, index}) => {
 
   // Estado para abrir y cerrar el sub acordion 
   const [showSub, setShowSub] = useState(null);
@@ -16,10 +16,16 @@ const AcordionSubCampos = ({arregloSub, setArregloSub, acordionEstate, index}) =
     }
   };
 
+  // const camposOrdenados = arreglo2[1].campos.sort((a,b) => {
+  //   return a.campo.localeCompare(b.campo);
+  // });
+
+  // console.log(camposOrdenados);
+
   return (
     <>  
-      { arregloSub.map((acor, index) => (
-        <Draggable key={acor.id} draggableId={acor.id} index={index}>
+      { acordionData.campos.map((acor, index) => (
+        <Draggable key={index} draggableId={acor.campo} index={index}>
           {(draggableProvidedSub) => (
           <div 
           {...draggableProvidedSub.draggableProps}
@@ -34,7 +40,7 @@ const AcordionSubCampos = ({arregloSub, setArregloSub, acordionEstate, index}) =
               <div className={`text-2xl text-[#245A95] p-2 right-12 ${showSub ? "rotate-180" : ""}`}>
                 <ion-icon name="chevron-down"></ion-icon>
               </div>
-                {acor.content}   
+                {acor.campo}   
             </div>
               {
                 showSub === index && (

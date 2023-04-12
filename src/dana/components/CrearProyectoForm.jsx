@@ -1,10 +1,46 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as XLSX from "xlsx"
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ExampleContex } from "../context/ExampleContext";
 
 
-export const CrearProyecto = ({ handleFileUpload }) => {
+export const CrearProyectoForm = () => {
+
+    const { dataArchivoExcel, setDataArchivoExcel } = useContext(ExampleContex);
+
+    // Funcion que combierte el excel en un arreglo
+    const handleFileUpload = (event) => {
+        const file = event.target.files[0];
+        const reader = new FileReader();
+  
+        reader.onload = function (event) {
+            const content = event.target.result;
+            const workbook = XLSX.read(content, { type: 'binary' });
+            const sheetName = workbook.SheetNames[0];
+            const sheet = workbook.Sheets[sheetName];
+            const data = XLSX.utils.sheet_to_json(sheet);
+    
+        setDataArchivoExcel([
+          {
+            campo: "FOLIO",
+            tipocampo: "ALFANUMERICO",
+            agrupacion: "DATOS DEL REGISTRO",
+            restriccion: "[N/A]",
+            longitud: 10
+          },...data,
+          {
+            campo: "FIRMA",
+            tipocampo: "FIRMA",
+            agrupacion: "FIRMAS",
+            restriccion: "[N/A]",
+            longitud: 10
+          }
+        ]);
+    };
+  
+    reader.readAsBinaryString(file);
+    }
 
     // Se obtiene el context para mandar el formulario resgistrar proyecto
     const { dataCrearProyecto, setDataCrearProyecto } = useContext(ExampleContex);
@@ -47,7 +83,7 @@ export const CrearProyecto = ({ handleFileUpload }) => {
             onSubmit={(valores, {resetForm}) => {
 
                 // aqui se mandan los valores del formulario al context para usarlos en la vista camposProyecto
-                setDataCrearProyecto(valores.proyecto);
+                setDataCrearProyecto( valores.proyecto);
 
                 // hace que los inputs del formulario se reinicien al estado inicial al hacer click 
                 resetForm();
@@ -55,7 +91,6 @@ export const CrearProyecto = ({ handleFileUpload }) => {
                 // llamada a la funcion del naviate a campos proyecto
                 handleSubmit();
                 
-                // console.log(valores);
             }}
         >
             {({values, errors, setFieldValue}) => (

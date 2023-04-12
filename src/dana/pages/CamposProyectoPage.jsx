@@ -4,41 +4,6 @@ import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import { useContext } from 'react';
 import { ExampleContex } from '../context/ExampleContext';
 
-
-// ESTADO INICIAL DEL ACORDION
-const initialAcordion = [
-  {
-      id: "1",
-      titulo: 'DATOS DEL REGISTRO',
-      subtitulo: 'FOLIO'
-  },
-  {
-      id: "6",
-      titulo: 'DATOS DEL REGISTRO',
-      subtitulo: 'bbbb'
-  },
-  {
-      id: '2',
-      titulo: 'DATOS PERSONALES',
-      subtitulo: 'AAA'
-  },
-  {
-      id: '3',
-      titulo: 'FIRMAS',
-      subtitulo: 'TÍTULO FIRMA'
-  },
-  {
-    id: '4',
-    titulo: 'OTRO',
-    subtitulo: '1234'
-  },
-  {
-    id: '5',
-    titulo: 'EJEMPLO',
-    subtitulo: 'LLLLL'
-  },
-]
-
 // función que hace funcionar el Droppable //
 export const StrictModeDroppable = ({ children, ...props }) => {
   const [enabled, setEnabled] = useState(false);
@@ -59,7 +24,7 @@ export const StrictModeDroppable = ({ children, ...props }) => {
   return <Droppable {...props}>{children}</Droppable>;
 };
 
-// función que reordena la lista al hacer drog and drop
+// función que reordena el acordion principal al hacer drog and drop
 const reorder = (list, starIndex, endIndex) => {
   const result = [...list];
   const [removed] = result.splice(starIndex, 1);
@@ -70,26 +35,77 @@ const reorder = (list, starIndex, endIndex) => {
 /// COMPONETE ///
 const CamposProyectoPage = () => {
 
-  const example = useContext(ExampleContex);
+  // Context del archivo excel
+  const { dataArchivoExcel, setDataArchivoExcel } = useContext(ExampleContex);
 
-  // State del Acordion
-  const [acordionEstate, setAcordionEstate] = useState(initialAcordion);
+  // Funcion que combierte a arreglo2
+  // const arreglo2 = dataArchivoExcel.reduce((acumulador, objeto) => {
+  //   const grupo = acumulador.find((elem) => elem.agrupacion === objeto.agrupacion);
+  //   if (grupo) {
+  //     grupo.campos.push(objeto);
+  //   } else {
+  //     acumulador.push({
+  //       agrupacion: objeto.agrupacion,
+  //       campos: [objeto]
+  //     });
+  //   }
+  //   return acumulador;
+  // }, []);
+
+  const grupos = dataArchivoExcel.reduce((grupos, campo) => {
+    const grupo = grupos.find(g => g.agrupacion === campo.agrupacion);
+    if (grupo) {
+      grupo.campos.push(campo);
+    } else {
+      grupos.push({
+        agrupacion: campo.agrupacion,
+        campos: [campo]
+      });
+    }
+    return grupos;
+  }, []);
+  
+  // Asignar un ID a cada grupo y a cada campo
+  let grupoId = 1;
+  let campoId = 1;
+  const arreglo2 = grupos.map(grupo => ({
+    id: `${grupoId++}`,
+    agrupacion: grupo.agrupacion,
+    campos: grupo.campos.map(campo => ({
+      id: `${campoId++}`,
+      ...campo
+    }))
+  }));
+
+  
+  // useEffect(() => {
+  //   setDataArchivoExcel(arreglo2);
+  // }, [arreglo2]);
+
+  console.log(dataArchivoExcel)
+  console.log(arreglo2)
+
+
+  // Funcion que reordena el sub acordion
+  const onDragEnd = (result) => {
+    if (!result.destination) {
+      return;
+    }
+
+    const itemsCopy = Array.from(dataArchivoExcel);
+    const [reorderedItem] = itemsCopy.splice(result.source.index, 1);
+    itemsCopy.splice(result.destination.index, 0, reorderedItem);
+
+    setDataArchivoExcel(itemsCopy);
+    console.log(result);
+  };
+
+  // Context del formulario crear proyecto
+  const example = useContext(ExampleContex);
 
   return (
     <>
-    <DragDropContext onDragEnd={(result) => {
-      const {source, destination} = result;
-      if (!destination) {
-        return;
-      }
-      if (
-        source.index === destination.index && 
-        source.droppableId === destination.droppableId) {
-        return;
-      }
-      setAcordionEstate(prevAcordion => reorder(prevAcordion, source.index, destination.index))
-      console.log(result)
-    }}>
+    <DragDropContext onDragEnd={onDragEnd}>
         <h1 className="p-5 text-2xl font-black">Campos proyecto: { <span className='text-[#245A95]'>{example.dataCrearProyecto}</span> }</h1>
         <StrictModeDroppable droppableId='camposProyectos'>
           {(droppableProvided) => (
@@ -99,7 +115,7 @@ const CamposProyectoPage = () => {
               className='drop-shadow-md mx-2 min-h-[15rem] flex flex-col bg-white border rounded-xl dark:bg-gray-800 dark:border-gray-700 dark:shadow-slate-700/[.7]'
             >
               <div className='drop-shadow-lg flex flex-auto flex-col p-4 md:p-5'>
-                <AcordionCampos acordionEstate={acordionEstate} setAcordionEstate={setAcordionEstate}/>
+                <AcordionCampos dataArchivoExcel={dataArchivoExcel} arreglo2={arreglo2}/>
               </div>
             {droppableProvided.placeholder}
             </div>

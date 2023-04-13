@@ -34,7 +34,7 @@ const MultiSelect = ({ label, name, options, ...rest }) => {
 
   return (
     <div className="">
-      <label htmlFor={name} className="block text-[#245A95] font-bold mb-2">
+      <label htmlFor={name} className="block text-[#245A95] font-bold mb-4">
         {label}
       </label>
       <Select

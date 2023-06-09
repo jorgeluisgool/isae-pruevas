@@ -82,51 +82,60 @@ export const FormLogin = () => {
 
   return (
         <>
-        <div className='drop-shadow-lg m-12 bg-slate-50 px-10 py-20 rounded-3xl border-2 border-[#245A95]'>
-            <div className='w-40 h-40 mx-auto pt-8'>
-                <img src="src/assets/logo_ISAe.png" alt="Your Company"/>
+        <div className='drop-shadow-lg bg-slate-50 px-6 py-12 rounded-3xl border-2 border-[#245A95]'>
+            <div className='flex items-center justify-center pb-6'>
+                <img src="src/assets/logo_ISAe.png" alt="Your Company" className='h-32'/>
             </div>
             <p className='font-medium text-lg text-gray-500'>Bienvenido de nuevo</p>
-            
             <div className='mt-4'>
                 <label className='text-lg text-[#245A95] font-medium'>Usuario</label>
                 <form onSubmit={onLogin}>
-                <input 
-                    className='w-full border-2 border-gray-100 rounded-xl p-4 mt-1 bg-transparet'
-                    type='text'
-                    placeholder='Ingrese su Usuario'
-                    name='usuario'
-                    value={usuario}
-                    onChange={(e) => setUsuario(e.target.value)}
-                    
-                />
-                
-                <label className='text-lg text-[#245A95] font-medium'>Contraseña</label>
-                <input 
-                    className='w-full border-2 border-gray-100 rounded-xl p-4 mt-1 bg-transparet'
-                    placeholder='Ingrese su contraseña'
-                    type='password'
-                    name='contrasena'
-                    value={contrasena}
-                    onChange={(e) => setContrasena(e.target.value)}
-                />
-                <div className='mt-8 flex flex-col gap-y-4'>
-                {
-                    errorUsuario !== "" && 
-                    <p className='text-red-700 w-full'>
-                        {errorUsuario}
-                    </p>
-                }
-                    <button 
-                    type='submit'
-                    className='active:scale-[.98] transition-all py-3 rounded-xl bg-[#245A95] hover:bg-sky-600 text-white text-lg font-bold'
-                    
-                    >
-                        Iniciar sesión
-                    </button>
-                </div> 
-                </form>  
-            </div>   
+                    <label class="relative block">
+                        <span class="sr-only">Search</span>
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-2">
+                            <i className="pi pi-user text-[#245A95]"></i>
+                        </span>
+                        <input 
+                            className='w-full border-2 border-gray-100 p-4 mt-1 bg-transparet rounded-md py-2 pl-9 pr-3 focus:outline-none focus:border-sky-500 focus:ring-sky-500 focus:ring-1'
+                            type='text'
+                            placeholder='Ingrese su Usuario'
+                            name='usuario'
+                            value={usuario}
+                            onChange={(e) => setUsuario(e.target.value)}   
+                        />
+                    </label>
+                    <label className='text-lg text-[#245A95] font-medium'>Contraseña</label>
+                        <label class="relative block">
+                            <span class="sr-only">Search</span>
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-2">
+                                <i className="pi pi-lock text-[#245A95]"></i>
+                            </span>
+                            <input 
+                                className='w-full border-2 border-gray-100 p-4 mt-1 bg-transparet rounded-md py-2 pl-9 pr-3 focus:outline-none focus:border-sky-500 focus:ring-sky-500 focus:ring-1'
+                                placeholder='Ingrese su contraseña'
+                                type='password'
+                                name='contrasena'
+                                value={contrasena}
+                                onChange={(e) => setContrasena(e.target.value)}
+                            />
+                        </label>
+                        <div className='mt-8 flex flex-col gap-y-4'>
+                        {
+                            errorUsuario !== "" && 
+                            <p className='text-red-700 w-full'>
+                                {errorUsuario}
+                            </p>
+                        }
+                            <button 
+                            type='submit'
+                            className='active:scale-[.98] transition-all py-3 rounded-xl bg-[#245A95] hover:bg-sky-600 text-white text-lg font-bold'
+
+                            >
+                                Iniciar sesión
+                            </button>
+                        </div> 
+                    </form>  
+                </div>   
         </div>
         </>
   )

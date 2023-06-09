@@ -3,6 +3,15 @@ import * as XLSX from "xlsx"
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ExampleContex } from "../context/ExampleContext";
+import { InputText } from 'primereact/inputtext';
+import { Dropdown } from "primereact/dropdown";
+
+const tipoProyecto = [
+    { name: 'MIGRACIONES', code: 'migraciones' },
+    { name: 'INVENTARIO', code: 'inventario' },
+    { name: 'MANTENIMIENTO', code: 'mantenimiento' },
+    { name: 'OTROS', code: 'otros' },
+];
 
 
 export const CrearProyectoForm = () => {
@@ -105,29 +114,47 @@ export const CrearProyectoForm = () => {
                                 <ion-icon name="archive-sharp"></ion-icon>
                             </button>
                         </div>
-                        <div className="mt-8 flex flex-col gap-y-1 w-full">
-                            <Field 
-                                className='w-full border-2 border-gray-300 rounded-xl py-3 bg-transparet'
-                                type='text'
-                                placeholder='  Proyecto'
-                                name='proyecto'
-                                value={values.proyecto.toUpperCase()}
-                            />
+                        <div className='mt-8 flex flex-col gap-y-1 w-full'>
+                            <div className="p-inputgroup">
+                                <span className='p-float-label relative'>
+                                    <Field
+                                        className="w-full appearance-none focus:outline-none bg-transparent"
+                                        as={InputText}
+                                        name="proyecto"
+                                        value={values.proyecto.toUpperCase()}
+                                    />
+                                    
+                                    <span className="p-inputgroup-addon border border-gray-300 p-2 rounded-md">
+                                      <i className="pi pi-file-edit text-[#245A95] font-bold text-2xl"></i>
+                                    </span>
+                                    <label htmlFor="name" className='text-lg text-[#245A95] font-semibold absolute top-0 left-0 transform'>
+                                      Proyecto
+                                    </label>
+                                </span>
+                            </div>
                             <ErrorMessage name="proyecto" component={() => (
                                 <span className="text-red-600"><ion-icon name="alert-circle-sharp"></ion-icon> {errors.proyecto}</span>
-                            )}/>
+                            )}/>   
                         </div>
-                        <div className="mt-8 flex flex-col gap-y-4">
-                            <Field
-                                className="border-2 border-gray-300 rounded-xl py-3 bg-transparet"
-                                as="select"
-                                name="tipo"
-                            >
-                                <option value="migraciones" defaultValue>MIGRACIONES</option>
-                                <option value="inventario">INVENTARIO</option>
-                                <option value="mentenimiento">MANTENIMIENTO</option>
-                                <option value="otros">OTROS</option>
-                            </Field>
+                        
+                        <div className="mt-8 flex flex-col gap-y-1 w-full">
+                            <div className="p-inputgroup">
+                                <span className='p-float-label relative'>
+                                    <Field
+                                        className="w-full appearance-none focus:outline-none bg-transparent"
+                                        as={Dropdown}
+                                        name="tipo"
+                                        options={tipoProyecto}
+                                        optionLabel="name"
+                                    />
+                                    <span className="p-inputgroup-addon border border-gray-300 p-2 rounded-md">
+                                        <i className="pi pi-search text-[#245A95] font-bold text-2xl"></i>
+                                    </span>
+                                    <label htmlFor="tipo" className='text-lg text-[#245A95] font-semibold absolute top-0 left-0 transform'>
+                                        Tipo de proyecto
+                                    </label>
+                                </span>
+                            </div>
                         </div>
                         <div className="mt-8 flex flex-col gap-y-1">
                             <input 

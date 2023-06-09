@@ -3,7 +3,7 @@ import React from 'react';
 const TableRegistros = ({data, headers, onDelete, onEdit, selectedRows, isSelected, onSelectedRow}) => {
   return (
     <table className="min-w-full bg-white rounded-lg overflow-hidden">
-  <thead className="bg-gray-100 text-gray-500 uppercase">
+  <thead className="bg-[#245A95] text-white uppercase">
     <tr>
       <th scope="col" className="relative px-6 py-3">
         <input

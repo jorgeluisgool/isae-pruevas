@@ -92,7 +92,7 @@ const AcordionCampos = ({arreglo2, dataArchivoExcel}) => {
                         </div>
 
                         {show === index && (
-                          <AcordionSubCampos acordionData={acordionData} arreglo2={arreglo2} arregloSub={arregloSub} setArregloSub={setArregloSub} acordionData={acordionData} index={index} />
+                          <AcordionSubCampos acordionData={acordionData} arreglo2={arreglo2} arregloSub={arregloSub} setArregloSub={setArregloSub} index={index} />
                         )}
                       </div>
                       {droppableSubProvided.placeholder}

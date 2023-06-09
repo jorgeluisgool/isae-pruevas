@@ -82,8 +82,8 @@ const CamposProyectoPage = () => {
   //   setDataArchivoExcel(arreglo2);
   // }, [arreglo2]);
 
-  console.log(dataArchivoExcel)
-  console.log(arreglo2)
+  // console.log(dataArchivoExcel)
+  // console.log(arreglo2)
 
 
   // Funcion que reordena el sub acordion

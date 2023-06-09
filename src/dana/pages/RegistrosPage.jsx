@@ -60,21 +60,21 @@ export const RegistrosPage = () => {
 
   return (
     <>
-    <h1 className="p-5 text-2xl font-black">Registros</h1>
-    <div className="m-12 container mx-auto">
+    <h1 className="pt-6 pl-4 text-4xl font-black">Registros</h1>
+    <div className="container mx-auto">
         <RegistrosForm/>
     </div>
     <div className="overflow-x-auto">
-        <div className="mb-4">
-        <TableRegistros 
-        data={data}
-        headers={["Nombre e Email", "Folio"]}
-        onDelete={handleDelete}
-        onEdit={handleEdit}
-        isSelected={isSelected}
-        selectedRows={selectedRows}
-        onSelectedRow={handleSelectedRow}
-        />
+        <div className="my-6 mx-4">
+          <TableRegistros 
+            data={data}
+            headers={["Nombre e Email", "Folio"]}
+            onDelete={handleDelete}
+            onEdit={handleEdit}
+            isSelected={isSelected}
+            selectedRows={selectedRows}
+            onSelectedRow={handleSelectedRow}
+          />
     </div>
     </div>
     </>

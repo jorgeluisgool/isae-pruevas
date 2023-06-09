@@ -1,8 +1,14 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { BotonMenu } from '../components/BotonMenu'
+import useAuth from '../hooks/useAuth';
 
 export const HomeScreem = ({titulo}) => {
+
+  const { userAuth, setUserAuth } = useAuth();
+
+  console.log(userAuth);
+
   return (
     <>
     <div className="bg-[#E2E2E2] h-full grid grid-cols-2 sm:grid-cols-3 gap-14 pt-20">
@@ -15,7 +21,7 @@ export const HomeScreem = ({titulo}) => {
         </div>
       </div>
       <div className="place-self-center ...">
-        <Link to='/menu'>
+        <Link to='/'>
           <BotonMenu titulo='USUARIOS' icono='person-add-outline'/>
         </Link>
         <div className='pt-5'>

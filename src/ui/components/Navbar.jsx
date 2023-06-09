@@ -11,6 +11,10 @@ export const Navbar = () => {
 
     //Funcion Boton Cerrar sesión
     const onLogout = () => {
+
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+
         navigate('/login', {
             replace: true
         });

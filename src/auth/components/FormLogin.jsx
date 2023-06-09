@@ -1,8 +1,11 @@
-import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import useAuth from '../../dana/hooks/useAuth';
+
 
 export const FormLogin = () => {
+
+    const { userAuth, setUserAuth } = useAuth();
 
     //Hook use Navigate
     const navigate = useNavigate();
@@ -49,34 +52,37 @@ export const FormLogin = () => {
     }
 
     const onLogin = (e) => {
+
+        localStorage.setItem("token", "true");
+
         e.preventDefault();
-        // console.log(usuario, contrasena);
         
         //Validar los datos
-    if (
-        usuario == "" && contrasena == ""
-    ){
+        if (
+            usuario == "" && contrasena == ""
+        ){
+            return setErrorUsuario("Todos los campos son obligatorios")
+        }else {
+            setErrorUsuario("")
+        }
 
-        return setErrorUsuario("Todos los campos son obligatorios")
-    }else {
-        setErrorUsuario("")
-    }
-
-        //enviar los datos y
-        //Navegar al menu al hacer click
+        //enviar los datos y Navegar al menu al hacer click
         getValidation({
             usuario: usuario,
             pass: contrasena
         }).then(resp => {
-            console.log(resp);
-            if (resp.length > 0) {
-                
+            
+            if (resp.length > 0) {         
                 navigate('/menu', {
                     replace: true
                 })
             }else{
                 console.log("usuario o contraseña incorrectos")
             }
+            
+            setUserAuth(resp);
+
+            localStorage.setItem('user', JSON.stringify(resp))
         });
     }
 
@@ -90,9 +96,9 @@ export const FormLogin = () => {
             <div className='mt-4'>
                 <label className='text-lg text-[#245A95] font-medium'>Usuario</label>
                 <form onSubmit={onLogin}>
-                    <label class="relative block">
-                        <span class="sr-only">Search</span>
-                        <span class="absolute inset-y-0 left-0 flex items-center pl-2">
+                    <label className="relative block">
+                        <span className="sr-only">Search</span>
+                        <span className="absolute inset-y-0 left-0 flex items-center pl-2">
                             <i className="pi pi-user text-[#245A95]"></i>
                         </span>
                         <input 
@@ -105,9 +111,9 @@ export const FormLogin = () => {
                         />
                     </label>
                     <label className='text-lg text-[#245A95] font-medium'>Contraseña</label>
-                        <label class="relative block">
-                            <span class="sr-only">Search</span>
-                            <span class="absolute inset-y-0 left-0 flex items-center pl-2">
+                        <label className="relative block">
+                            <span className="sr-only">Search</span>
+                            <span className="absolute inset-y-0 left-0 flex items-center pl-2">
                                 <i className="pi pi-lock text-[#245A95]"></i>
                             </span>
                             <input 

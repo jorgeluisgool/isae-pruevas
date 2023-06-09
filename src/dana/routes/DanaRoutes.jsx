@@ -8,6 +8,7 @@ import { HomeScreem } from '../pages/HomeScreem'
 import ProyectosPage from '../pages/ProyectosPage'
 import { RegistrosPage } from '../pages/RegistrosPage'
 import ExampleContexProvider from '../context/ExampleContext'
+import { ProtectedRoutes } from '../../router/ProtectedRoutes'
 
 export const DanaRoutes = () => {
 
@@ -15,17 +16,19 @@ export const DanaRoutes = () => {
     <>
     <Navbar/>
       <div className='min-h-screen bg-[#E2E2E2] pt-20'>
-        <ExampleContexProvider>
+        
           <Routes>
+            <Route element={<ProtectedRoutes />}>
               <Route path='menu' element={ <HomeScreem/>}/>
               <Route path='proyectos' element={ <ProyectosPage/>}/>
               <Route path='camposproyecto' element={ <CamposProyectoPage/>}/>
               <Route path='ejemplo2' element={ <EjemploDragDrop222/>}/>
               <Route path='registros' element={ <RegistrosPage/>}/>
               <Route path='ejemplo' element={ <EjemploDragDrop/>}/>
-              <Route path='/' element={<Navigate to='menu'/>}/>
+              <Route path='/' element={<Navigate to='login'/>}/>
+            </Route>
           </Routes>
-        </ExampleContexProvider>
+        
       </div>
     </>
   )

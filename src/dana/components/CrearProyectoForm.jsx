@@ -67,7 +67,7 @@ export const CrearProyectoForm = () => {
         <Formik 
             initialValues={{
                 proyecto: '',
-                tipo: 'MIGRACIONES',
+                tipo: '',
                 agregarArchivo: '',
             }}
 
@@ -92,7 +92,7 @@ export const CrearProyectoForm = () => {
             onSubmit={(valores, {resetForm}) => {
 
                 // aqui se mandan los valores del formulario al context para usarlos en la vista camposProyecto
-                setDataCrearProyecto( valores.proyecto);
+                setDataCrearProyecto( valores);
 
                 // hace que los inputs del formulario se reinicien al estado inicial al hacer click 
                 resetForm();

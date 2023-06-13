@@ -3,6 +3,8 @@ import AcordionCampos from '../components/AcordionCampos'
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import { useContext } from 'react';
 import { ExampleContex } from '../context/ExampleContext';
+import { DndContext, closestCenter } from '@dnd-kit/core';
+import { SortableContext, arrayMove, verticalListSortingStrategy } from '@dnd-kit/sortable';
 
 // función que hace funcionar el Droppable //
 export const StrictModeDroppable = ({ children, ...props }) => {
@@ -35,8 +37,13 @@ const reorder = (list, starIndex, endIndex) => {
 /// COMPONETE ///
 const CamposProyectoPage = () => {
 
+   // Context del formulario crear proyecto
+   const example = useContext(ExampleContex);
+  //  console.log(example)
+
   // Context del archivo excel
   const { dataArchivoExcel, setDataArchivoExcel } = useContext(ExampleContex);
+  console.log(dataArchivoExcel)
 
   // Funcion que combierte a arreglo2
   // const arreglo2 = dataArchivoExcel.reduce((acumulador, objeto) => {
@@ -52,7 +59,7 @@ const CamposProyectoPage = () => {
   //   return acumulador;
   // }, []);
 
-  const grupos = dataArchivoExcel.reduce((grupos, campo) => {
+  const grupos = example.dataArchivoExcel.reduce((grupos, campo) => {
     const grupo = grupos.find(g => g.agrupacion === campo.agrupacion);
     if (grupo) {
       grupo.campos.push(campo);
@@ -62,6 +69,7 @@ const CamposProyectoPage = () => {
         campos: [campo]
       });
     }
+    // console.log(grupos)
     return grupos;
   }, []);
   
@@ -100,13 +108,51 @@ const CamposProyectoPage = () => {
     console.log(result);
   };
 
-  // Context del formulario crear proyecto
-  const example = useContext(ExampleContex);
+  const handleDragEnd =(event) => {
+    const {active, over} = event
+
+    const oldIndex = arreglo2.findIndex(element => element.id === active.id); 
+    const newIndex = arreglo2.findIndex(element => element.id === over.id);
+
+    const newOrder = arrayMove(arreglo2, oldIndex, newIndex);
+
+    setDataArchivoExcel(newOrder)
+    console.log(newOrder)
+  }
+
 
   return (
     <>
-    <DragDropContext onDragEnd={onDragEnd}>
-        <h1 className="p-5 text-2xl font-black">Campos proyecto: { <span className='text-[#245A95]'>{example.dataCrearProyecto}</span> }</h1>
+    <DndContext
+      collisionDetection={closestCenter}
+      onDragEnd={handleDragEnd}
+    >
+      <h1 className="p-5 text-2xl font-black">Campos proyecto: { <span className='text-[#245A95]'>{example.dataCrearProyecto.proyecto}</span> }</h1>
+        <div className='drop-shadow-lg flex flex-auto flex-col px-4 md:mx-28 md:px-5'>
+          <SortableContext
+            items={arreglo2}
+            strategy={verticalListSortingStrategy}
+          >
+            {
+              arreglo2.map((item, index) => (
+                <AcordionCampos key={item.id} data={item} index={index}/>
+              ))          
+            }
+          </SortableContext>
+        </div>
+      
+    </DndContext>
+
+
+
+
+
+
+
+
+
+    {/* <DragDropContext onDragEnd={onDragEnd}>
+        <h1 className="p-5 text-2xl font-black">Campos proyecto: { <span className='text-[#245A95]'>{example.dataCrearProyecto.proyecto}</span> }</h1>
         <StrictModeDroppable droppableId='camposProyectos'>
           {(droppableProvided) => (
             <div 
@@ -115,13 +161,13 @@ const CamposProyectoPage = () => {
               className='drop-shadow-md mx-2 min-h-[15rem] flex flex-col bg-white border rounded-xl dark:bg-gray-800 dark:border-gray-700 dark:shadow-slate-700/[.7]'
             >
               <div className='drop-shadow-lg flex flex-auto flex-col p-4 md:p-5'>
-                <AcordionCampos dataArchivoExcel={dataArchivoExcel} arreglo2={arreglo2}/>
+                <AcordionCampos dataArchivoExcel={example.dataArchivoExcel} arreglo2={arreglo2}/>
               </div>
             {droppableProvided.placeholder}
             </div>
           )}
         </StrictModeDroppable>  
-      </DragDropContext>
+      </DragDropContext> */}
     </>
   )
 }

@@ -18,38 +18,175 @@ export const CrearProyectoForm = () => {
 
     const { dataArchivoExcel, setDataArchivoExcel } = useContext(ExampleContex);
 
-    // Funcion que combierte el excel en un arreglo
+
     const handleFileUpload = (event) => {
         const file = event.target.files[0];
         const reader = new FileReader();
-  
+      
         reader.onload = function (event) {
-            const content = event.target.result;
-            const workbook = XLSX.read(content, { type: 'binary' });
-            const sheetName = workbook.SheetNames[0];
-            const sheet = workbook.Sheets[sheetName];
-            const data = XLSX.utils.sheet_to_json(sheet);
-    
-        setDataArchivoExcel([
-          {
-            campo: "FOLIO",
-            tipocampo: "ALFANUMERICO",
-            agrupacion: "DATOS DEL REGISTRO",
-            restriccion: "[N/A]",
-            longitud: 10
-          },...data,
-          {
-            campo: "FIRMA",
-            tipocampo: "FIRMA",
-            agrupacion: "FIRMAS",
-            restriccion: "[N/A]",
-            longitud: 10
-          }
-        ]);
-    };
+          const content = event.target.result;
+          const workbook = XLSX.read(content, { type: 'binary' });
+          const sheetName = workbook.SheetNames[0];
+          const sheet = workbook.Sheets[sheetName];
+          const data = XLSX.utils.sheet_to_json(sheet);
+      
+          const grupos = data.reduce((grupos, campo) => {
+            const grupo = grupos.find(g => g.agrupacion === campo.agrupacion);
+            if (grupo) {
+              grupo.campos.push(campo);
+            } else {
+              grupos.push({
+                agrupacion: campo.agrupacion,
+                campos: [campo]
+              });
+            }
+            return grupos;
+          }, []);
+      
+          const arreglo2 = grupos.map((grupo, grupoIndex) => ({
+            id: `${grupoIndex + 1}`,
+            agrupacion: grupo.agrupacion,
+            campos: grupo.campos.map((campo, campoIndex) => ({
+              id: `${campoIndex + 1}`,
+              campo: campo.campo,
+              tipocampo: campo.tipocampo,
+              restriccion: campo.restriccion,
+              longitud: campo.longitud
+            }))
+          }));
+      
+          const dataArchivoExcel = [
+            {
+              id: '0',
+              agrupacion: 'DATOS DEL REGISTRO',
+              campos: [
+                {
+                  id: '1',
+                  campo: 'FOLIO',
+                  tipocampo: 'ALFANUMERICO',
+                  restriccion: '[N/A]',
+                  longitud: 10
+                }
+              ]
+            },
+            ...arreglo2,
+            {
+              id: `${arreglo2.length + 2}`,
+              agrupacion: 'FIRMAS',
+              campos: [
+                {
+                  id: '1',
+                  campo: 'FIRMA',
+                  tipocampo: 'FIRMA',
+                  restriccion: '[N/A]',
+                  longitud: 10
+                }
+              ]
+            }
+          ];
+      
+          setDataArchivoExcel(dataArchivoExcel);
+        };
+      
+        reader.readAsBinaryString(file);
+      };
+      
+
+    // const handleFileUpload = (event) => {
+    //     const file = event.target.files[0];
+    //     const reader = new FileReader();
+      
+    //     reader.onload = function (event) {
+    //       const content = event.target.result;
+    //       const workbook = XLSX.read(content, { type: 'binary' });
+    //       const sheetName = workbook.SheetNames[0];
+    //       const sheet = workbook.Sheets[sheetName];
+    //       const data = XLSX.utils.sheet_to_json(sheet);
+      
+    //       const grupos = data.reduce((grupos, campo) => {
+    //         const grupo = grupos.find(g => g.agrupacion === campo.agrupacion);
+    //         if (grupo) {
+    //           grupo.campos.push(campo);
+    //         } else {
+    //           grupos.push({
+    //             agrupacion: campo.agrupacion,
+    //             campos: [campo]
+    //           });
+    //         }
+    //         return grupos;
+    //       }, []);
+      
+    //       const arreglo2 = grupos.map((grupo, grupoIndex) => ({
+    //         id: `${grupoIndex + 1}`,
+    //         agrupacion: grupo.agrupacion,
+    //         campos: grupo.campos.map((campo, campoIndex) => ({
+    //           id: `${campoIndex + 1}`,
+    //           campo: campo.campo,
+    //           tipocampo: campo.tipocampo,
+    //           restriccion: campo.restriccion,
+    //           longitud: campo.longitud
+    //         }))
+    //       }));
+      
+    //       const dataArchivoExcel = [
+    //         ...arreglo2,
+    //         {
+    //           id: `${arreglo2.length + 1}`,
+    //           agrupacion: 'FIRMAS',
+    //           campos: [
+    //             {
+    //               id: '1',
+    //               campo: 'FIRMA',
+    //               tipocampo: 'FIRMA',
+    //               restriccion: '[N/A]',
+    //               longitud: 10
+    //             }
+    //           ]
+    //         }
+    //       ];
+      
+    //       setDataArchivoExcel(dataArchivoExcel);
+    //     };
+      
+    //     reader.readAsBinaryString(file);
+    //   };
+      
+      
+
+      
+
+    //Funcion que combierte el excel en un arreglo
+    // const handleFileUpload = (event) => {
+    //     const file = event.target.files[0];
+    //     const reader = new FileReader();
   
-    reader.readAsBinaryString(file);
-    }
+    //    reader.onload = function (event) {
+    //        const content = event.target.result;
+    //        const workbook = XLSX.read(content, { type: 'binary' });
+    //        const sheetName = workbook.SheetNames[0];
+    //        const sheet = workbook.Sheets[sheetName];
+    //        const data = XLSX.utils.sheet_to_json(sheet);
+    
+    //     setDataArchivoExcel([
+    //       {
+    //         campo: "FOLIO",
+    //         tipocampo: "ALFANUMERICO",
+    //         agrupacion: "DATOS DEL REGISTRO",
+    //         restriccion: "[N/A]",
+    //         longitud: 10
+    //       },...data,
+    //       {
+    //         campo: "FIRMA",
+    //         tipocampo: "FIRMA",
+    //         agrupacion: "FIRMAS",
+    //         restriccion: "[N/A]",
+    //         longitud: 10
+    //       }
+    //     ]);
+    // };
+  
+    // reader.readAsBinaryString(file);
+    // }
 
     // Se obtiene el context para mandar el formulario resgistrar proyecto
     const { dataCrearProyecto, setDataCrearProyecto } = useContext(ExampleContex);
@@ -192,3 +329,197 @@ export const CrearProyectoForm = () => {
         </>
     )
 }
+
+
+
+
+
+
+
+
+// [
+//     {
+//         "id": "1",
+//         "campo": "FOLIO",
+//         "tipocampo": "ALFANUMERICO",
+//         "agrupacion": "DATOS DEL REGISTRO",
+//         "restriccion": "[N/A]",
+//         "longitud": 10
+//     },
+//     {
+//         "id": "2",
+//         "agrupacion": "DATOS PERSONALES",
+//         "campos": [
+//             {
+//                 "id": "1",
+//                 "campo": "nombre",
+//                 "tipocampo": "ALFANUMERICO",
+//                 "agrupacion": "DATOS PERSONALES",
+//                 "restriccion": "[N/A]",
+//                 "longitud": 10
+//             },
+//             {
+//                 "id": "2",
+//                 "campo": "apellido",
+//                 "tipocampo": "ALFANUMERICO",
+//                 "agrupacion": "DATOS PERSONALES",
+//                 "restriccion": "[N/A]",
+//                 "longitud": 10
+//             }
+//         ]
+//     },
+//     {
+//         "id": "3",
+//         "agrupacion": "OTROS3",
+//         "campos": [
+//             {
+//                 "id": "1",
+//                 "campo": "direccion",
+//                 "tipocampo": "ALFANUMERICO",
+//                 "agrupacion": "OTROS3",
+//                 "restriccion": "[N/A]",
+//                 "longitud": 10
+//             }
+//         ]
+//     },
+//     {
+//         "id": "4",
+//         "agrupacion": "OTROS4",
+//         "campos": [
+//             {
+//                 "id": "1",
+//                 "campo": "otro",
+//                 "tipocampo": "ALFANUMERICO",
+//                 "agrupacion": "OTROS4",
+//                 "restriccion": "[N/A]",
+//                 "longitud": 10
+//             }
+//         ]
+//     },
+//     {
+//         "id": "5",
+//         "agrupacion": "ejemplo5",
+//         "campos": [
+//             {
+//                 "id": "1",
+//                 "campo": "hhh",
+//                 "tipocampo": "ALFANUMERICO",
+//                 "agrupacion": "ejemplo5",
+//                 "restriccion": "[N/A]",
+//                 "longitud": 10
+//             },
+//             {
+//                 "id": "2",
+//                 "campo": "jjjj",
+//                 "tipocampo": "Correo",
+//                 "agrupacion": "ejemplo5",
+//                 "restriccion": "[N/A]",
+//                 "longitud": 12
+//             }
+//         ]
+//     },
+//     {
+//         "id": "6",
+//         "campo": "FIRMA",
+//         "tipocampo": "FIRMA",
+//         "agrupacion": "FIRMAS",
+//         "restriccion": "[N/A]",
+//         "longitud": 10
+//     }
+// ]
+
+
+[
+    {
+        "id": "1",
+        "agrupacion": "DATOS DEL REGISTRO",
+        "campos": [
+            {
+                "id": "1",
+                "campo": "FOLIO",
+                "tipocampo": "ALFANUMERICO",
+                "restriccion": "[N/A]",
+                "longitud": 10
+            }
+        ]
+    },
+    {
+        "id": "2",
+        "agrupacion": "DATOS PERSONALES",
+        "campos": [
+            {
+                "id": "1",
+                "campo": "nombre",
+                "tipocampo": "ALFANUMERICO",
+                "restriccion": "[N/A]",
+                "longitud": 10
+            },
+            {
+                "id": "2",
+                "campo": "apellido",
+                "tipocampo": "ALFANUMERICO",
+                "restriccion": "[N/A]",
+                "longitud": 10
+            }
+        ]
+    },
+    {
+        "id": "3",
+        "agrupacion": "OTROS3",
+        "campos": [
+            {
+                "id": "1",
+                "campo": "direccion",
+                "tipocampo": "ALFANUMERICO",
+                "restriccion": "[N/A]",
+                "longitud": 10
+            }
+        ]
+    },
+    {
+        "id": "4",
+        "agrupacion": "OTROS4",
+        "campos": [
+            {
+                "id": "1",
+                "campo": "otro",
+                "tipocampo": "ALFANUMERICO",
+                "restriccion": "[N/A]",
+                "longitud": 10
+            }
+        ]
+    },
+    {
+        "id": "5",
+        "agrupacion": "ejemplo5",
+        "campos": [
+            {
+                "id": "1",
+                "campo": "hhh",
+                "tipocampo": "ALFANUMERICO",
+                "restriccion": "[N/A]",
+                "longitud": 10
+            },
+            {
+                "id": "2",
+                "campo": "jjjj",
+                "tipocampo": "Correo",
+                "restriccion": "[N/A]",
+                "longitud": 12
+            }
+        ]
+    },
+    {
+        "id": "6",
+        "agrupacion": "FIRMAS",
+        "campos": [
+            {
+                "id": "1",
+                "campo": "FIRMA",
+                "tipocampo": "FIRMA",
+                "restriccion": "[N/A]",
+                "longitud": 10
+            }
+        ]
+    }
+]

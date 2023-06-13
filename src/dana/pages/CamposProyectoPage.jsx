@@ -111,10 +111,10 @@ const CamposProyectoPage = () => {
   const handleDragEnd =(event) => {
     const {active, over} = event
 
-    const oldIndex = arreglo2.findIndex(element => element.id === active.id); 
-    const newIndex = arreglo2.findIndex(element => element.id === over.id);
+    const oldIndex = dataArchivoExcel.findIndex(element => element.id === active.id); 
+    const newIndex = dataArchivoExcel.findIndex(element => element.id === over.id);
 
-    const newOrder = arrayMove(arreglo2, oldIndex, newIndex);
+    const newOrder = arrayMove(dataArchivoExcel, oldIndex, newIndex);
 
     setDataArchivoExcel(newOrder)
     console.log(newOrder)
@@ -130,11 +130,11 @@ const CamposProyectoPage = () => {
       <h1 className="p-5 text-2xl font-black">Campos proyecto: { <span className='text-[#245A95]'>{example.dataCrearProyecto.proyecto}</span> }</h1>
         <div className='drop-shadow-lg flex flex-auto flex-col px-4 md:mx-28 md:px-5'>
           <SortableContext
-            items={arreglo2}
+            items={dataArchivoExcel}
             strategy={verticalListSortingStrategy}
           >
             {
-              arreglo2.map((item, index) => (
+              dataArchivoExcel.map((item, index) => (
                 <AcordionCampos key={item.id} data={item} index={index}/>
               ))          
             }

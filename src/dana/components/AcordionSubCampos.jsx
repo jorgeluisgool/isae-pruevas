@@ -27,7 +27,7 @@ const AcordionSubCampos = ({acordionData, acordionEstate}) => {
 
   return (
     <>  
-      { dataArchivoExcel.campos.map((acor, index) => (
+      { acordionData.campos.map((acor, index) => (
         <div key={acor.id} className="bg-[#e2e2e2] rounded hs-accordion mt-3">
           <div onClick={() => toggleShow(index)} className="rounded border-2 border-slate-300 p-6 hs-accordion-toggle hs-accordion-active:text-blue-600 py-3 inline-flex items-center gap-x-3 w-full font-semibold text-left text-gray-800 transition hover:text-gray-500 dark:hs-accordion-active:text-blue-500 dark:text-gray-200 dark:hover:text-gray-400" aria-controls="hs-basic-nested-sub-collapse-one">
             <div className={`text-2xl text-[#245A95] p-2 right-12 ${showSub ? "rotate-180" : ""}`}>

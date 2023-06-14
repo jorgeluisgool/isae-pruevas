@@ -10,8 +10,6 @@ const ProyectosPage = () => {
 
   const { dataArchivoExcel, setDataArchivoExcel } = useContext(ExampleContex);
 
-  
-
   const { data: proyectos, loading } = useFetchProjects();
     const headers = [
         "idproyecto",
@@ -21,9 +19,9 @@ const ProyectosPage = () => {
     ];
   return (
         <>
-        <h1 className="p-5 text-2xl font-black">Proyectos</h1>
+        <h1 className="pt-6 pl-4 text-4xl font-black">Proyectos</h1>
             <CrearProyectoForm/>
-            <div className="m-12 container mx-auto">
+            <div className="container mx-auto pb-6">
             {loading ? <SkeletonTabla headers={headers}/> :  <TablaCRUD tipoDatos={"PROYECTOS"} listaDatos = {proyectos} headers = {headers} editar = {false} eliminar = {true} seleccionMultiple = {false} />}
             </div> 
         </>

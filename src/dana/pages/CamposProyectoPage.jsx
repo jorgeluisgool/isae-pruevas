@@ -123,33 +123,26 @@ const CamposProyectoPage = () => {
 
   return (
     <>
-    <DndContext
+      <h1 className="pt-6 pb-8 pl-4 text-4xl font-black">Campos proyecto: { <span className='text-[#245A95]'>{example.dataCrearProyecto.proyecto}</span> }</h1>
+      <DndContext
       collisionDetection={closestCenter}
       onDragEnd={handleDragEnd}
-    >
-      <h1 className="p-5 text-2xl font-black">Campos proyecto: { <span className='text-[#245A95]'>{example.dataCrearProyecto.proyecto}</span> }</h1>
-        <div className='drop-shadow-lg flex flex-auto flex-col px-4 md:mx-28 md:px-5'>
-          <SortableContext
-            items={dataArchivoExcel}
-            strategy={verticalListSortingStrategy}
-          >
-            {
-              dataArchivoExcel.map((item, index) => (
-                <AcordionCampos key={item.id} data={item} index={index}/>
-              ))          
-            }
-          </SortableContext>
-        </div>
-      
-    </DndContext>
-
-
-
-
-
-
-
-
+      >
+        <div className='lg:w-8/12 lg:h-11/12 mx-auto bg-white shadow-lg p-8'>
+          <div className='drop-shadow-lg flex flex-auto flex-col px-4 md:mx-10 md:px-5'>
+              <SortableContext
+                items={dataArchivoExcel}
+                strategy={verticalListSortingStrategy}
+              >
+                {
+                  dataArchivoExcel.map((item, index) => (
+                    <AcordionCampos key={item.id} data={item} index={index}/>
+                  ))          
+                }
+              </SortableContext>
+            </div>
+          </div>
+      </DndContext>
 
     {/* <DragDropContext onDragEnd={onDragEnd}>
         <h1 className="p-5 text-2xl font-black">Campos proyecto: { <span className='text-[#245A95]'>{example.dataCrearProyecto.proyecto}</span> }</h1>

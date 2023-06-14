@@ -25,7 +25,7 @@ export const DanaRoutes = () => {
               <Route path='ejemplo2' element={ <EjemploDragDrop222/>}/>
               <Route path='registros' element={ <RegistrosPage/>}/>
               <Route path='ejemplo' element={ <EjemploDragDrop/>}/>
-              <Route path='/' element={<Navigate to='login'/>}/>
+              <Route path='/' element={<Navigate to='menu'/>}/>
             </Route>
           </Routes>
         

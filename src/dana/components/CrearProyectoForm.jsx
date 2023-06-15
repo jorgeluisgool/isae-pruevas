@@ -71,7 +71,7 @@ export const CrearProyectoForm = () => {
             },
             ...arreglo2,
             {
-              id: `${arreglo2.length + 2}`,
+              id: `${arreglo2.length + 1}`,
               agrupacion: 'FIRMAS',
               campos: [
                 {

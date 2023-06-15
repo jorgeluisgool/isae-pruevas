@@ -43,7 +43,6 @@ const CamposProyectoPage = () => {
 
   // Context del archivo excel
   const { dataArchivoExcel, setDataArchivoExcel } = useContext(ExampleContex);
-  console.log(dataArchivoExcel)
 
   // Funcion que combierte a arreglo2
   // const arreglo2 = dataArchivoExcel.reduce((acumulador, objeto) => {
@@ -120,7 +119,6 @@ const CamposProyectoPage = () => {
     console.log(newOrder)
   }
 
-
   return (
     <>
       <h1 className="pt-6 pb-8 pl-4 text-4xl font-black">Campos proyecto: { <span className='text-[#245A95]'>{example.dataCrearProyecto.proyecto}</span> }</h1>
@@ -136,7 +134,7 @@ const CamposProyectoPage = () => {
               >
                 {
                   dataArchivoExcel.map((item, index) => (
-                    <AcordionCampos key={item.id} data={item} index={index}/>
+                    <AcordionCampos key={item.id} data={item} dataArchivoExcel={dataArchivoExcel} index={index} setDataArchivoExcel={setDataArchivoExcel}/>
                   ))          
                 }
               </SortableContext>
@@ -144,23 +142,6 @@ const CamposProyectoPage = () => {
           </div>
       </DndContext>
 
-    {/* <DragDropContext onDragEnd={onDragEnd}>
-        <h1 className="p-5 text-2xl font-black">Campos proyecto: { <span className='text-[#245A95]'>{example.dataCrearProyecto.proyecto}</span> }</h1>
-        <StrictModeDroppable droppableId='camposProyectos'>
-          {(droppableProvided) => (
-            <div 
-              {...droppableProvided.droppableProps}
-              ref={droppableProvided.innerRef}
-              className='drop-shadow-md mx-2 min-h-[15rem] flex flex-col bg-white border rounded-xl dark:bg-gray-800 dark:border-gray-700 dark:shadow-slate-700/[.7]'
-            >
-              <div className='drop-shadow-lg flex flex-auto flex-col p-4 md:p-5'>
-                <AcordionCampos dataArchivoExcel={example.dataArchivoExcel} arreglo2={arreglo2}/>
-              </div>
-            {droppableProvided.placeholder}
-            </div>
-          )}
-        </StrictModeDroppable>  
-      </DragDropContext> */}
     </>
   )
 }

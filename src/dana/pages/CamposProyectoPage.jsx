@@ -5,107 +5,20 @@ import { useContext } from 'react';
 import { ExampleContex } from '../context/ExampleContext';
 import { DndContext, closestCenter } from '@dnd-kit/core';
 import { SortableContext, arrayMove, verticalListSortingStrategy } from '@dnd-kit/sortable';
-
-// función que hace funcionar el Droppable //
-export const StrictModeDroppable = ({ children, ...props }) => {
-  const [enabled, setEnabled] = useState(false);
-
-  useEffect(() => {
-      const animation = requestAnimationFrame(() => setEnabled(true));
-
-      return () => {
-          cancelAnimationFrame(animation);
-          setEnabled(false);
-      };
-  }, []);
-
-  if (!enabled) {
-      return null;
-  }
-
-  return <Droppable {...props}>{children}</Droppable>;
-};
-
-// función que reordena el acordion principal al hacer drog and drop
-const reorder = (list, starIndex, endIndex) => {
-  const result = [...list];
-  const [removed] = result.splice(starIndex, 1);
-  result.splice(endIndex, 0, removed)  
-  return result;
-};
+import { BotonFlotanteGuardar } from '../components/BotonFlotanteGuardar';
+import { BotonFlotanteRegresar } from '../components/BotonFlotanteRegresar';
+import { useNavigate } from 'react-router-dom';
 
 /// COMPONETE ///
 const CamposProyectoPage = () => {
 
+  const navigate = useNavigate();
+
    // Context del formulario crear proyecto
    const example = useContext(ExampleContex);
-  //  console.log(example)
 
   // Context del archivo excel
   const { dataArchivoExcel, setDataArchivoExcel } = useContext(ExampleContex);
-
-  // Funcion que combierte a arreglo2
-  // const arreglo2 = dataArchivoExcel.reduce((acumulador, objeto) => {
-  //   const grupo = acumulador.find((elem) => elem.agrupacion === objeto.agrupacion);
-  //   if (grupo) {
-  //     grupo.campos.push(objeto);
-  //   } else {
-  //     acumulador.push({
-  //       agrupacion: objeto.agrupacion,
-  //       campos: [objeto]
-  //     });
-  //   }
-  //   return acumulador;
-  // }, []);
-
-  const grupos = example.dataArchivoExcel.reduce((grupos, campo) => {
-    const grupo = grupos.find(g => g.agrupacion === campo.agrupacion);
-    if (grupo) {
-      grupo.campos.push(campo);
-    } else {
-      grupos.push({
-        agrupacion: campo.agrupacion,
-        campos: [campo]
-      });
-    }
-    // console.log(grupos)
-    return grupos;
-  }, []);
-  
-  // Asignar un ID a cada grupo y a cada campo
-  let grupoId = 1;
-  let campoId = 1;
-  const arreglo2 = grupos.map(grupo => ({
-    id: `${grupoId++}`,
-    agrupacion: grupo.agrupacion,
-    campos: grupo.campos.map(campo => ({
-      id: `${campoId++}`,
-      ...campo
-    }))
-  }));
-
-  
-  // useEffect(() => {
-  //   setDataArchivoExcel(arreglo2);
-  // }, [arreglo2]);
-
-  // console.log(dataArchivoExcel)
-  // console.log(arreglo2)
-
-
-  // Funcion que reordena el sub acordion
-  const onDragEnd = (result) => {
-    if (!result.destination) {
-      return;
-    }
-
-    const itemsCopy = Array.from(dataArchivoExcel);
-    const [reorderedItem] = itemsCopy.splice(result.source.index, 1);
-    itemsCopy.splice(result.destination.index, 0, reorderedItem);
-
-    setDataArchivoExcel(itemsCopy);
-    console.log(result);
-  };
 
   const handleDragEnd =(event) => {
     const {active, over} = event
@@ -118,6 +31,17 @@ const CamposProyectoPage = () => {
     setDataArchivoExcel(newOrder)
     console.log(newOrder)
   }
+
+  const handleClickGuardar = () => {
+    // Acciones a realizar cuando se hace clic en el botón flotante
+    console.log('Botón flotante clickeado');
+  };
+
+  const handleClickRegresar = () => {
+    // Acciones a realizar cuando se hace clic en el botón flotante izquierdo
+    navigate('/proyectos');
+    console.log('Botón flotante izquierdo clickeado');
+  };
 
   return (
     <>
@@ -141,6 +65,8 @@ const CamposProyectoPage = () => {
             </div>
           </div>
       </DndContext>
+      <BotonFlotanteGuardar onClick={handleClickGuardar} />
+      <BotonFlotanteRegresar onClick={handleClickRegresar} />
 
     </>
   )

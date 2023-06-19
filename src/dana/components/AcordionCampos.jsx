@@ -78,10 +78,24 @@ const AcordionCampos = ({ arreglo2, dataArchivoExcel, data, index, setDataArchiv
       }
       
     }
-
      setDataArchivoExcel(nuevaLista)
      console.log(nuevaLista)
+  }
 
+  const agregarCampo = () => {
+    let lista = [...dataArchivoExcel];
+    const idNuevo = dataArchivoExcel[index].campos.length + 1
+
+    const nuevoCampo = {
+      id: `${idNuevo}`,
+      longitud: '',
+      campo: 'Nuevo campo',
+      restriccion: '',
+      tipocampo: ''
+    }
+
+    lista[index].campos = [...lista[index].campos, nuevoCampo];
+    setDataArchivoExcel(lista);
   }
 
   return (
@@ -101,9 +115,10 @@ const AcordionCampos = ({ arreglo2, dataArchivoExcel, data, index, setDataArchiv
             <ion-icon name="reorder-three-outline"></ion-icon>
           </span>
           <div className="hs-accordion active" id="hs-basic-nested-heading-one">
+          <div className="flex items-center justify-around">
             <div
               onClick={() => toggleShow(index)}
-              className="hs-accordion-toggle hs-accordion-active:text-blue-600 py-3 inline-flex items-center gap-x-3 w-full font-semibold text-left text-gray-800 transition hover:text-gray-500 dark:hs-accordion-active:text-blue-500 dark:text-gray-200 dark:hover:text-gray-400"
+              className="hs-accordion-toggle hs-accordion-active:text-blue-600 py-3 inline-flex items-center gap-x-3 w-full text-left text-gray-800 transition text-lg font-black hover:text-gray-500 dark:hs-accordion-active:text-blue-500 dark:text-gray-200 dark:hover:text-gray-400"
               aria-controls="hs-basic-nested-collapse-one"
             >
               <div className={`text-2xl text-[#245A95] ${show === index ? "rotate-180" : ""}`}>
@@ -111,14 +126,26 @@ const AcordionCampos = ({ arreglo2, dataArchivoExcel, data, index, setDataArchiv
               </div>
               {data.agrupacion}
             </div>
+            <div className='pr-10'>
+              <button
+                type="submit"
+                onClick={agregarCampo}
+                className="ml-auto w-auto h-10 object-cover active:scale-[.98] bg-transparent hover:bg-[#245A95] hover:text-white text-[#245A95] text-sm font-bold inline-flex items-center rounded-full bg-primary p-2 uppercase leading-normal shadow-md transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)]"
+              >
+                <span className='text-3xl'><ion-icon name="add-circle"></ion-icon></span>
+                <span className="ml-1">Agregar campo</span>
+              </button>
+            </div>
+          </div>
+            
             {show === index && (
               <SortableContext
                 items={data.campos}
                 strategy={verticalListSortingStrategy}
               >
                 {
-                  data.campos.map((item, index) => (
-                    <AcordionSubCampos key={index} data={item} index={index} />
+                  data.campos.map((item, ind) => (
+                    <AcordionSubCampos key={ind} data={item} index={ind} indPadre={index} />
                   ))
                 }
               </SortableContext>

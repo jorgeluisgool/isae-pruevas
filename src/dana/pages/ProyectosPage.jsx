@@ -1,14 +1,24 @@
+import { useEffect } from "react";
 import { CrearProyectoForm } from "../components/CrearProyectoForm";
 import { SkeletonTabla } from "../components/SkeletonTabla";
 import { TablaCRUD } from "../components/TablaCRUD";
-import * as XLSX from "xlsx"
 import { useFetchProjects } from "../hooks/useFetchProjects";
-import { useContext, useState } from "react";
-import { ExampleContex } from "../context/ExampleContext";
+import useAuth from '../hooks/useAuth';
+
 
 const ProyectosPage = () => {
 
-  const { dataArchivoExcel, setDataArchivoExcel } = useContext(ExampleContex);
+  const { userAuth, setUserAuth } = useAuth();
+
+  useEffect(() => {
+    const loggedInUser = localStorage.getItem("user");
+    
+    if (loggedInUser) {
+      const foundUser = JSON.parse(loggedInUser);
+      setUserAuth(foundUser);
+      // console.log(foundUser)
+    }
+  }, []);
 
   const { data: proyectos, loading } = useFetchProjects();
     const headers = [

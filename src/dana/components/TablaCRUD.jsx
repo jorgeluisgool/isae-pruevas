@@ -67,7 +67,7 @@ export const TablaCRUD = ({ listaDatos = [], headers = [], tipoDatos = '', edita
     
     const header = (
         <div className="table-header">
-            <h5 className="mx-0 my-1">Lista de {tipoDatos}</h5>
+            <h5 className="mx-0 my-1">LISTA DES {tipoDatos}</h5>
             <span className="p-input-icon-left">
                 <i className="pi pi-search" />
                 <InputText type="search" onInput={(e) => setGlobalFilter(e.target.value)} placeholder="Buscar..." />
@@ -92,7 +92,7 @@ export const TablaCRUD = ({ listaDatos = [], headers = [], tipoDatos = '', edita
     );
 
     return (
-        <Card className="m-8 ">
+        <Card className="m-8 my-6 mx-4 xl:mx-20 bg-white rounded-lg overflow-hidden">
             <div className="datatable-crud-demo">
                 {/* <Toast ref={toast} /> */}
 

@@ -5,6 +5,10 @@ import { useNavigate } from "react-router-dom";
 import { ExampleContex } from "../context/ExampleContext";
 import { InputText } from 'primereact/inputtext';
 import { Dropdown } from "primereact/dropdown";
+import { useFetchProjects } from "../hooks/useFetchProjects";
+import useAuth from "../hooks/useAuth";
+import { Dialog } from "primereact/dialog";
+import { Button } from "primereact/button";
 
 const tipoProyecto = [
     { name: 'MIGRACIONES', code: 'migraciones' },
@@ -17,6 +21,20 @@ const tipoProyecto = [
 export const CrearProyectoForm = () => {
 
     const { dataArchivoExcel, setDataArchivoExcel } = useContext(ExampleContex);
+    const { data: proyectos, loading } = useFetchProjects();
+    const [showDialog, setShowDialog] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
+
+
+    const showDialogFunc = (message) => {
+      setErrorMessage(message);
+      setShowDialog(true);
+    };
+    
+    const hideDialog = () => {
+      setShowDialog(false);
+    };
+
 
 
     const handleFileUpload = (event) => {
@@ -90,106 +108,10 @@ export const CrearProyectoForm = () => {
       
         reader.readAsBinaryString(file);
       };
-      
-
-    // const handleFileUpload = (event) => {
-    //     const file = event.target.files[0];
-    //     const reader = new FileReader();
-      
-    //     reader.onload = function (event) {
-    //       const content = event.target.result;
-    //       const workbook = XLSX.read(content, { type: 'binary' });
-    //       const sheetName = workbook.SheetNames[0];
-    //       const sheet = workbook.Sheets[sheetName];
-    //       const data = XLSX.utils.sheet_to_json(sheet);
-      
-    //       const grupos = data.reduce((grupos, campo) => {
-    //         const grupo = grupos.find(g => g.agrupacion === campo.agrupacion);
-    //         if (grupo) {
-    //           grupo.campos.push(campo);
-    //         } else {
-    //           grupos.push({
-    //             agrupacion: campo.agrupacion,
-    //             campos: [campo]
-    //           });
-    //         }
-    //         return grupos;
-    //       }, []);
-      
-    //       const arreglo2 = grupos.map((grupo, grupoIndex) => ({
-    //         id: `${grupoIndex + 1}`,
-    //         agrupacion: grupo.agrupacion,
-    //         campos: grupo.campos.map((campo, campoIndex) => ({
-    //           id: `${campoIndex + 1}`,
-    //           campo: campo.campo,
-    //           tipocampo: campo.tipocampo,
-    //           restriccion: campo.restriccion,
-    //           longitud: campo.longitud
-    //         }))
-    //       }));
-      
-    //       const dataArchivoExcel = [
-    //         ...arreglo2,
-    //         {
-    //           id: `${arreglo2.length + 1}`,
-    //           agrupacion: 'FIRMAS',
-    //           campos: [
-    //             {
-    //               id: '1',
-    //               campo: 'FIRMA',
-    //               tipocampo: 'FIRMA',
-    //               restriccion: '[N/A]',
-    //               longitud: 10
-    //             }
-    //           ]
-    //         }
-    //       ];
-      
-    //       setDataArchivoExcel(dataArchivoExcel);
-    //     };
-      
-    //     reader.readAsBinaryString(file);
-    //   };
-      
-      
-
-      
-
-    //Funcion que combierte el excel en un arreglo
-    // const handleFileUpload = (event) => {
-    //     const file = event.target.files[0];
-    //     const reader = new FileReader();
-  
-    //    reader.onload = function (event) {
-    //        const content = event.target.result;
-    //        const workbook = XLSX.read(content, { type: 'binary' });
-    //        const sheetName = workbook.SheetNames[0];
-    //        const sheet = workbook.Sheets[sheetName];
-    //        const data = XLSX.utils.sheet_to_json(sheet);
-    
-    //     setDataArchivoExcel([
-    //       {
-    //         campo: "FOLIO",
-    //         tipocampo: "ALFANUMERICO",
-    //         agrupacion: "DATOS DEL REGISTRO",
-    //         restriccion: "[N/A]",
-    //         longitud: 10
-    //       },...data,
-    //       {
-    //         campo: "FIRMA",
-    //         tipocampo: "FIRMA",
-    //         agrupacion: "FIRMAS",
-    //         restriccion: "[N/A]",
-    //         longitud: 10
-    //       }
-    //     ]);
-    // };
-  
-    // reader.readAsBinaryString(file);
-    // }
 
     // Se obtiene el context para mandar el formulario resgistrar proyecto
     const { dataCrearProyecto, setDataCrearProyecto } = useContext(ExampleContex);
+    // console.log(dataCrearProyecto)
 
     // se usa el hook useNavigate de react-router-dom para navegar al vista de campos proyecto
     const navigate = useNavigate();
@@ -214,7 +136,7 @@ export const CrearProyectoForm = () => {
                 // Validacion input nombre proyecto
                 if(!valores.proyecto) {
                     errores.proyecto = 'Ingrese el nombre del proyecto'
-                } else if(!/^[A-Za-z0-9]+$/.test(valores.proyecto)) {
+                } else if(!/^[A-Za-z0-9\s]+$/.test(valores.proyecto)) {
                     errores.proyecto = 'El nombre del proyecto solo acepta: letras y numeros'
                 }
 
@@ -227,7 +149,10 @@ export const CrearProyectoForm = () => {
             }}
 
             onSubmit={(valores, {resetForm}) => {
+              
+              const proyectosFilter = proyectos.find(proyect => proyect.proyecto === valores.proyecto);
 
+              if (proyectosFilter === undefined){
                 // aqui se mandan los valores del formulario al context para usarlos en la vista camposProyecto
                 setDataCrearProyecto( valores);
 
@@ -236,12 +161,14 @@ export const CrearProyectoForm = () => {
 
                 // llamada a la funcion del naviate a campos proyecto
                 handleSubmit();
-                
+              }else{
+                showDialogFunc("Nombre de proyecto repetido")
+              }    
             }}
         >
             {({values, errors, setFieldValue}) => (
                 <Form>
-                    <div className='bg-slate-50 m-5 px-8 py-5 rounded-3xl border-2 border-[#245A95]'>
+                    <div className='m-5 bg-slate-50 mx-4 xl:mx-20 my-4 px-4 py-2 rounded-3xl border-2 border-[#245A95] shadow-md'>
                     <label className="text-lg font-medium">
                         Registrar proyecto
                     </label>
@@ -258,9 +185,9 @@ export const CrearProyectoForm = () => {
                                         className="w-full appearance-none focus:outline-none bg-transparent"
                                         as={InputText}
                                         name="proyecto"
-                                        value={values.proyecto.toUpperCase()}
-                                    />
-                                    
+                                        value={values.proyecto}
+                                        onChange={(e) => setFieldValue("proyecto", e.target.value.toUpperCase())}
+                                    /> 
                                     <span className="p-inputgroup-addon border border-gray-300 p-2 rounded-md">
                                       <i className="pi pi-file-edit text-[#245A95] font-bold text-2xl"></i>
                                     </span>
@@ -325,201 +252,21 @@ export const CrearProyectoForm = () => {
                     </div>
                 </Form>
             )}
-        </Formik>       
+        </Formik> 
+        <Dialog
+          visible={showDialog}
+          onHide={hideDialog}
+          header={
+          <>
+            <span className="pr-1">{errorMessage}</span>
+              <ion-icon name="help-circle"></ion-icon>
+          </>   
+        }
+          footer={<button onClick={hideDialog} className="ml-auto object-cover active:scale-[.98] py-3 bg-transparent hover:bg-[#245A95] hover:text-white text-[#245A95] text-sm font-bold inline-block rounded-full bg-primary p-2 uppercase leading-normal shadow-md transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] mt-4" >Cerrar</button>}
+        >
+          <p className="text-3xl font-black">Es necesario cambiar el nombre</p>
+          <div className="text-center pt-2 text-6xl text-yellow-500 animate-pulse"><ion-icon name="warning"></ion-icon></div>
+        </Dialog>      
         </>
     )
 }
-
-
-
-
-
-
-
-
-// [
-//     {
-//         "id": "1",
-//         "campo": "FOLIO",
-//         "tipocampo": "ALFANUMERICO",
-//         "agrupacion": "DATOS DEL REGISTRO",
-//         "restriccion": "[N/A]",
-//         "longitud": 10
-//     },
-//     {
-//         "id": "2",
-//         "agrupacion": "DATOS PERSONALES",
-//         "campos": [
-//             {
-//                 "id": "1",
-//                 "campo": "nombre",
-//                 "tipocampo": "ALFANUMERICO",
-//                 "agrupacion": "DATOS PERSONALES",
-//                 "restriccion": "[N/A]",
-//                 "longitud": 10
-//             },
-//             {
-//                 "id": "2",
-//                 "campo": "apellido",
-//                 "tipocampo": "ALFANUMERICO",
-//                 "agrupacion": "DATOS PERSONALES",
-//                 "restriccion": "[N/A]",
-//                 "longitud": 10
-//             }
-//         ]
-//     },
-//     {
-//         "id": "3",
-//         "agrupacion": "OTROS3",
-//         "campos": [
-//             {
-//                 "id": "1",
-//                 "campo": "direccion",
-//                 "tipocampo": "ALFANUMERICO",
-//                 "agrupacion": "OTROS3",
-//                 "restriccion": "[N/A]",
-//                 "longitud": 10
-//             }
-//         ]
-//     },
-//     {
-//         "id": "4",
-//         "agrupacion": "OTROS4",
-//         "campos": [
-//             {
-//                 "id": "1",
-//                 "campo": "otro",
-//                 "tipocampo": "ALFANUMERICO",
-//                 "agrupacion": "OTROS4",
-//                 "restriccion": "[N/A]",
-//                 "longitud": 10
-//             }
-//         ]
-//     },
-//     {
-//         "id": "5",
-//         "agrupacion": "ejemplo5",
-//         "campos": [
-//             {
-//                 "id": "1",
-//                 "campo": "hhh",
-//                 "tipocampo": "ALFANUMERICO",
-//                 "agrupacion": "ejemplo5",
-//                 "restriccion": "[N/A]",
-//                 "longitud": 10
-//             },
-//             {
-//                 "id": "2",
-//                 "campo": "jjjj",
-//                 "tipocampo": "Correo",
-//                 "agrupacion": "ejemplo5",
-//                 "restriccion": "[N/A]",
-//                 "longitud": 12
-//             }
-//         ]
-//     },
-//     {
-//         "id": "6",
-//         "campo": "FIRMA",
-//         "tipocampo": "FIRMA",
-//         "agrupacion": "FIRMAS",
-//         "restriccion": "[N/A]",
-//         "longitud": 10
-//     }
-// ]
-
-
-[
-    {
-        "id": "1",
-        "agrupacion": "DATOS DEL REGISTRO",
-        "campos": [
-            {
-                "id": "1",
-                "campo": "FOLIO",
-                "tipocampo": "ALFANUMERICO",
-                "restriccion": "[N/A]",
-                "longitud": 10
-            }
-        ]
-    },
-    {
-        "id": "2",
-        "agrupacion": "DATOS PERSONALES",
-        "campos": [
-            {
-                "id": "1",
-                "campo": "nombre",
-                "tipocampo": "ALFANUMERICO",
-                "restriccion": "[N/A]",
-                "longitud": 10
-            },
-            {
-                "id": "2",
-                "campo": "apellido",
-                "tipocampo": "ALFANUMERICO",
-                "restriccion": "[N/A]",
-                "longitud": 10
-            }
-        ]
-    },
-    {
-        "id": "3",
-        "agrupacion": "OTROS3",
-        "campos": [
-            {
-                "id": "1",
-                "campo": "direccion",
-                "tipocampo": "ALFANUMERICO",
-                "restriccion": "[N/A]",
-                "longitud": 10
-            }
-        ]
-    },
-    {
-        "id": "4",
-        "agrupacion": "OTROS4",
-        "campos": [
-            {
-                "id": "1",
-                "campo": "otro",
-                "tipocampo": "ALFANUMERICO",
-                "restriccion": "[N/A]",
-                "longitud": 10
-            }
-        ]
-    },
-    {
-        "id": "5",
-        "agrupacion": "ejemplo5",
-        "campos": [
-            {
-                "id": "1",
-                "campo": "hhh",
-                "tipocampo": "ALFANUMERICO",
-                "restriccion": "[N/A]",
-                "longitud": 10
-            },
-            {
-                "id": "2",
-                "campo": "jjjj",
-                "tipocampo": "Correo",
-                "restriccion": "[N/A]",
-                "longitud": 12
-            }
-        ]
-    },
-    {
-        "id": "6",
-        "agrupacion": "FIRMAS",
-        "campos": [
-            {
-                "id": "1",
-                "campo": "FIRMA",
-                "tipocampo": "FIRMA",
-                "restriccion": "[N/A]",
-                "longitud": 10
-            }
-        ]
-    }
-]

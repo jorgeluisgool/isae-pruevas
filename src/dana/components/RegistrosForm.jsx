@@ -24,7 +24,7 @@ import { Dropdown } from 'primereact/dropdown';
     console.log(values);
   };
 
-const RegistrosForm = () => {
+const RegistrosForm = ({usuarios, loading}) => {
 
   const [selectedCountries, setSelectedCountries] = useState(null);
 
@@ -33,16 +33,16 @@ const RegistrosForm = () => {
     <Formik initialValues={initialValues} onSubmit={onSubmit}>
         {(formik) => (
             <Form>
-                <div className='bg-slate-50 mx-6 my-4 px-4 py-2 rounded-3xl border-2 border-[#245A95] shadow-md'>
+                <div className='bg-slate-50 mx-4 xl:mx-20 my-4 px-4 py-2 rounded-3xl border-2 border-[#245A95] shadow-md'>
                     <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-2 gap-3">
                         <div className="mt-8 mx-4 flex flex-col">
                             <div className='p-inputgroup flex-1'>
                               <span className='p-float-label relative'>
                                 <Field
                                   as={MultiSelect}
-                                  name="countries"
-                                  options={countries}
-                                  optionLabel="name"
+                                  name="usuarios"
+                                  options={usuarios}
+                                  optionLabel="usuario"
                                   filter
                                   filterPlaceholder='Nombre de proyecto'
                                   // onChange={handleChange}

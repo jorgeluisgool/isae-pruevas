@@ -1,5 +1,5 @@
 import AcordionCampos from '../components/AcordionCampos'
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { ExampleContex } from '../context/ExampleContext';
 import { DndContext, closestCenter } from '@dnd-kit/core';
 import { SortableContext, arrayMove, verticalListSortingStrategy } from '@dnd-kit/sortable';
@@ -9,14 +9,16 @@ import { useNavigate } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
 import { useFetchProjects } from '../hooks/useFetchProjects';
 import { api } from '../helpers/variablesGlobales';
+import { Dialog } from 'primereact/dialog';
+import { Player } from '@lottiefiles/react-lottie-player';
 
 /// COMPONETE ///
 const CamposProyectoPage = () => {
 
+  const [showDialog, setShowDialog] = useState(false);
+
   const { userAuth, setUserAuth, dataCrearProyecto } = useAuth();
   // console.log(dataCrearProyecto.tipo.name)
-
-  const { data: proyectos, loading } = useFetchProjects();
 
   // Función que mantiene el estado del usuario al hacer refesh
   useEffect(() => {
@@ -50,37 +52,30 @@ const CamposProyectoPage = () => {
     console.log(newOrder)
   }
 
-  const onSubmit = (values) => {
+  const onSubmit = () => {
 
       fetch(`${api}/crear/proyecto/${dataCrearProyecto.proyecto}/${dataCrearProyecto.tipo.name}`, {
-        method: 'POST', // O 'PUT' según el tipo de solicitud que desees realizar
+        method: 'POST',
         headers: {
-          'Content-Type': 'application/json' // Asegúrate de establecer el tipo de contenido adecuado
+          'Content-Type': 'application/json' 
         },
-        body: JSON.stringify(dataArchivoExcel) // Convierte los valores a JSON antes de enviarlos
+        body: JSON.stringify(dataArchivoExcel) 
       })
         .then(response => response.json())
         .then(responseData => {
           // Lógica adicional después de enviar los datos a la API
           // ...
           console.log('Respuesta de la API:', responseData);
+          setShowDialog(true);
         })
         .catch(error => console.log(error));
-    
-      // resetForm();
-  
-      // setEmpresaActual(values);
 
-
-    // console.log(values);
-    // const empresa = {...values, usuario}
-    // console.log(empresa)
-   
+        setShowDialog(true);
   }; 
 
-  const handleClickGuardar = () => {
-    // Acciones a realizar cuando se hace clic en el botón flotante
-    console.log('Botón flotante clickeado');
+  const handleDialogClose = () => {
+    setShowDialog(false);
+    navigate('/proyectos'); // Redireccionar a la página de proyectos
   };
 
   const handleClickRegresar = () => {
@@ -112,6 +107,24 @@ const CamposProyectoPage = () => {
       </DndContext>
       <BotonFlotanteGuardar onClick={onSubmit} />
       <BotonFlotanteRegresar onClick={handleClickRegresar} />
+
+      <Dialog
+          visible={showDialog}
+          onHide={() => setShowDialog(false)}
+          footer={<button onClick={handleDialogClose} className="ml-auto object-cover active:scale-[.98] py-3 bg-transparent hover:bg-[#245A95] hover:text-white text-[#245A95] text-sm font-bold inline-block rounded-full bg-primary p-2 uppercase leading-normal shadow-md transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] mt-4" >Cerrar</button>}
+        >
+          <p className="text-3xl font-black pb-10">Proyecto guardado exitosamente</p>
+          <Player src='https://lottie.host/da9fce7b-d61d-4dd2-adff-7f9cffae9bd0/AQpy3VS18s.json'
+            className="player"
+            loop
+            autoplay
+            style={{ height: '150px', width: '150px' }}
+          />
+      </Dialog> 
+
+      {/* <Dialog visible={showDialog} onHide={() => setShowDialog(false)}>
+        <h2>Proyecto guardado correctamente</h2>
+      </Dialog> */}
     </>
   )
 }

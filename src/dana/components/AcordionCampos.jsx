@@ -89,9 +89,9 @@ const AcordionCampos = ({ arreglo2, dataArchivoExcel, data, index, setDataArchiv
     const nuevoCampo = {
       id: `${idNuevo}`,
       longitud: '',
-      campo: 'Nuevo campo',
+      nombreCampo: 'Nuevo campo',
       restriccion: '',
-      tipocampo: ''
+      tipoCampo: ''
     }
 
     lista[index].campos = [...lista[index].campos, nuevoCampo];

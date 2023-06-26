@@ -9,6 +9,7 @@ import { useFetchProjects } from "../hooks/useFetchProjects";
 import useAuth from "../hooks/useAuth";
 import { Dialog } from "primereact/dialog";
 import { Button } from "primereact/button";
+import { Player } from "@lottiefiles/react-lottie-player";
 
 const tipoProyecto = [
     { name: 'MIGRACIONES', code: 'migraciones' },
@@ -66,8 +67,8 @@ export const CrearProyectoForm = () => {
             agrupacion: grupo.agrupacion,
             campos: grupo.campos.map((campo, campoIndex) => ({
               id: `${campoIndex + 1}`,
-              campo: campo.campo,
-              tipocampo: campo.tipocampo,
+              nombreCampo: campo.campo, // Cambio de "campo" a "nombreCampo"
+              tipoCampo: campo.tipocampo, // Cambio de "tipocampo" a "tipoCampo"
               restriccion: campo.restriccion,
               longitud: campo.longitud
             }))
@@ -80,8 +81,8 @@ export const CrearProyectoForm = () => {
               campos: [
                 {
                   id: '1',
-                  campo: 'FOLIO',
-                  tipocampo: 'ALFANUMERICO',
+                  nombreCampo: 'FOLIO',
+                  tipoCampo: 'ALFANUMERICO',
                   restriccion: '[N/A]',
                   longitud: 10
                 }
@@ -94,8 +95,8 @@ export const CrearProyectoForm = () => {
               campos: [
                 {
                   id: '1',
-                  campo: 'FIRMA',
-                  tipocampo: 'FIRMA',
+                  nombreCampo: 'FIRMA',
+                  tipoCampo: 'FIRMA',
                   restriccion: '[N/A]',
                   longitud: 10
                 }
@@ -162,15 +163,15 @@ export const CrearProyectoForm = () => {
                 // llamada a la funcion del naviate a campos proyecto
                 handleSubmit();
               }else{
-                showDialogFunc("Nombre de proyecto repetido")
+                showDialogFunc("El nombre del proyecto ya existe")
               }    
             }}
         >
             {({values, errors, setFieldValue}) => (
                 <Form>
-                    <div className='m-5 bg-slate-50 mx-4 xl:mx-20 my-4 px-4 py-2 rounded-3xl border-2 border-[#245A95] shadow-md'>
-                    <label className="text-lg font-medium">
-                        Registrar proyecto
+                    <div className='mx-4 xl:mx-20 my-4 px-4 py-2 shadow-md bg-white rounded-lg overflow-hidden'>
+                    <label className="mx-0 my-1 text-xl font-bold text-[#245A95]">
+                        CREAR PROYECTO
                     </label>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                         <div className="mt-8 flex flex-col gap-y-4">
@@ -262,10 +263,15 @@ export const CrearProyectoForm = () => {
               <ion-icon name="help-circle"></ion-icon>
           </>   
         }
-          footer={<button onClick={hideDialog} className="ml-auto object-cover active:scale-[.98] py-3 bg-transparent hover:bg-[#245A95] hover:text-white text-[#245A95] text-sm font-bold inline-block rounded-full bg-primary p-2 uppercase leading-normal shadow-md transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] mt-4" >Cerrar</button>}
+          footer={<button onClick={hideDialog} className="px-6 ml-auto object-cover active:scale-[.98] py-3 bg-transparent hover:bg-[#245A95] hover:text-white text-[#245A95] text-sm font-bold inline-block rounded-full bg-primary p-2 uppercase leading-normal shadow-md transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] mt-4" >OK</button>}
         >
           <p className="text-3xl font-black">Es necesario cambiar el nombre</p>
-          <div className="text-center pt-2 text-6xl text-yellow-500 animate-pulse"><ion-icon name="warning"></ion-icon></div>
+          <Player src='https://assets10.lottiefiles.com/packages/lf20_Tkwjw8.json'
+            className="player"
+            loop
+            autoplay
+            style={{ height: '150px', width: '150px' }}
+          />
         </Dialog>      
         </>
     )

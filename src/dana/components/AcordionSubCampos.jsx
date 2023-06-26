@@ -98,7 +98,7 @@ const AcordionSubCampos = ({data, acordionEstate, index,indPadre}) => {
               <div className={`text-2xl text-[#245A95] p-2 right-12 ${showSub ? "rotate-180" : ""}`}>
                 <ion-icon name="chevron-down"></ion-icon>
               </div>
-                {data.campo}   
+                {data.nombreCampo}   
             </div>
             <div className='pr-10'>
               <button
@@ -149,17 +149,17 @@ const AcordionSubCampos = ({data, acordionEstate, index,indPadre}) => {
                             <Field
                               as={Dropdown}
                               className="w-full appearance-none focus:outline-none"
-                              name={`dataArchivoExcel[${indPadre}].campos[${index}].tipocampo`}
+                              name={`dataArchivoExcel[${indPadre}].campos[${index}].tipoCampo`}
                               options={tipoCampos}
                               optionLabel="label"
                               filter
                               onChange={(e) => {
                                 const newDataArchivoExcel = [...dataArchivoExcel];
-                                newDataArchivoExcel[indPadre].campos[index].tipocampo =
+                                newDataArchivoExcel[indPadre].campos[index].tipoCampo =
                                   e.value.tipo;
                                 setDataArchivoExcel(newDataArchivoExcel);
                               }}
-                              value={values.dataArchivoExcel?.[indPadre]?.campos?.[index]?.tipocampo || ''}
+                              value={values.dataArchivoExcel?.[indPadre]?.campos?.[index]?.tipoCampo || ''}
                             />
                             <span className="p-inputgroup-addon border border-gray-300 p-2 rounded-md">
                               <i className="pi pi-file-edit text-[#245A95] font-bold text-xl"></i>
@@ -178,11 +178,11 @@ const AcordionSubCampos = ({data, acordionEstate, index,indPadre}) => {
                                 <Field
                                     className="w-full appearance-none focus:outline-none"
                                     as={InputText}
-                                    name="campo"
-                                    value={dataArchivoExcel[indPadre].campos[index].campo}
+                                    name="nombreCampo"
+                                    value={dataArchivoExcel[indPadre].campos[index].nombreCampo}
                                     onChange={(e) => {
                                       const newDataArchivoExcel = [...dataArchivoExcel];
-                                      newDataArchivoExcel[indPadre].campos[index].campo = e.target.value;
+                                      newDataArchivoExcel[indPadre].campos[index].nombreCampo = e.target.value;
                                       setDataArchivoExcel(newDataArchivoExcel);
                                     }}
                                 />
@@ -190,7 +190,7 @@ const AcordionSubCampos = ({data, acordionEstate, index,indPadre}) => {
                                 <span className="p-inputgroup-addon border border-gray-300 p-2 rounded-md">
                                   <i className="pi pi-file-edit text-[#245A95] font-bold text-xl"></i>
                                 </span>
-                                <label htmlFor="campo" className='text-lg text-[#245A95] font-semibold absolute top-0 left-0 transform'>
+                                <label htmlFor="nombreCampo" className='text-lg text-[#245A95] font-semibold absolute top-0 left-0 transform'>
                                   Campo
                                 </label>
                             </span>

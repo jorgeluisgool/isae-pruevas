@@ -13,7 +13,9 @@ export const RegistrosPage = () => {
   const [showForm, setShowForm] = useState(false);
   const [selectedRows, setSelectedRows] = useState([]);
   const [modalAbrirCerrar, setModalAbrirCerrar] = useState(false); 
-  const [showSub, setShowSub] = useState(null); 
+  const [showSub, setShowSub] = useState(null);
+  
+  const [listaRegistros, setListaRegistros] = useState([]);
 
   const { data: usuarios, loading } = useFetchUsers();
   // console.log(usuarios);
@@ -70,9 +72,9 @@ export const RegistrosPage = () => {
 
   return (
     <>
-    <h1 className="pt-6 pl-4 text-4xl font-black">Registros</h1>
+    <h1 className="pt-6 pl-3 xl:pl-20 text-4xl font-black text-[#245A95]">Registros</h1>
     <div className="container mx-auto">
-        <RegistrosForm usuarios={usuarios} loading={loading}/>
+        <RegistrosForm usuarios={usuarios} loading={loading} listaRegistros={listaRegistros} setListaRegistros={setListaRegistros}/>
     </div>
     <div className="overflow-x-auto">
         <div className="my-6 mx-4 xl:mx-20">
@@ -85,6 +87,7 @@ export const RegistrosPage = () => {
             selectedRows={selectedRows}
             onSelectedRow={handleSelectedRow}
             setModalAbrirCerrar={setModalAbrirCerrar}
+            listaRegistros={listaRegistros}
           />
     </div>
     </div>

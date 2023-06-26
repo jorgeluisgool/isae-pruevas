@@ -32,35 +32,66 @@ const RegistrosForm = ({usuarios, listaRegistros, setListaRegistros}) => {
     index === self.findIndex((o) => o.proyecto === obj.proyecto)
   );
 
+  const handleUsuarioChange = (usuario) => {
+    setUsuariosSeleccionados(usuario.target.value);
+    setCargando(true); // Activar ventana de carga
 
-  useEffect(() => {
-    if (usuariosSeleccionados.length > 0 && proyectosSeleccionados.length > 0) {
-      const ListaUsuariosProyectos = {
-        usuarios: usuariosSeleccionados,
-        proyectos: proyectosSeleccionados,
-      };
+    fetch(`${api}/obtener/proyectos/asignados/usuarios`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(usuario.target.value),
+    })
+      .then((response) => response.json())
+      .then((responseData) => {
+        setListaProyectos(responseData);
+      })
+      .catch((error) => console.log(error))
+      .finally(() => {
+        setCargando(false); // Desactivar ventana de carga una vez que se complete la carga
+      });
+  };
 
-      // Obtener registros asignados a usuarios y proyectos seleccionados
+  const handleProyectoChange = (proyecto) => {
+    setProyectosSeleccionados([proyecto.target.value]);
+    setCargando(true); // Activar ventana de carga
+
+    const ListaUsuariosProyectos = {
+      usuarios: usuariosSeleccionados,
+      proyectos: [proyecto.target.value],
+    };
+
+    Promise.all([
       fetch(`${api}/obtener/registros/asignados/usuario/proyecto`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(ListaUsuariosProyectos),
+      }).then((response) => response.json()),
+      fetch(`${api}/obtener/campos/proyectos`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify([proyecto.target.value]),
+      }).then((response) => response.json()),
+    ])
+      .then(([registrosData, camposData]) => {
+        setListaRegistros(registrosData);
+        setListaRegistrosValor(registrosData);
+        setListaCampos(camposData);
       })
-        .then((response) => response.json())
-        .then((responseData) => {
-          console.log(responseData);
-          setListaRegistros(responseData);
-          setListaRegistrosValor(responseData);
-        })
-        .catch((error) => console.log(error));
-    }
-  }, [usuariosSeleccionados, proyectosSeleccionados]);
+      .catch((error) => console.log(error))
+      .finally(() => {
+        setCargando(false); // Desactivar ventana de carga una vez que se complete la carga
+      });
+  };
 
-  const cargarValores = (campo) => {
+  const handleCampoChange = (campo) => {
     setCampoSeleccionado(campo.target.value);
-    setCargando(true);
+    setCargando(true); // Activar ventana de carga
 
     fetch(`${api}/obtener/valores/busqueda`, {
       method: 'POST',
@@ -75,18 +106,31 @@ const RegistrosForm = ({usuarios, listaRegistros, setListaRegistros}) => {
     })
       .then((response) => response.json())
       .then((responseData) => {
-        console.log(responseData);
         setListaValores(responseData);
-        setCargando(false);
       })
-      .catch((error) => {
-        console.log(error);
-        setCargando(false);
+      .catch((error) => console.log(error))
+      .finally(() => {
+        setCargando(false); // Desactivar ventana de carga una vez que se complete la carga
       });
   };
 
   return (
     <>
+    {/* Ventana de carga */}
+    {cargando && (
+        <div className="fixed top-0 left-0 right-0 bottom-0 bg-slate-200 bg-opacity-50 flex items-center justify-center z-50">
+          <div className="flex items-center transition duration-500 ease-in-out">
+            <span className="hover:text-gray-400 duration-500 text-3xl text-slate-50">
+              <img src="/src/assets/isae.png" alt="Icono" className="h-20 xl:h-40 mr-1 animate-spin"/>
+            </span>
+            <img src="/src/assets/letras_isae.png" alt="Icono" className="h-20 xl:h-40 mr-2" />
+          </div>
+          <div className='fixed pt-36 xl:pt-60'>
+          <h1 className='text-[#C41420] text-4xl font-black'>Cargando...</h1>
+          </div>
+        </div>
+      )}
+
     <Formik initialValues={initialValues} onSubmit={onSubmit}>
         {(formik, values ) => (
             <Form>
@@ -103,26 +147,27 @@ const RegistrosForm = ({usuarios, listaRegistros, setListaRegistros}) => {
                                   optionLabel="usuario"
                                   filter
                                   emptyFilterMessage='No se encontarron usuarios'
-                                  onChange={(usuario)=>{
-                                    setUsuariosSeleccionados(usuario.target.value);
-                                    // console.log(usuario.target.value);
+                                  onChange={handleUsuarioChange}
+                                  // onChange={(usuario)=>{
+                                  //   setUsuariosSeleccionados(usuario.target.value);
+                                  //   // console.log(usuario.target.value);
 
-                                    fetch(`${api}/obtener/proyectos/asignados/usuarios`, {
-                                      method: 'POST',
-                                      headers: {
-                                        'Content-Type': 'application/json' 
-                                      },
-                                      body: JSON.stringify(usuario.target.value) 
-                                    })
-                                      .then(response => response.json())
-                                      .then(responseData => {
-                                        // console.log(responseData)
-                                        // obtenemos los proyectos
-                                        setListaProyectos(responseData)
+                                  //   fetch(`${api}/obtener/proyectos/asignados/usuarios`, {
+                                  //     method: 'POST',
+                                  //     headers: {
+                                  //       'Content-Type': 'application/json' 
+                                  //     },
+                                  //     body: JSON.stringify(usuario.target.value) 
+                                  //   })
+                                  //     .then(response => response.json())
+                                  //     .then(responseData => {
+                                  //       // console.log(responseData)
+                                  //       // obtenemos los proyectos
+                                  //       setListaProyectos(responseData)
                                         
-                                      })
-                                      .catch(error => console.log(error));
-                                  }}
+                                  //     })
+                                  //     .catch(error => console.log(error));
+                                  // }}
                                   value={usuariosSeleccionados}
                                   display="chip"
                                   className="w-full appearance-none focus:outline-none bg-transparent"
@@ -147,41 +192,42 @@ const RegistrosForm = ({usuarios, listaRegistros, setListaRegistros}) => {
                                     optionLabel="proyecto"
                                     filter
                                     emptyFilterMessage='No se encontarron proyectos'
-                                    onChange={(proyecto) => {
-                                      setProyectosSeleccionados([proyecto.target.value]);
-                                      const ListaUsuariosProyectos = {usuarios: usuariosSeleccionados, proyectos: [proyecto.target.value]}
+                                    onChange={handleProyectoChange}
+                                    // onChange={(proyecto) => {
+                                    //   setProyectosSeleccionados([proyecto.target.value]);
+                                    //   const ListaUsuariosProyectos = {usuarios: usuariosSeleccionados, proyectos: [proyecto.target.value]}
 
-                                      // obtencion de los registros de acuerdo a los usuarios selecionados y al proyecto seleccionado
-                                      fetch(`${api}/obtener/registros/asignados/usuario/proyecto`, {
-                                        method: 'POST',
-                                        headers: {
-                                          'Content-Type': 'application/json' 
-                                        },
-                                        body: JSON.stringify(ListaUsuariosProyectos) 
-                                      })
-                                        .then(response => response.json())
-                                        .then(responseData => {
-                                          console.log(responseData)
-                                          setListaRegistros(responseData);
-                                          setListaRegistrosValor(responseData);                
-                                        })
-                                        .catch(error => console.log(error)); 
+                                    //   // obtencion de los registros de acuerdo a los usuarios selecionados y al proyecto seleccionado
+                                    //   fetch(`${api}/obtener/registros/asignados/usuario/proyecto`, {
+                                    //     method: 'POST',
+                                    //     headers: {
+                                    //       'Content-Type': 'application/json' 
+                                    //     },
+                                    //     body: JSON.stringify(ListaUsuariosProyectos) 
+                                    //   })
+                                    //     .then(response => response.json())
+                                    //     .then(responseData => {
+                                    //       console.log(responseData)
+                                    //       setListaRegistros(responseData);
+                                    //       setListaRegistrosValor(responseData);                
+                                    //     })
+                                    //     .catch(error => console.log(error)); 
                                         
-                                        // obenemos los campos para el select de buscar por
-                                        fetch(`${api}/obtener/campos/proyectos`, {
-                                          method: 'POST',
-                                          headers: {
-                                            'Content-Type': 'application/json' 
-                                          },
-                                          body: JSON.stringify([proyecto.target.value]) 
-                                        })
-                                          .then(response => response.json())
-                                          .then(responseData => {
-                                            console.log(responseData)
-                                            setListaCampos(responseData);                
-                                          })
-                                          .catch(error => console.log(error));
-                                    }}
+                                    //     // obenemos los campos para el select de buscar por
+                                    //     fetch(`${api}/obtener/campos/proyectos`, {
+                                    //       method: 'POST',
+                                    //       headers: {
+                                    //         'Content-Type': 'application/json' 
+                                    //       },
+                                    //       body: JSON.stringify([proyecto.target.value]) 
+                                    //     })
+                                    //       .then(response => response.json())
+                                    //       .then(responseData => {
+                                    //         console.log(responseData)
+                                    //         setListaCampos(responseData);                
+                                    //       })
+                                    //       .catch(error => console.log(error));
+                                    // }}
                                     value={proyectosSeleccionados[0]}
                                     
                                     className="w-full appearance-none focus:outline-none bg-transparent"
@@ -209,23 +255,24 @@ const RegistrosForm = ({usuarios, listaRegistros, setListaRegistros}) => {
                                     filter
                                     emptyFilterMessage='Campo no encontradofh'
                                     filterPlaceholder='Campo'
-                                    onChange={(campo) =>{
+                                    onChange={handleCampoChange}
+                                    // onChange={(campo) =>{
 
-                                      setCampoSeleccionado(campo.target.value)
-                                      fetch(`${api}/obtener/valores/busqueda`, {
-                                        method: 'POST',
-                                        headers: {
-                                          'Content-Type': 'application/json' 
-                                        },
-                                        body: JSON.stringify({usuarios: usuariosSeleccionados, proyecto:proyectosSeleccionados, campo:campo.target.value}) 
-                                      })
-                                        .then(response => response.json())
-                                        .then(responseData => {
-                                          console.log(responseData)
-                                          setListaValores(responseData);                  
-                                        })
-                                        .catch(error => console.log(error)); 
-                                    }}
+                                    //   setCampoSeleccionado(campo.target.value)
+                                    //   fetch(`${api}/obtener/valores/busqueda`, {
+                                    //     method: 'POST',
+                                    //     headers: {
+                                    //       'Content-Type': 'application/json' 
+                                    //     },
+                                    //     body: JSON.stringify({usuarios: usuariosSeleccionados, proyecto:proyectosSeleccionados, campo:campo.target.value}) 
+                                    //   })
+                                    //     .then(response => response.json())
+                                    //     .then(responseData => {
+                                    //       console.log(responseData)
+                                    //       setListaValores(responseData);                  
+                                    //     })
+                                    //     .catch(error => console.log(error)); 
+                                    // }}
                                     value={campoSeleccionado}
                                     display="chip"
                                     className="w-full appearance-none focus:outline-none bg-transparent"

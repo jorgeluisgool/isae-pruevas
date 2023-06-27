@@ -26,11 +26,19 @@ const RegistrosForm = ({usuarios, listaRegistros, setListaRegistros}) => {
 
   const [cargando, setCargando] = useState(false);
 
+  // const [valorSeleccionado2, setValorSeleccionado2] = useState('');
+
   // const ListaUsuariosProyectos = {usuarios: usuariosSeleccionados, proyectos: proyectosSeleccionados}
 
   const listaProyectosFiltrados = listaProyectos.filter((obj, index, self) =>
     index === self.findIndex((o) => o.proyecto === obj.proyecto)
   );
+
+  const listaValoresFiltrados = listaValores.filter((obj, index, self) => 
+    index === self.findIndex((o) => o.valor.trim() === obj.valor.trim())
+  ); 
+
+  console.log(listaRegistrosValor);
 
   const handleUsuarioChange = (usuario) => {
     setUsuariosSeleccionados(usuario.target.value);
@@ -70,6 +78,7 @@ const RegistrosForm = ({usuarios, listaRegistros, setListaRegistros}) => {
         },
         body: JSON.stringify(ListaUsuariosProyectos),
       }).then((response) => response.json()),
+      
       fetch(`${api}/obtener/campos/proyectos`, {
         method: 'POST',
         headers: {
@@ -126,7 +135,7 @@ const RegistrosForm = ({usuarios, listaRegistros, setListaRegistros}) => {
             <img src="/src/assets/letras_isae.png" alt="Icono" className="h-20 xl:h-40 mr-2" />
           </div>
           <div className='fixed pt-36 xl:pt-60'>
-          <h1 className='text-[#C41420] text-4xl font-black'>Cargando...</h1>
+          <h1 className='text-[#C41420] text-4xl font-black animate-pulse'>Cargando...</h1>
           </div>
         </div>
       )}
@@ -286,8 +295,7 @@ const RegistrosForm = ({usuarios, listaRegistros, setListaRegistros}) => {
                                 </span>
                               </div>
                           }
-                              
-                            
+                                
                         </div>
                         <div className="mt-8 mx-4 flex flex-col">
                           {
@@ -297,16 +305,20 @@ const RegistrosForm = ({usuarios, listaRegistros, setListaRegistros}) => {
                                   <Field
                                     as={Dropdown}
                                     name="valores"
-                                    options={listaValores}
+                                    options={listaValoresFiltrados}
                                     optionLabel="valor"
                                     filter
                                     emptyFilterMessage='Valor del campo no encontrado'
                                     filterPlaceholder='Nombre de proyecto'
                                     onChange={(valor) => {
                                       setValorSeleccionado(valor.target.value);
-                                      console.log('listaRegistrosValor', [listaRegistrosValor[0]]);
+                                      console.log(valor.target.value);
 
-                                      setListaRegistros([listaRegistrosValor[0]]);
+                                     const resultados =  listaValores.filter(item => item.valor.trim() === valor.target.value.valor.trim());
+
+                                    
+
+                                      setListaRegistros(resultados.map(item => item.inventario));
                                     }}
                                     value={valorSeleccionado}
                                     display="chip"

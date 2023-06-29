@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { api } from '../helpers/variablesGlobales';
 
-const TableRegistros = ({data, headers, onDelete, onEdit, selectedRows, isSelected, onSelectedRow, setModalAbrirCerrar, listaRegistros}) => {
+const TableRegistros = ({data, headers, onDelete, onEdit, selectedRows, isSelected, onSelectedRow, setModalAbrirCerrar, listaRegistros, setProyectoSeleccionado, setDataProyectoSeleccionado}) => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+
+  const [cargando, setCargando] = useState(false);
 
   const totalRows = listaRegistros.length;
   const totalPages = Math.ceil(totalRows / rowsPerPage);
@@ -21,6 +23,20 @@ const TableRegistros = ({data, headers, onDelete, onEdit, selectedRows, isSelect
 
   return (
     <>
+    {cargando && (
+        <div className="fixed top-0 left-0 right-0 bottom-0 bg-slate-200 bg-opacity-50 flex items-center justify-center z-50">
+          <div className="flex items-center transition duration-500 ease-in-out">
+            <span className="hover:text-gray-400 duration-500 text-3xl text-slate-50">
+              <img src="/src/assets/isae.png" alt="Icono" className="h-20 xl:h-40 mr-1 animate-spin"/>
+            </span>
+            <img src="/src/assets/letras_isae.png" alt="Icono" className="h-20 xl:h-40 mr-2" />
+          </div>
+          <div className='fixed pt-36 xl:pt-60'>
+          <h1 className='text-[#C41420] text-4xl font-black animate-pulse'>Cargando...</h1>
+          </div>
+        </div>
+      )}
+
     <table className="min-w-full bg-white rounded-lg overflow-hidden shadow-md">
       <thead className="bg-[#245A95] text-white uppercase">
         <tr className='text-left'>
@@ -29,7 +45,7 @@ const TableRegistros = ({data, headers, onDelete, onEdit, selectedRows, isSelect
               type="checkbox"
               className="absolute h-4 w-4 top-3 left-3"
               onChange={() => {}}
-              checked={selectedRows.length === data.length}
+              // checked={selectedRows.length === data.length}
             />
             <div className="items-center pl-12">
               <span>Proyecto</span>
@@ -64,7 +80,32 @@ const TableRegistros = ({data, headers, onDelete, onEdit, selectedRows, isSelect
       </thead>
       <tbody className="divide-y divide-gray-200" >
         {currentRows.map((registro, index) => (
-          <tr key={index} onClick={() => { setModalAbrirCerrar(true)}} className='cursor-pointer hover:bg-[#E2E2E2]'>
+          <tr 
+            key={index} 
+            onClick={() => {
+              setProyectoSeleccionado(registro);
+              setCargando(true); // Mostrar ventana de carga
+              
+              fetch(`${api}/obtener/datoscompletos/registro/${registro.idinventario}/${registro.proyecto.idproyecto}/0`, {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json' 
+                },
+              })
+                .then(response => response.json())
+                .then(responseData => {
+                  setDataProyectoSeleccionado(responseData);
+                  setCargando(false); // Ocultar ventana de carga
+                  setModalAbrirCerrar(true);
+                })
+                .catch(error => {
+                  console.log(error);
+                  setCargando(false); // Ocultar ventana de carga en caso de error
+                });
+            }}
+            
+            className='cursor-pointer hover:bg-[#E2E2E2]'
+          >
             <td className="px-6">
               <div className="flex items-center">
                 <div className="flex-shrink-0 h-4 w-4">

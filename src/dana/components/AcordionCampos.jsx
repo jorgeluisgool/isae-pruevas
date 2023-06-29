@@ -109,7 +109,7 @@ const AcordionCampos = ({ arreglo2, dataArchivoExcel, data, index, setDataArchiv
           style={style}
           ref={setNodeRef}
           {...attributes}
-          className="hs-accordion-group bg-slate-50 px-5 py-3 my-2 rounded-2xl border-2 border-[#245A95]"
+          className="hs-accordion-group bg-slate-50 px-5 py-2 my-3 rounded-2xl border-2 border-[#245A95] shadow-[#245A95] shadow-md"
         >
           <span className='absolute right-8 text-2xl text-[#245A95] ' {...listeners}>
             <ion-icon name="reorder-three-outline"></ion-icon>

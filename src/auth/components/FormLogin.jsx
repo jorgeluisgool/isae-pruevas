@@ -72,10 +72,12 @@ export const FormLogin = () => {
             pass: contrasena
         }).then(resp => {
             
-            if (resp.length > 0) {         
+            if (resp.length > 0) {
+                
                 navigate('/menu', {
                     replace: true
                 })
+                               
             }else{
                 console.log("usuario o contraseña incorrectos")
             }

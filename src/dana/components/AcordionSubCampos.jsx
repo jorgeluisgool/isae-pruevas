@@ -88,7 +88,7 @@ const AcordionSubCampos = ({data, acordionEstate, index,indPadre}) => {
           style={style}
           ref={setNodeRef}
           {...attributes}
-          className="bg-[#e2e2e2] rounded hs-accordion mt-3"
+          className="bg-[#e2e2e2] rounded hs-accordion mt-2 mb-4 shadow-slate-400 shadow-md"
         >
           <span className='absolute right-12 text-xl text-[#245A95]' {...listeners}>
             <ion-icon name="reorder-three-outline"></ion-icon>

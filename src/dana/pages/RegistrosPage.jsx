@@ -3,12 +3,13 @@ import RegistrosForm from '../components/RegistrosForm'
 import TableRegistros from '../components/TablaRegistros'
 import { Dialog } from 'primereact/dialog';
 import { useFetchUsers } from '../hooks/useFetchUsers';
-
-const initialData = [  {    name: "Juan Perez",    email: "juan.perez@example.com",    image:      "https://randomuser.me/api/portraits/men/1.jpg",  },  {    name: "Maria Garcia",    email: "maria.garcia@example.com",    image:      "https://randomuser.me/api/portraits/women/2.jpg",  },  {    name: "Pedro Sanchez",    email: "pedro.sanchez@example.com",    image:      "https://randomuser.me/api/portraits/men/3.jpg",  },];
+import { Field, Formik } from 'formik';
+import { InputText } from 'primereact/inputtext';
+import { Calendar } from 'primereact/calendar';
+import { ComponentTipoCampo } from '../components/ComponentTipoCampo';
 
 export const RegistrosPage = () => {
 
-  const [data, setData] = useState(initialData);
   const [editIndex, setEditIndex] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [selectedRows, setSelectedRows] = useState([]);
@@ -17,8 +18,21 @@ export const RegistrosPage = () => {
   
   const [listaRegistros, setListaRegistros] = useState([]);
 
+  const [proyectoSeleccionado, setProyectoSeleccionado] = useState(null);
+  const [dataProyectoSeleccionado, setDataProyectoSeleccionado] = useState([]);
+  const [showAcordion, setShowAcordion] = useState(null);
+
+  const toggleShow = (index) => {
+    if (index === showAcordion) {
+      setShowAcordion(null)
+    } else {
+      setShowAcordion(index)
+    }
+  }
+   
+  console.log(dataProyectoSeleccionado);
+
   const { data: usuarios, loading } = useFetchUsers();
-  // console.log(usuarios);
 
   const handleSelectedRow = (index) => {
     if (selectedRows.includes(index)) {
@@ -46,15 +60,6 @@ export const RegistrosPage = () => {
     setEditIndex(null);
   };
 
-  // Funcoion para abrir y cerrar el sub acordion
-  const toggleShow = (index) => {
-    if (index === showSub) {
-      setShowSub(null)
-    } else {
-      setShowSub(index)
-    }
-  };
-
   const handleSubmit = (values) => {
     if (editIndex === null) {
       setData([...data, values]);
@@ -79,8 +84,6 @@ export const RegistrosPage = () => {
     <div className="overflow-x-auto">
         <div className="my-6 mx-4 xl:mx-20">
           <TableRegistros 
-            data={data}
-            headers={["Nombre e Email", "Folio"]}
             onDelete={handleDelete}
             onEdit={handleEdit}
             isSelected={isSelected}
@@ -88,42 +91,67 @@ export const RegistrosPage = () => {
             onSelectedRow={handleSelectedRow}
             setModalAbrirCerrar={setModalAbrirCerrar}
             listaRegistros={listaRegistros}
+            setProyectoSeleccionado={setProyectoSeleccionado}
+            setDataProyectoSeleccionado={setDataProyectoSeleccionado}
           />
     </div>
     </div>
 
-    <Dialog header="Detalles de viaje" visible={modalAbrirCerrar} style={{ width: '90vw' }} onHide={() => setModalAbrirCerrar(false)}>
-      <h1>Proyecto:</h1>
-      <h1>Registro:</h1>
+    <Dialog header="" visible={modalAbrirCerrar} style={{ width: '70vw' }} onHide={() => setModalAbrirCerrar(false)}>
+      <h1 className='text-2xl font-black xl:mx-36'>Proyecto:</h1>
+      <h1 className='text-2xl font-black xl:mx-36'>Registro:</h1>
 
-      <div className="bg-[#e2e2e2] rounded hs-accordion mt-3">
-        <div className='flex items-center justify-around'>
-          <div 
-            // onClick={() => toggleShow(index)} 
-            className="rounded p-4 hs-accordion-toggle hs-accordion-active:text-blue-600 py-1 inline-flex items-center gap-x-2 w-full font-black text-left text-[#245A95] text-xl transition hover:text-gray-500 dark:hs-accordion-active:text-blue-500 dark:text-gray-200 dark:hover:text-gray-400" 
-            aria-controls="hs-basic-nested-sub-collapse-one"
-          >
-            <div className={`text-2xl text-[#245A95] p-2 right-12 ${showSub ? "rotate-180" : ""}`}>
-              <ion-icon name="chevron-down"></ion-icon>
+      {dataProyectoSeleccionado.listaAgrupaciones && dataProyectoSeleccionado.listaAgrupaciones.length > 0 && (
+        dataProyectoSeleccionado.listaAgrupaciones.map((item, index) => (
+          <div key={index} className="bg-[#e2e2e2] rounded-md hs-accordion mt-7 xl:mx-36">
+            <div className='bg-[#245A95] flex items-center justify-around rounded-md cursor-pointer shadow-slate-900 shadow-md' onClick={() => toggleShow(index)}>
+              <div 
+                // onClick={() => toggleShow(index)} 
+                className="rounded p-4 hs-accordion-toggle hs-accordion-active:text-blue-600 py-1 inline-flex items-center gap-x-2 w-full font-black text-left text-white text-xl transition hover:text-gray-300 dark:hs-accordion-active:text-blue-500 dark:text-gray-200 dark:hover:text-gray-400" 
+                aria-controls="hs-basic-nested-sub-collapse-one"
+              >
+                <div className={`text-2xl text-white p-2 right-12 transform transition duration-300 ease-in-out ${showAcordion === index ? "rotate-180" : ""}`}>
+                  <ion-icon name="chevron-down"></ion-icon>
+                </div>
+                  {item.agrupacion}   
+              </div>
+              <div className='pr-10'>
+              </div>
             </div>
-              {''}   
+            <Formik initialValues={''} onSubmit={''}>
+              {
+                showAcordion === index && (
+                  <div className='px-2 xl:px-10 py-3'>
+              {
+                item.campos.map((item) => (
+                <div key={item.idCampo} className="mt-8">
+                  <span className='p-float-label'>
+                    <div className='grid grid-cols-2'>
+                      <div className=''>
+                        <p className='text-sm xl:text-base text-[#245A95] font-semibold text-right pr-5'>{item.nombreCampo}:</p>
+                      </div>
+                      <div className=''>
+                        <ComponentTipoCampo tipoCampo={item.tipoCampo}/>
+                      </div>
+                    </div>
+                  </span>
+                </div>
+                ))
+              }    
+            </div>
+                )
+              }
+            
+            </Formik>
+            
           </div>
-          <div className='pr-10'>
-            {/* <button
-              type="submit"
-              onClick={() => eliminarCampo(index)}
-              className="ml-auto h-10 w-10 object-cover active:scale-[.98] bg-transparent hover:bg-[#BE1622] hover:text-white text-[#BE1622] text-sm font-bold inline-flex items-center rounded-full bg-primary p-2 uppercase leading-normal shadow-md transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)]"
-            >
-              <span className='text-2xl'>
-                <ion-icon name="trash"></ion-icon>
-              </span>
-              <span className="ml-1"></span>
-            </button> */}
-          </div>
-        </div>
-      </div>
+        ))
+        )}
+      
     </Dialog>
     </>
     
   )
 }
+
+

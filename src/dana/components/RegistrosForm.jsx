@@ -28,6 +28,8 @@ const RegistrosForm = ({usuarios, listaRegistros, setListaRegistros}) => {
 
   // const [valorSeleccionado2, setValorSeleccionado2] = useState('');
 
+  // setAutoZIndex(true);
+
   // const ListaUsuariosProyectos = {usuarios: usuariosSeleccionados, proyectos: proyectosSeleccionados}
 
   const listaProyectosFiltrados = listaProyectos.filter((obj, index, self) =>
@@ -38,7 +40,7 @@ const RegistrosForm = ({usuarios, listaRegistros, setListaRegistros}) => {
     index === self.findIndex((o) => o.valor.trim() === obj.valor.trim())
   ); 
 
-  console.log(listaRegistrosValor);
+  // console.log(listaRegistrosValor);
 
   const handleUsuarioChange = (usuario) => {
     setUsuariosSeleccionados(usuario.target.value);

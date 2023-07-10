@@ -26,9 +26,6 @@ const tipoCampos = [
 /// COMPONETE ///
 const AcordionSubCampos = ({data, acordionEstate, index,indPadre}) => {
 
-
-  const [ingredient, setIngredient] = useState('');
-
   const { dataArchivoExcel, setDataArchivoExcel } = useContext(ExampleContex);
 
   // Estado para abrir y cerrar el sub acordion 

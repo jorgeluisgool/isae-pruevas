@@ -157,7 +157,7 @@ const RegistrosForm = ({usuarios, listaRegistros, setListaRegistros}) => {
                                   options={usuarios}
                                   optionLabel="usuario"
                                   filter
-                                  emptyFilterMessage='No se encontarron usuarios'
+                                  emptyFilterMessage='No se encontraron usuarios'
                                   onChange={handleUsuarioChange}
                                   // onChange={(usuario)=>{
                                   //   setUsuariosSeleccionados(usuario.target.value);

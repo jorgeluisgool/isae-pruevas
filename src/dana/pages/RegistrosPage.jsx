@@ -3,10 +3,11 @@ import RegistrosForm from '../components/RegistrosForm'
 import TableRegistros from '../components/TablaRegistros'
 import { Dialog } from 'primereact/dialog';
 import { useFetchUsers } from '../hooks/useFetchUsers';
-import { Field, Formik } from 'formik';
+import { Field, Form, Formik } from 'formik';
 import { InputText } from 'primereact/inputtext';
 import { Calendar } from 'primereact/calendar';
 import { ComponentTipoCampo } from '../components/ComponentTipoCampo';
+import { useForm, Controller } from 'react-hook-form';
 
 export const RegistrosPage = () => {
 
@@ -14,7 +15,6 @@ export const RegistrosPage = () => {
   const [showForm, setShowForm] = useState(false);
   const [selectedRows, setSelectedRows] = useState([]);
   const [modalAbrirCerrar, setModalAbrirCerrar] = useState(false); 
-  const [showSub, setShowSub] = useState(null);
   
   const [listaRegistros, setListaRegistros] = useState([]);
 
@@ -42,11 +42,6 @@ export const RegistrosPage = () => {
     }
   };
 
-  const handleAdd = (item) => {
-    setData([...data, item]);
-    setShowForm(false);
-  };
-
   const handleDelete = (index) => {
     setData(data.filter((item, i) => i !== index));
   };
@@ -60,19 +55,24 @@ export const RegistrosPage = () => {
     setEditIndex(null);
   };
 
-  const handleSubmit = (values) => {
-    if (editIndex === null) {
-      setData([...data, values]);
-    } else {
-      const newData = [...data];
-      newData[editIndex] = values;
-      setData(newData);
-    }
-    setShowForm(false);
-  };
-
   const isSelected = (index) => {
     return selectedRows.includes(index);
+  };
+
+  const handleSubmit = (values) => {
+    console.log(values);
+
+    // const newData = { ...dataProyectoSeleccionado };
+
+    //     newData.listaAgrupaciones.forEach((agrupacion) => {
+    //       agrupacion.campos.forEach((campo) => {
+    //         if (values.hasOwnProperty(campo.nombreCampo)) {
+    //           campo.valor = values[campo.nombreCampo];
+    //         }
+    //       });
+    //     });
+
+    //     console.log(newData);
   };
 
   return (
@@ -96,62 +96,85 @@ export const RegistrosPage = () => {
           />
     </div>
     </div>
-
-    <Dialog header="" visible={modalAbrirCerrar} style={{ width: '70vw' }} onHide={() => setModalAbrirCerrar(false)}>
-      <h1 className='text-2xl font-black xl:mx-36'>Proyecto:</h1>
-      <h1 className='text-2xl font-black xl:mx-36'>Registro:</h1>
-
+    {/* MODAL DE SELECCION DEL PROYECTO */}
+    
+    <Dialog header={`PROYECTO: ${proyectoSeleccionado?.proyecto?.proyecto}`} visible={modalAbrirCerrar} style={{ width: '70vw' }} onHide={() => setModalAbrirCerrar(false)}>
+      <h1 className='text-lg font-bold xl:mx-36'>Registro: {proyectoSeleccionado ? proyectoSeleccionado.folio : 'Cargando...'}</h1>
+      <Formik initialValues={{}} onSubmit={handleSubmit}>
+      {({ values }) => (
+      <Form >
       {dataProyectoSeleccionado.listaAgrupaciones && dataProyectoSeleccionado.listaAgrupaciones.length > 0 && (
-        dataProyectoSeleccionado.listaAgrupaciones.map((item, index) => (
-          <div key={index} className="bg-[#e2e2e2] rounded-md hs-accordion mt-7 xl:mx-36">
-            <div className='bg-[#245A95] flex items-center justify-around rounded-md cursor-pointer shadow-slate-900 shadow-md' onClick={() => toggleShow(index)}>
+        dataProyectoSeleccionado.listaAgrupaciones.map((itemagrupacion, indexAgrupacion) => (
+          <div key={indexAgrupacion} className="bg-[#e2e2e2] rounded-md hs-accordion mt-7 xl:mx-36">
+            <div className='bg-[#245A95] flex items-center justify-around rounded-md cursor-pointer shadow-slate-900 shadow-md' onClick={() => toggleShow(indexAgrupacion)}>
               <div 
                 // onClick={() => toggleShow(index)} 
                 className="rounded p-4 hs-accordion-toggle hs-accordion-active:text-blue-600 py-1 inline-flex items-center gap-x-2 w-full font-black text-left text-white text-xl transition hover:text-gray-300 dark:hs-accordion-active:text-blue-500 dark:text-gray-200 dark:hover:text-gray-400" 
                 aria-controls="hs-basic-nested-sub-collapse-one"
               >
-                <div className={`text-2xl text-white p-2 right-12 transform transition duration-300 ease-in-out ${showAcordion === index ? "rotate-180" : ""}`}>
+                <div className={`text-2xl text-white p-2 right-12 transform transition duration-300 ease-in-out ${showAcordion === indexAgrupacion ? "rotate-180" : ""}`}>
                   <ion-icon name="chevron-down"></ion-icon>
                 </div>
-                  {item.agrupacion}   
+                  {itemagrupacion.agrupacion}   
               </div>
               <div className='pr-10'>
               </div>
             </div>
-            <Formik initialValues={''} onSubmit={''}>
+            
+              
               {
-                showAcordion === index && (
+                showAcordion === indexAgrupacion && (
                   <div className='px-2 xl:px-10 py-3'>
-              {
-                item.campos.map((item) => (
-                <div key={item.idCampo} className="mt-8">
-                  <span className='p-float-label'>
-                    <div className='grid grid-cols-2'>
-                      <div className=''>
-                        <p className='text-sm xl:text-base text-[#245A95] font-semibold text-right pr-5'>{item.nombreCampo}:</p>
+                    {
+                      itemagrupacion.campos.map((item, indexCampo) => (
+                      <div key={item.idCampo} className="mt-8">
+                        <span className='p-float-label'>
+                          <div className='grid grid-cols-2'>
+                            <div className=''>
+                              <p className='text-sm xl:text-base text-[#245A95] font-semibold text-right pr-5'>{item.nombreCampo}:</p>
+                            </div>
+                            <div className=''>
+                              <ComponentTipoCampo itemagrupacion={itemagrupacion} campo={item} indexAgrupacion={indexAgrupacion} indexCampo={indexCampo}/>
+                            </div>
+                          </div>
+                        </span>
                       </div>
-                      <div className=''>
-                        <ComponentTipoCampo tipoCampo={item.tipoCampo}/>
-                      </div>
-                    </div>
-                  </span>
-                </div>
-                ))
-              }    
-            </div>
+                      ))
+                    }    
+                  </div>
                 )
               }
-            
-            </Formik>
-            
+              
+                
           </div>
         ))
         )}
-      
+        <div className="absolute inset-x-0 bottom-4 left-4 flex gap-3">
+          <button
+            type="submit"
+            className="hover:shadow-slate-600 border h-10 px-4 bg-[#245A95] hover:bg-[#1F4973] text-white text-lg font-bold rounded-full shadow-md transition duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-[#245A95]"
+          >
+            Aceptar
+          </button>
+          <button
+            className="hover:shadow-slate-600 border h-10 px-4 bg-[#245A95] hover:bg-[#1F4973] text-white text-lg font-bold rounded-full shadow-md transition duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-[#245A95]"
+            onClick={() => console.log('Cancelar')}
+          >
+            Cancelar
+          </button>
+        </div>
+        </Form> 
+        )}
+        </Formik>    
     </Dialog>
     </>
     
   )
 }
+
+
+
+
+
 
 

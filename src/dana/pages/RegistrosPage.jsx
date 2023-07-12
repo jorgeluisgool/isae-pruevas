@@ -12,7 +12,7 @@ import { useForm, Controller } from 'react-hook-form';
 export const RegistrosPage = () => {
 
   const [editIndex, setEditIndex] = useState(null);
-  const [showForm, setShowForm] = useState(false);
+  const [usuariosSeleccionados, setUsuariosSeleccionados] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
   const [modalAbrirCerrar, setModalAbrirCerrar] = useState(false); 
   
@@ -60,26 +60,28 @@ export const RegistrosPage = () => {
   };
 
   const handleSubmit = (values) => {
-    console.log(values);
+    // console.log(values);
 
-    // const newData = { ...dataProyectoSeleccionado };
+      const newData = { ...dataProyectoSeleccionado };
 
-    //     newData.listaAgrupaciones.forEach((agrupacion) => {
-    //       agrupacion.campos.forEach((campo) => {
-    //         if (values.hasOwnProperty(campo.nombreCampo)) {
-    //           campo.valor = values[campo.nombreCampo];
-    //         }
-    //       });
-    //     });
+        newData.listaAgrupaciones.forEach((agrupacion) => {
+          agrupacion.campos.forEach((campo) => {
+            if (values.hasOwnProperty(campo.nombreCampo)) {
+              campo.valor = values[campo.nombreCampo];
+            }
+          });
+        });
 
-    //     console.log(newData);
+      console.log(newData);
   };
+
+  // console.log(listaRegistros)
 
   return (
     <>
     <h1 className="pt-6 pl-3 xl:pl-20 text-4xl font-black text-[#245A95]">Registros</h1>
     <div className="container mx-auto">
-        <RegistrosForm usuarios={usuarios} loading={loading} listaRegistros={listaRegistros} setListaRegistros={setListaRegistros}/>
+        <RegistrosForm usuariosSeleccionados={usuariosSeleccionados} setUsuariosSeleccionados={setUsuariosSeleccionados} usuarios={usuarios} loading={loading} listaRegistros={listaRegistros} setListaRegistros={setListaRegistros}/>
     </div>
     <div className="overflow-x-auto">
         <div className="my-6 mx-4 xl:mx-20">
@@ -93,6 +95,7 @@ export const RegistrosPage = () => {
             listaRegistros={listaRegistros}
             setProyectoSeleccionado={setProyectoSeleccionado}
             setDataProyectoSeleccionado={setDataProyectoSeleccionado}
+            usuariosSeleccionados={usuariosSeleccionados}
           />
     </div>
     </div>
@@ -134,7 +137,7 @@ export const RegistrosPage = () => {
                               <p className='text-sm xl:text-base text-[#245A95] font-semibold text-right pr-5'>{item.nombreCampo}:</p>
                             </div>
                             <div className=''>
-                              <ComponentTipoCampo itemagrupacion={itemagrupacion} campo={item} indexAgrupacion={indexAgrupacion} indexCampo={indexCampo}/>
+                              <ComponentTipoCampo dataProyectoSeleccionado={dataProyectoSeleccionado} itemagrupacion={itemagrupacion} campo={item} indexAgrupacion={indexAgrupacion} indexCampo={indexCampo}/>
                             </div>
                           </div>
                         </span>

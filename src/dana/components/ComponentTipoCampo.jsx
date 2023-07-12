@@ -1,8 +1,9 @@
-import { Field } from 'formik'
+import { Field, useFormikContext } from 'formik'
 import { Calendar } from 'primereact/calendar'
 import { InputText } from 'primereact/inputtext'
 import { Dropdown } from 'primereact/dropdown';
 import { Checkbox } from 'primereact/checkbox';
+import { InputNumber } from 'primereact/inputnumber';       
 import React, { useRef, useState } from 'react';
 import SignatureCanvas from 'react-signature-canvas'
 
@@ -15,11 +16,17 @@ import { Tag } from 'primereact/tag';
 import { Dialog } from 'primereact/dialog';
 
 import '../../styles/sigCanvas.css'
+import { format } from 'date-fns';
 
 
 export const ComponentTipoCampo = ({campo, dataProyectoSeleccionado, values, indexAgrupacion, indexCampo, itemagrupacion}) => {
 
-  // console.log('VALUES', dataProyectoSeleccionado.listaAgrupaciones[indexAgrupacion].campos[indexCampo].nombreCampo);
+  const { setFieldValue } = useFormikContext();
+
+   // State del Calendar
+   const [selectedDate, setSelectedDate] = useState(new Date(campo.valor));
+  const [selectedValueCatalogo, setSelectedValueCatalogo] = useState(campo.valor);
+  const [selectedValueCatalogoInput, setSelectedValueCatalogoInput] = useState(campo.valor);
 
   const [imageURL, setImageURL] = useState(null);
   const [modalAbrirFirma, setModalAbrirFirma] = useState(false);
@@ -29,16 +36,11 @@ export const ComponentTipoCampo = ({campo, dataProyectoSeleccionado, values, ind
   const limpiar = () => sigCanvas.current.clear()
   const guardar = () => setImageURL(sigCanvas.current.getTrimmedCanvas().toDataURL("image/png"))
 
-  // console.log(imageURL);
-
   const toast = useRef(null);
   const [totalSize, setTotalSize] = useState(0);
   const fileUploadRef = useRef(null);
 
-  const [fecha, setFecha] = useState(new Date(campo.valor));
   const [hora, setHora] = useState(parseHora(campo.valor));
-
-  // console.log(hora)
 
   function parseHora(horaString) {
     const [hora, minutos] = horaString.split(':');
@@ -126,12 +128,6 @@ export const ComponentTipoCampo = ({campo, dataProyectoSeleccionado, values, ind
   const uploadOptions = { icon: 'pi pi-fw pi-cloud-upload', iconOnly: true, className: 'custom-upload-btn p-button-success p-button-rounded p-button-outlined' };
   const cancelOptions = { icon: 'pi pi-fw pi-times', iconOnly: true, className: 'custom-cancel-btn p-button-danger p-button-rounded p-button-outlined' };
 
-
-  // const handleInputChange = (fieldName, value) => {
-  //   setValue(fieldName, value);
-  // };
-
-
   return (
     <>
       <div className="p-inputgroup">
@@ -142,51 +138,58 @@ export const ComponentTipoCampo = ({campo, dataProyectoSeleccionado, values, ind
               {({ field, form }) => (
                 <Calendar
                   className="w-full appearance-none focus:outline-none bg-transparent"
-                  value={new Date(campo.valor)}
+                  value={selectedDate}
                   dateFormat="dd/mm/yy"
-                  onChange={(e) => form.setFieldValue(field.name, e.value)}
+                  onChange={(e) => {
+                    const formattedDate = format(e.value, 'dd/MM/yy');
+                    setSelectedDate(e.value); // Actualiza la variable de estado con la fecha seleccionada
+                    form.setFieldValue(field.name, formattedDate);
+                  }}
+                  maxLength={campo.longitud}
+                  pattern={campo.restriccion}
                 />
               )}
             </Field>
-
-            {/* <Field
-              className="w-full appearance-none focus:outline-none bg-transparent"
-              as={Calendar}
-              name={campo.nombreCampo}
-              defaultValue={new Date(campo.valor)}
-              // value={fecha}
-              dateFormat='dd/mm/yy'
-              onChange={(selectedDate) => setFecha(selectedDate)}
-            /> */}
             <span className="p-inputgroup-addon border border-gray-300 p-2 rounded-md">
               <i className="pi pi-calendar-plus text-[#245A95] font-bold text-2xl"></i>
             </span>
           </span>
         )}
 
-        {/* {campo.tipoCampo === 'HORA' && (
+        {campo.tipoCampo === 'HORA' && (
           <span className='p-float-label relative'>
-            <Field
-              className="w-full appearance-none focus:outline-none bg-transparent"
-              as={Calendar}
-              name="calendariohora"
-              value={hora}
-              onChange={(e) => setHora(e.value)}
-              timeOnly 
-            />
+            <Field name={campo.nombreCampo}>
+              {({ field, form }) => (
+                <Calendar
+                  className="w-full appearance-none focus:outline-none bg-transparent"
+                  value={hora}
+                  onChange={(e) => {
+                    const formattedDate = format(e.value, 'HH:mm');
+                    setHora(e.value);
+                    form.setFieldValue(field.name, formattedDate);
+                  }}
+                  timeOnly
+                  maxLength={campo.longitud}
+                  pattern={campo.restriccion}
+                />
+              )}
+            </Field>
             <span className="p-inputgroup-addon border border-gray-300 p-2 rounded-md">
               <i className="pi pi-file-edit text-[#245A95] font-bold text-2xl"></i>
             </span>
           </span>
-        )} */}
+        )}
 
         {campo.tipoCampo === "ALFABETICO" && (      
           <span className='p-float-label relative'>
+            {console.log(`${campo.restriccion}`)}
             <Field 
               as={InputText}
               className="w-full appearance-none focus:outline-none bg-transparent"
               name={campo.nombreCampo}
               defaultValue={campo.valor}
+              maxLength={campo.longitud}
+              pattern={`${campo.restriccion}`}
             />
             <span className="p-inputgroup-addon border border-gray-300 p-2 rounded-md">
               <i className="pi pi-file-edit text-[#245A95] font-bold text-2xl"></i>
@@ -201,6 +204,8 @@ export const ComponentTipoCampo = ({campo, dataProyectoSeleccionado, values, ind
               className="w-full appearance-none focus:outline-none bg-transparent" 
               name={campo.nombreCampo}
               defaultValue={campo.valor} 
+              maxLength={campo.longitud}
+              pattern={campo.restriccion}
             />
             <span className="p-inputgroup-addon border border-gray-300 p-2 rounded-md">
               <i className="pi pi-file-edit text-[#245A95] font-bold text-2xl"></i>
@@ -215,6 +220,8 @@ export const ComponentTipoCampo = ({campo, dataProyectoSeleccionado, values, ind
               as={InputText}
               name={campo.nombreCampo}
               defaultValue={campo.valor}
+              maxLength={campo.longitud}
+              keyfilter={RegExp(`[0-9 ${campo.restriccion.replace('[','').replace(']','')}]`)}
             />
             <span className="p-inputgroup-addon border border-gray-300 p-2 rounded-md">
               <i className="pi pi-file-edit text-[#245A95] font-bold text-2xl"></i>
@@ -229,6 +236,8 @@ export const ComponentTipoCampo = ({campo, dataProyectoSeleccionado, values, ind
               as={InputText}
               name={campo.nombreCampo}
               defaultValue={campo.valor}
+              maxLength={campo.longitud}
+              pattern={campo.restriccion}
             />
             <span className="p-inputgroup-addon border border-gray-300 p-2 rounded-md">
               <i className="pi pi-file-edit text-[#245A95] font-bold text-2xl"></i>
@@ -243,6 +252,7 @@ export const ComponentTipoCampo = ({campo, dataProyectoSeleccionado, values, ind
               as={InputText}
               name={campo.nombreCampo}
               defaultValue={campo.valor}
+              maxLength={campo.longitud}
             />
             <span className="p-inputgroup-addon border border-gray-300 p-2 rounded-md">
               <i className="pi pi-file-edit text-[#245A95] font-bold text-2xl"></i>
@@ -250,46 +260,57 @@ export const ComponentTipoCampo = ({campo, dataProyectoSeleccionado, values, ind
           </span>
         )}
 
-        {/* {campo.tipoCampo === 'CATALOGO' && (
+        {campo.tipoCampo === 'CATALOGO' && (
           <span className='p-float-label relative'>
             <Field
               className="w-full appearance-none focus:outline-none bg-transparent"
               as={Dropdown}
               name={campo.nombreCampo}
-              defaultValue={campo.valor} 
-              // optionLabel="catalogo"
+              value={selectedValueCatalogo}
+              options={dataProyectoSeleccionado?.catalogos[campo?.nombreCampo].catalogo.map(option => ({
+                label: option,
+                value: option
+              }))}
               filter
               emptyFilterMessage='No se encontraron conincidencias'
-            >
-              {dataProyectoSeleccionado.catalogos[campo.nombreCampo].catalogo.map((option) => (
-                <option key={option} value={option}>
-                  {option}
-                </option>
-              ))}
-            </Field>
-            <span className="p-inputgroup-addon border border-gray-300 p-2 rounded-md">
-              <i className="pi pi-file-edit text-[#245A95] font-bold text-2xl"></i>
-            </span>
-          </span>
-        )} */}
-
-        {/* {campo.tipoCampo === 'CATALOGO-INPUT' && (
-          <span className='p-float-label relative'>
-            <Field
-              className="w-full appearance-none focus:outline-none bg-transparent"
-              as={Dropdown}
-              name="proyecto"
-              options={dataProyectoSeleccionado.catalogos[campo.nombreCampo].catalogo} 
-              value={campo.valor}
-              filter
-              emptyFilterMessage='No se encontraron conincidencias'
-              // onChange={''} 
+              placeholder="Seleccione una opción"
+              onChange={(e) => {
+                setSelectedValueCatalogo(e.value);
+                setFieldValue(campo.nombreCampo, e.value);
+              }}
+              maxLength={campo.longitud}
             />
             <span className="p-inputgroup-addon border border-gray-300 p-2 rounded-md">
               <i className="pi pi-file-edit text-[#245A95] font-bold text-2xl"></i>
             </span>
           </span>
-        )} */}
+        )}
+
+        {campo.tipoCampo === 'CATALOGO-INPUT' && (
+          <span className='p-float-label relative'>
+            <Field
+              className="w-full appearance-none focus:outline-none bg-transparent"
+              as={Dropdown}
+              name={campo.nombreCampo}
+              value={selectedValueCatalogoInput}
+              options={dataProyectoSeleccionado?.catalogos[campo?.nombreCampo].catalogo.map(option => ({
+                label: option,
+                value: option
+              }))} 
+              filter
+              emptyFilterMessage='No se encontraron conincidencias'
+              placeholder="Seleccione una opción"
+              onChange={(e) => {
+                setSelectedValueCatalogoInput(e.value);
+                setFieldValue(campo.nombreCampo, e.value);
+              }}
+              maxLength={campo.longitud} 
+            />
+            <span className="p-inputgroup-addon border border-gray-300 p-2 rounded-md">
+              <i className="pi pi-file-edit text-[#245A95] font-bold text-2xl"></i>
+            </span>
+          </span>
+        )}
 
         {campo.tipoCampo === 'CHECKBOX' && (
           <span className='p-float-label relative'>
@@ -297,18 +318,12 @@ export const ComponentTipoCampo = ({campo, dataProyectoSeleccionado, values, ind
               {({ field, form }) => (
                 <Checkbox
                   className="w-full appearance-none focus:outline-none bg-transparent"
-                  checked={Boolean(field.value)}
+                  checked={!!field.value}
                   onChange={(e) => form.setFieldValue(field.name, e.target.checked)}
+                  maxLength={campo.longitud}
                 />
               )}
             </Field>
-
-            {/* <Field
-              className="w-full appearance-none focus:outline-none bg-transparent"
-              as={Checkbox}
-              name={campo.nombreCampo}
-              checked={Boolean(campo.valor)} 
-            /> */}
           </span>
         )}
 
@@ -322,6 +337,7 @@ export const ComponentTipoCampo = ({campo, dataProyectoSeleccionado, values, ind
               as={InputText}
               name={campo.nombreCampo}
               defaultValue={campo.valor}
+              maxLength={campo.longitud}
               // onChange={''} 
             />
             <span className="hover:bg-[#245A95] hover:text-white cursor-pointer border border-[#245A95] p-2 rounded-md">

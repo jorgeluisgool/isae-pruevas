@@ -12,10 +12,9 @@ import { api } from '../helpers/variablesGlobales';
     console.log(values);
   };
 
-const RegistrosForm = ({usuarios, listaRegistros, setListaRegistros}) => {
+const RegistrosForm = ({usuarios, listaRegistros, setListaRegistros, usuariosSeleccionados, setUsuariosSeleccionados}) => {
 
   const [listaRegistrosValor, setListaRegistrosValor] = useState([]);
-  const [usuariosSeleccionados, setUsuariosSeleccionados] = useState([]);
   const [listaProyectos, setListaProyectos] = useState([]);
   const [proyectosSeleccionados, setProyectosSeleccionados] = useState([]);
   const [listaCampos, setListaCampos] = useState([]);
@@ -26,11 +25,7 @@ const RegistrosForm = ({usuarios, listaRegistros, setListaRegistros}) => {
 
   const [cargando, setCargando] = useState(false);
 
-  // const [valorSeleccionado2, setValorSeleccionado2] = useState('');
-
-  // setAutoZIndex(true);
-
-  // const ListaUsuariosProyectos = {usuarios: usuariosSeleccionados, proyectos: proyectosSeleccionados}
+  //  console.log(usuariosSeleccionados.idusuario)
 
   const listaProyectosFiltrados = listaProyectos.filter((obj, index, self) =>
     index === self.findIndex((o) => o.proyecto === obj.proyecto)

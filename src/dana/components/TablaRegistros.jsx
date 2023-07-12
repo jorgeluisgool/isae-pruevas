@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { api } from '../helpers/variablesGlobales';
 
-const TableRegistros = ({data, headers, onDelete, onEdit, selectedRows, isSelected, onSelectedRow, setModalAbrirCerrar, listaRegistros, setProyectoSeleccionado, setDataProyectoSeleccionado}) => {
+const TableRegistros = ({data, headers, onDelete, onEdit, selectedRows, isSelected, onSelectedRow, setModalAbrirCerrar, listaRegistros, setProyectoSeleccionado, setDataProyectoSeleccionado, usuariosSeleccionados}) => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -20,6 +20,8 @@ const TableRegistros = ({data, headers, onDelete, onEdit, selectedRows, isSelect
 
   // Función para cambiar de página
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  // console.log(usuariosSeleccionados[0].idusuario)
 
   return (
     <>
@@ -86,7 +88,7 @@ const TableRegistros = ({data, headers, onDelete, onEdit, selectedRows, isSelect
               setProyectoSeleccionado(registro);
               setCargando(true); // Mostrar ventana de carga
               
-              fetch(`${api}/obtener/datoscompletos/registro/${registro.idinventario}/${registro.proyecto.idproyecto}/0`, {
+              fetch(`${api}/obtener/datoscompletos/registro/${registro.idinventario}/${registro.proyecto.idproyecto}/${usuariosSeleccionados[0].idusuario}`, {
                 method: 'GET',
                 headers: {
                   'Content-Type': 'application/json' 
@@ -185,7 +187,7 @@ const TableRegistros = ({data, headers, onDelete, onEdit, selectedRows, isSelect
 
     <div className="flex items-center justify-between mt-4">
         <div className="flex items-center">
-          <span className="mr-2 text-gray-700">Filas por página:</span>
+          <span className="mr-2 text-[#245A95] font-bold text-lg">Filas por página:</span>
           <select
             className="border border-gray-300 rounded px-3 py-1"
             value={rowsPerPage}
@@ -197,9 +199,13 @@ const TableRegistros = ({data, headers, onDelete, onEdit, selectedRows, isSelect
             <option value={20}>20</option>
           </select>
         </div>
+        <h1 className='text-[#245A95] font-bold text-lg'> 
+          Total de registros:
+          <span className='text-gray-700'> {totalRows}</span> 
+        </h1>
         <div className="flex items-center pl-4">
-          <span className="mr-2 text-gray-700">
-            Página {currentPage} de {totalPages}
+          <span className="mr-2 text-[#245A95] font-bold text-lg">
+            Página <span className='text-gray-700'>{currentPage}</span> de <span className='text-gray-700'>{totalPages}</span>
           </span>
           <nav className="relative z-0 inline-flex shadow-sm rounded-md">
             <button

@@ -62,17 +62,16 @@ export const RegistrosPage = () => {
   const handleSubmit = (values) => {
     // console.log(values);
 
-      const newData = { ...dataProyectoSeleccionado };
-
-        newData.listaAgrupaciones.forEach((agrupacion) => {
-          agrupacion.campos.forEach((campo) => {
-            if (values.hasOwnProperty(campo.nombreCampo)) {
-              campo.valor = values[campo.nombreCampo];
-            }
+        const newData = { ...dataProyectoSeleccionado }
+          newData.listaAgrupaciones.forEach((agrupacion) => {
+            agrupacion.campos.forEach((campo) => {
+              if (values.hasOwnProperty(campo.nombreCampo)) {
+                campo.valor = values[campo.nombreCampo];
+              }
+            });
           });
-        });
 
-      console.log(newData);
+        console.log(newData);
   };
 
   // console.log(listaRegistros)

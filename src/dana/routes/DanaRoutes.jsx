@@ -8,6 +8,7 @@ import { RegistrosPage } from '../pages/RegistrosPage'
 import ExampleContexProvider from '../context/ExampleContext'
 import { ProtectedRoutes } from '../../router/ProtectedRoutes'
 import EjemploFormularioRegistros from '../components/EjemploFormularioRegistros'
+import { ClientesRegistrosPage } from '../pages/ClientesRegistrosPage'
 
 export const DanaRoutes = () => {
 
@@ -23,6 +24,7 @@ export const DanaRoutes = () => {
               <Route path='ejemploformulario' element={ <EjemploFormularioRegistros/>}/>
               <Route path='camposproyecto' element={ <CamposProyectoPage/>}/>
               <Route path='registros' element={ <RegistrosPage/>}/>
+              <Route path='clientes' element={ <ClientesRegistrosPage/>}/>
               <Route path='/' element={<Navigate to='menu'/>}/>
             </Route>
           </Routes>

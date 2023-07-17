@@ -27,6 +27,7 @@ export const ComponentTipoCampo = ({campo, dataProyectoSeleccionado, values, ind
    const [selectedDate, setSelectedDate] = useState(new Date(campo.valor));
   const [selectedValueCatalogo, setSelectedValueCatalogo] = useState(campo.valor);
   const [selectedValueCatalogoInput, setSelectedValueCatalogoInput] = useState(campo.valor);
+  const [inputNumerico, setInputNumerico] = useState(campo.valor);
 
   const [imageURL, setImageURL] = useState(null);
   const [modalAbrirFirma, setModalAbrirFirma] = useState(false);
@@ -128,6 +129,9 @@ export const ComponentTipoCampo = ({campo, dataProyectoSeleccionado, values, ind
   const uploadOptions = { icon: 'pi pi-fw pi-cloud-upload', iconOnly: true, className: 'custom-upload-btn p-button-success p-button-rounded p-button-outlined' };
   const cancelOptions = { icon: 'pi pi-fw pi-times', iconOnly: true, className: 'custom-cancel-btn p-button-danger p-button-rounded p-button-outlined' };
 
+  const [inputValue, setInputValue] = useState(campo.valor);
+
+
   return (
     <>
       <div className="p-inputgroup">
@@ -145,8 +149,6 @@ export const ComponentTipoCampo = ({campo, dataProyectoSeleccionado, values, ind
                     setSelectedDate(e.value); // Actualiza la variable de estado con la fecha seleccionada
                     form.setFieldValue(field.name, formattedDate);
                   }}
-                  maxLength={campo.longitud}
-                  pattern={campo.restriccion}
                 />
               )}
             </Field>
@@ -169,8 +171,6 @@ export const ComponentTipoCampo = ({campo, dataProyectoSeleccionado, values, ind
                     form.setFieldValue(field.name, formattedDate);
                   }}
                   timeOnly
-                  maxLength={campo.longitud}
-                  pattern={campo.restriccion}
                 />
               )}
             </Field>
@@ -182,14 +182,16 @@ export const ComponentTipoCampo = ({campo, dataProyectoSeleccionado, values, ind
 
         {campo.tipoCampo === "ALFABETICO" && (      
           <span className='p-float-label relative'>
-            {console.log(`${campo.restriccion}`)}
             <Field 
               as={InputText}
               className="w-full appearance-none focus:outline-none bg-transparent"
               name={campo.nombreCampo}
               defaultValue={campo.valor}
               maxLength={campo.longitud}
-              pattern={`${campo.restriccion}`}
+              // onChange={(e) => {
+              //   e.target.value = e.target.value.toUpperCase();
+              // }}
+              keyfilter={RegExp(`[A-Z ${campo.restriccion.replace('[','').replace(']','')}]`)}
             />
             <span className="p-inputgroup-addon border border-gray-300 p-2 rounded-md">
               <i className="pi pi-file-edit text-[#245A95] font-bold text-2xl"></i>
@@ -203,9 +205,9 @@ export const ComponentTipoCampo = ({campo, dataProyectoSeleccionado, values, ind
               as={InputText}
               className="w-full appearance-none focus:outline-none bg-transparent" 
               name={campo.nombreCampo}
-              defaultValue={campo.valor} 
+              defaultValue={campo.valor}
               maxLength={campo.longitud}
-              pattern={campo.restriccion}
+              keyfilter={RegExp(`[0-9A-Z ${campo.restriccion.replace('[','').replace(']','')}]`)}
             />
             <span className="p-inputgroup-addon border border-gray-300 p-2 rounded-md">
               <i className="pi pi-file-edit text-[#245A95] font-bold text-2xl"></i>
@@ -221,7 +223,7 @@ export const ComponentTipoCampo = ({campo, dataProyectoSeleccionado, values, ind
               name={campo.nombreCampo}
               defaultValue={campo.valor}
               maxLength={campo.longitud}
-              keyfilter={RegExp(`[0-9 ${campo.restriccion.replace('[','').replace(']','')}]`)}
+              keyfilter={RegExp(`[0-9${campo.restriccion.replace('[','').replace(']','')}]`)}
             />
             <span className="p-inputgroup-addon border border-gray-300 p-2 rounded-md">
               <i className="pi pi-file-edit text-[#245A95] font-bold text-2xl"></i>
@@ -237,7 +239,7 @@ export const ComponentTipoCampo = ({campo, dataProyectoSeleccionado, values, ind
               name={campo.nombreCampo}
               defaultValue={campo.valor}
               maxLength={campo.longitud}
-              pattern={campo.restriccion}
+              keyfilter={RegExp(`[A-Za-z1-9@\\-_.${campo.restriccion.replace('[','').replace(']','')}]`)}
             />
             <span className="p-inputgroup-addon border border-gray-300 p-2 rounded-md">
               <i className="pi pi-file-edit text-[#245A95] font-bold text-2xl"></i>
@@ -253,6 +255,7 @@ export const ComponentTipoCampo = ({campo, dataProyectoSeleccionado, values, ind
               name={campo.nombreCampo}
               defaultValue={campo.valor}
               maxLength={campo.longitud}
+              keyfilter={RegExp(`[0-9A-Za-z${campo.restriccion.replace('[','').replace(']','')}]`)}
             />
             <span className="p-inputgroup-addon border border-gray-300 p-2 rounded-md">
               <i className="pi pi-file-edit text-[#245A95] font-bold text-2xl"></i>
@@ -317,11 +320,13 @@ export const ComponentTipoCampo = ({campo, dataProyectoSeleccionado, values, ind
             <Field name={campo.nombreCampo}>
               {({ field, form }) => (
                 <Checkbox
-                  className="w-full appearance-none focus:outline-none bg-transparent"
-                  checked={!!field.value}
-                  onChange={(e) => form.setFieldValue(field.name, e.target.checked)}
-                  maxLength={campo.longitud}
-                />
+                className="w-full appearance-none focus:outline-none bg-transparent"
+                checked={field.value === 'true'}
+                onChange={(e) => {
+                  const stringValue = e.target.checked ? 'true' : 'false';
+                  form.setFieldValue(field.name, stringValue);
+                }}
+              />
               )}
             </Field>
           </span>
@@ -338,6 +343,7 @@ export const ComponentTipoCampo = ({campo, dataProyectoSeleccionado, values, ind
               name={campo.nombreCampo}
               defaultValue={campo.valor}
               maxLength={campo.longitud}
+              keyfilter={RegExp(`[0-9A-Za-z ${campo.restriccion.replace('[','').replace(']','')}]`)}
               // onChange={''} 
             />
             <span className="hover:bg-[#245A95] hover:text-white cursor-pointer border border-[#245A95] p-2 rounded-md">

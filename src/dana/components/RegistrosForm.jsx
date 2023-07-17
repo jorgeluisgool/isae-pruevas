@@ -12,7 +12,7 @@ import { api } from '../helpers/variablesGlobales';
     console.log(values);
   };
 
-const RegistrosForm = ({usuarios, listaRegistros, setListaRegistros, usuariosSeleccionados, setUsuariosSeleccionados}) => {
+const RegistrosForm = ({usuarios, listaRegistros, setListaRegistros, usuariosSeleccionados, setUsuariosSeleccionados, proyectosClientes}) => {
 
   const [listaRegistrosValor, setListaRegistrosValor] = useState([]);
   const [listaProyectos, setListaProyectos] = useState([]);
@@ -37,6 +37,27 @@ const RegistrosForm = ({usuarios, listaRegistros, setListaRegistros, usuariosSel
 
   // console.log(listaRegistrosValor);
 
+
+  const handleProyectoCliente = (proyecto) => {
+    
+    fetch(`${api}/obtener/proyectos/cliente`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(ListaUsuariosProyectos),
+    }).then((response) => response.json())
+
+    .then((response) => response.json())
+    .then((responseData) => {
+      setListaValores(responseData);
+    })
+    .catch((error) => console.log(error))
+    .finally(() => {
+      setCargando(false); // Desactivar ventana de carga una vez que se complete la carga
+    });
+}
+
   const handleUsuarioChange = (usuario) => {
     setUsuariosSeleccionados(usuario.target.value);
     setCargando(true); // Activar ventana de carga
@@ -57,6 +78,7 @@ const RegistrosForm = ({usuarios, listaRegistros, setListaRegistros, usuariosSel
         setCargando(false); // Desactivar ventana de carga una vez que se complete la carga
       });
   };
+
 
   const handleProyectoChange = (proyecto) => {
     setProyectosSeleccionados([proyecto.target.value]);
@@ -143,58 +165,14 @@ const RegistrosForm = ({usuarios, listaRegistros, setListaRegistros, usuariosSel
                 <div className='mx-4 xl:mx-20 my-4 px-4 py-2 shadow-md bg-white rounded-lg overflow-hidden'>
                   <h1 className='mx-0 my-1 text-xl font-bold text-[#245A95]'>Buscar registro</h1>
                     <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-2 gap-3">
-                        <div className="mt-8 mx-4 flex flex-col">
-                            <div className='p-inputgroup flex-1'>
-                              <span className='p-float-label relative'>
-                                <Field
-                                  as={MultiSelect}
-                                  name="usuarios"
-                                  options={usuarios}
-                                  optionLabel="usuario"
-                                  filter
-                                  emptyFilterMessage='No se encontraron usuarios'
-                                  onChange={handleUsuarioChange}
-                                  // onChange={(usuario)=>{
-                                  //   setUsuariosSeleccionados(usuario.target.value);
-                                  //   // console.log(usuario.target.value);
 
-                                  //   fetch(`${api}/obtener/proyectos/asignados/usuarios`, {
-                                  //     method: 'POST',
-                                  //     headers: {
-                                  //       'Content-Type': 'application/json' 
-                                  //     },
-                                  //     body: JSON.stringify(usuario.target.value) 
-                                  //   })
-                                  //     .then(response => response.json())
-                                  //     .then(responseData => {
-                                  //       // console.log(responseData)
-                                  //       // obtenemos los proyectos
-                                  //       setListaProyectos(responseData)
-                                        
-                                  //     })
-                                  //     .catch(error => console.log(error));
-                                  // }}
-                                  value={usuariosSeleccionados}
-                                  display="chip"
-                                  className="w-full appearance-none focus:outline-none bg-transparent"
-                                />
-                                <span className="p-inputgroup-addon border border-gray-300 p-2 rounded-md">
-                                  <i className="pi pi-users text-[#245A95] font-bold text-2xl"></i>
-                                </span>
-                                <label htmlFor="name" className='text-lg text-[#245A95] font-semibold absolute top-0 left-0 transform'>
-                                  Usuarios
-                                </label>
-                              </span>
-                            </div>
-                        </div>
-                        <div className="mt-8 mx-4 flex flex-col">
-                            
+                    <div className="mt-8 mx-4 flex flex-col">
                               <div className='p-inputgroup flex-1'>
                                 <span className='p-float-label relative'>
                                   <Field
                                     as={Dropdown}
                                     name="listaProyectosFiltrados"
-                                    options={listaProyectosFiltrados}
+                                    options={proyectosClientes}
                                     optionLabel="proyecto"
                                     filter
                                     emptyFilterMessage='No se encontarron proyectos'
@@ -246,8 +224,52 @@ const RegistrosForm = ({usuarios, listaRegistros, setListaRegistros, usuariosSel
                                   </label>
                                 </span>
                               </div>
-                            
                         </div>
+                        <div className="mt-8 mx-4 flex flex-col">
+                            <div className='p-inputgroup flex-1'>
+                              <span className='p-float-label relative'>
+                                <Field
+                                  as={MultiSelect}
+                                  name="usuarios"
+                                  options={usuarios}
+                                  optionLabel="usuario"
+                                  filter
+                                  emptyFilterMessage='No se encontraron usuarios'
+                                  onChange={handleUsuarioChange}
+                                  // onChange={(usuario)=>{
+                                  //   setUsuariosSeleccionados(usuario.target.value);
+                                  //   // console.log(usuario.target.value);
+
+                                  //   fetch(`${api}/obtener/proyectos/asignados/usuarios`, {
+                                  //     method: 'POST',
+                                  //     headers: {
+                                  //       'Content-Type': 'application/json' 
+                                  //     },
+                                  //     body: JSON.stringify(usuario.target.value) 
+                                  //   })
+                                  //     .then(response => response.json())
+                                  //     .then(responseData => {
+                                  //       // console.log(responseData)
+                                  //       // obtenemos los proyectos
+                                  //       setListaProyectos(responseData)
+                                        
+                                  //     })
+                                  //     .catch(error => console.log(error));
+                                  // }}
+                                  value={usuariosSeleccionados}
+                                  display="chip"
+                                  className="w-full appearance-none focus:outline-none bg-transparent"
+                                />
+                                <span className="p-inputgroup-addon border border-gray-300 p-2 rounded-md">
+                                  <i className="pi pi-users text-[#245A95] font-bold text-2xl"></i>
+                                </span>
+                                <label htmlFor="name" className='text-lg text-[#245A95] font-semibold absolute top-0 left-0 transform'>
+                                  Usuarios
+                                </label>
+                              </span>
+                            </div>
+                        </div>
+                        
                         <div className="mt-8 mx-4 flex flex-col">
                           {
                             listaCampos.length === 0 ? <div></div> :

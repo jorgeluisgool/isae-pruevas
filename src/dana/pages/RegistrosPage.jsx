@@ -8,8 +8,14 @@ import { InputText } from 'primereact/inputtext';
 import { Calendar } from 'primereact/calendar';
 import { ComponentTipoCampo } from '../components/ComponentTipoCampo';
 import { useForm, Controller } from 'react-hook-form';
+import { BotonFlotanteRegresar } from '../components/BotonFlotanteRegresar';
+import { useNavigate } from 'react-router-dom';
+import { useFetchProjetsClientes } from '../hooks/useFetchProjetsClientes';
+import useAuth from '../hooks/useAuth';
 
 export const RegistrosPage = () => {
+
+  const navigate = useNavigate();
 
   const [editIndex, setEditIndex] = useState(null);
   const [usuariosSeleccionados, setUsuariosSeleccionados] = useState([]);
@@ -30,9 +36,15 @@ export const RegistrosPage = () => {
     }
   }
    
-  console.log(dataProyectoSeleccionado);
+  // console.log(dataProyectoSeleccionado);
+
+  // Aqui obtengo el context del cliente seleccionado
+  const { clienteSeleccionado } = useAuth();
 
   const { data: usuarios, loading } = useFetchUsers();
+  const { data: proyectosClientes, loadingProyectosClientes } = useFetchProjetsClientes(clienteSeleccionado);
+
+  // console.log(proyectosClientes);
 
   const handleSelectedRow = (index) => {
     if (selectedRows.includes(index)) {
@@ -74,13 +86,24 @@ export const RegistrosPage = () => {
         console.log(newData);
   };
 
-  // console.log(listaRegistros)
+  const handleClickRegresar = () => {
+    // Acciones a realizar cuando se hace clic en el botón flotante izquierdo
+    navigate('/clientes');
+  };
 
   return (
     <>
     <h1 className="pt-6 pl-3 xl:pl-20 text-4xl font-black text-[#245A95]">Registros</h1>
     <div className="container mx-auto">
-        <RegistrosForm usuariosSeleccionados={usuariosSeleccionados} setUsuariosSeleccionados={setUsuariosSeleccionados} usuarios={usuarios} loading={loading} listaRegistros={listaRegistros} setListaRegistros={setListaRegistros}/>
+        <RegistrosForm 
+          usuariosSeleccionados={usuariosSeleccionados} 
+          setUsuariosSeleccionados={setUsuariosSeleccionados} 
+          usuarios={usuarios} 
+          loading={loading} 
+          listaRegistros={listaRegistros} 
+          setListaRegistros={setListaRegistros}
+          proyectosClientes={proyectosClientes}
+        />
     </div>
     <div className="overflow-x-auto">
         <div className="my-6 mx-4 xl:mx-20">
@@ -169,6 +192,8 @@ export const RegistrosPage = () => {
         )}
         </Formik>    
     </Dialog>
+
+    <BotonFlotanteRegresar onClick={handleClickRegresar} />
     </>
     
   )

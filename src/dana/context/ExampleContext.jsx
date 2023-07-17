@@ -7,6 +7,7 @@ export default function ExampleContexProvider({children}) {
     const [userAuth, setUserAuth] = useState({});
     const [dataCrearProyecto, setDataCrearProyecto] = useState('');
     const [dataArchivoExcel, setDataArchivoExcel] = useState([]);
+    const [clienteSeleccionado, setClienteSeleccionado] = useState([]);
 
     return (
         <ExampleContex.Provider 
@@ -16,7 +17,9 @@ export default function ExampleContexProvider({children}) {
             dataCrearProyecto, 
             setDataCrearProyecto,
             dataArchivoExcel,
-            setDataArchivoExcel
+            setDataArchivoExcel,
+            clienteSeleccionado,
+            setClienteSeleccionado
         }}>
             {children}
         </ExampleContex.Provider>

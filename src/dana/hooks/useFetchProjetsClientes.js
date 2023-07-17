@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getUsuarios } from "../helpers/getUsers";
+import { getProjectClient } from "../helpers/getProjectClient";
 import { api } from "../helpers/variablesGlobales";
 
 const acomodarDatos = (lista) => {
@@ -12,19 +12,19 @@ const acomodarDatos = (lista) => {
   return nuevaLista;
 }
 
-export const useFetchUsers = ()=>{
-  // console.log(prueba)
+export const useFetchProjetsClientes = (clienteSeleccionado)=>{
+
     const [state, setState] = useState({
         data: [],
         loading: true
     });
 
     useEffect(() => {
-        getUsuarios(api)
-          .then(usuarios => {
+        getProjectClient(api, clienteSeleccionado)
+          .then(projects => {
             // console.log('Cargando datos...');
             setState({
-                data: acomodarDatos(usuarios),
+                data: acomodarDatos(projects),
                 loading: false
             });
 

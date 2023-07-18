@@ -25,7 +25,9 @@ const RegistrosForm = ({usuarios, listaRegistros, setListaRegistros, usuariosSel
 
   const [cargando, setCargando] = useState(false);
 
-  //  console.log(usuariosSeleccionados.idusuario)
+  // const [lista, setLista] = useState([]);
+
+  // console.log(proyectosSeleccionados);
 
   const listaProyectosFiltrados = listaProyectos.filter((obj, index, self) =>
     index === self.findIndex((o) => o.proyecto === obj.proyecto)
@@ -58,29 +60,39 @@ const RegistrosForm = ({usuarios, listaRegistros, setListaRegistros, usuariosSel
     });
 }
 
-  const handleUsuarioChange = (usuario) => {
-    setUsuariosSeleccionados(usuario.target.value);
-    setCargando(true); // Activar ventana de carga
+const handleUsuarioChange = (usuario) => {
+  setUsuariosSeleccionados(usuario.target.value);
 
-    fetch(`${api}/obtener/proyectos/asignados/usuarios`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(usuario.target.value),
-    })
-      .then((response) => response.json())
-      .then((responseData) => {
-        setListaProyectos(responseData);
+  if (usuario.target.value.length !== 0) {
+    setCargando(true); // Activar ventana de carga
+    const fetchPromises = usuario.target.value.map((usuario) => {
+      return fetch(`${api}/obtener/registros/asignados/usuario/proyecto/${usuario.idusuario}/${proyectosSeleccionados[0].idproyecto}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
       })
-      .catch((error) => console.log(error))
-      .finally(() => {
+        .then((response) => response.json());
+    });
+
+    Promise.all(fetchPromises)
+      .then((responsesData) => {
+        console.log(responsesData)
+        const lista = responsesData.flat();
         setCargando(false); // Desactivar ventana de carga una vez que se complete la carga
-      });
-  };
+        console.log(lista);
+        setListaRegistros(lista);
+      })
+      .catch((error) => console.log(error));
+  } else {
+    setListaRegistros(listaRegistrosValor);
+  }
+};
+
 
 
   const handleProyectoChange = (proyecto) => {
+    
     setProyectosSeleccionados([proyecto.target.value]);
     setCargando(true); // Activar ventana de carga
 
@@ -90,12 +102,12 @@ const RegistrosForm = ({usuarios, listaRegistros, setListaRegistros, usuariosSel
     };
 
     Promise.all([
-      fetch(`${api}/obtener/registros/asignados/usuario/proyecto`, {
+      fetch(`${api}/obtener/registros/proyecto`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(ListaUsuariosProyectos),
+        body: JSON.stringify(proyecto.target.value),
       }).then((response) => response.json()),
       
       fetch(`${api}/obtener/campos/proyectos`, {
@@ -226,6 +238,8 @@ const RegistrosForm = ({usuarios, listaRegistros, setListaRegistros, usuariosSel
                               </div>
                         </div>
                         <div className="mt-8 mx-4 flex flex-col">
+                          {
+                            listaCampos.length === 0 ? <div></div> :
                             <div className='p-inputgroup flex-1'>
                               <span className='p-float-label relative'>
                                 <Field
@@ -268,6 +282,8 @@ const RegistrosForm = ({usuarios, listaRegistros, setListaRegistros, usuariosSel
                                 </label>
                               </span>
                             </div>
+                          }
+                            
                         </div>
                         
                         <div className="mt-8 mx-4 flex flex-col">

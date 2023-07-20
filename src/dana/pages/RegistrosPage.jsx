@@ -12,6 +12,7 @@ import { BotonFlotanteRegresar } from '../components/BotonFlotanteRegresar';
 import { useNavigate } from 'react-router-dom';
 import { useFetchProjetsClientes } from '../hooks/useFetchProjetsClientes';
 import useAuth from '../hooks/useAuth';
+import { ModalHistorialRegistros } from '../components/ModalHistorialRegistros';
 
 export const RegistrosPage = () => {
 
@@ -20,7 +21,8 @@ export const RegistrosPage = () => {
   const [editIndex, setEditIndex] = useState(null);
   const [usuariosSeleccionados, setUsuariosSeleccionados] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
-  const [modalAbrirCerrar, setModalAbrirCerrar] = useState(false); 
+  const [modalAbrirCerrar, setModalAbrirCerrar] = useState(false);
+  const [modalHistorialAbrirCerrar, setModalHistorialAbrirCerrar] = useState(false); 
   
   const [listaRegistros, setListaRegistros] = useState([]);
 
@@ -36,7 +38,7 @@ export const RegistrosPage = () => {
     }
   }
    
-  // console.log(dataProyectoSeleccionado);
+  console.log(dataProyectoSeleccionado);
 
   // Aqui obtengo el context del cliente seleccionado
   const { clienteSeleccionado } = useAuth();
@@ -91,6 +93,19 @@ export const RegistrosPage = () => {
     navigate('/clientes');
   };
 
+  const handleReset = (historialCambio) => {
+    console.log(historialCambio);
+    
+    const newData = { ...dataProyectoSeleccionado }
+      newData.listaAgrupaciones.forEach((agrupacion) => {
+        agrupacion.campos.forEach((campo) => {
+          campo.valor = historialCambio.valoranterior;  
+        });
+      });
+      
+    console.log(newData);
+  }
+
   return (
     <>
     <h1 className="pt-6 pl-3 xl:pl-20 text-4xl font-black text-[#245A95]">Registros</h1>
@@ -123,7 +138,7 @@ export const RegistrosPage = () => {
     </div>
     {/* MODAL DE SELECCION DEL PROYECTO */}
     
-    <Dialog header={`PROYECTO: ${proyectoSeleccionado?.proyecto?.proyecto}`} visible={modalAbrirCerrar} style={{ width: '70vw' }} onHide={() => setModalAbrirCerrar(false)}>
+    <Dialog header={`PROYECTO: ${proyectoSeleccionado?.proyecto?.proyecto}`} visible={modalAbrirCerrar} style={{ width: '90vw' }} onHide={() => setModalAbrirCerrar(false)}>
       <h1 className='text-lg font-bold xl:mx-36'>Registro: {proyectoSeleccionado ? proyectoSeleccionado.folio : 'Cargando...'}</h1>
       <Formik initialValues={{}} onSubmit={handleSubmit}>
       {({ values }) => (
@@ -187,11 +202,27 @@ export const RegistrosPage = () => {
           >
             Cancelar
           </button>
+
+          <div className="flex ml-auto pr-8">
+            <button
+              className="hover:shadow-slate-600 border h-10 px-4 bg-[#245A95] hover:bg-[#1F4973] text-white text-lg font-bold rounded-full shadow-md transition duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-[#245A95] ml-auto"
+              onClick={() => setModalHistorialAbrirCerrar(true)}
+            >
+              <i className="pi pi-history"></i>
+            </button>
+          </div>
         </div>
         </Form> 
         )}
         </Formik>    
     </Dialog>
+
+    <ModalHistorialRegistros 
+      modalHistorialAbrirCerrar={modalHistorialAbrirCerrar} 
+      setModalHistorialAbrirCerrar={setModalHistorialAbrirCerrar} 
+      proyectoSeleccionado={proyectoSeleccionado}
+      handleReset={handleReset}
+    />
 
     <BotonFlotanteRegresar onClick={handleClickRegresar} />
     </>

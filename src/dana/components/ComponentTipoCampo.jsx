@@ -38,7 +38,7 @@ export const ComponentTipoCampo = ({campo, dataProyectoSeleccionado, values, ind
   const guardar = () => setImageURL(sigCanvas.current.getTrimmedCanvas().toDataURL("image/png"))
 
   const toast = useRef(null);
-  const [totalSize, setTotalSize] = useState(0);
+  
   const fileUploadRef = useRef(null);
 
   const [hora, setHora] = useState(parseHora(campo.valor));
@@ -50,6 +50,12 @@ export const ComponentTipoCampo = ({campo, dataProyectoSeleccionado, values, ind
     fechaActual.setMinutes(minutos);
     return fechaActual;
   }
+  ///////////////////////////////////////////////
+  // Funciones y estados para el FileUpload/////
+  /////////////////////////////////////////////
+
+  const [totalSize, setTotalSize] = useState(0);
+  const [uploadedFiles, setUploadedFiles] = useState([]);
 
   const onTemplateSelect = (e) => {
     let _totalSize = totalSize;
@@ -62,14 +68,36 @@ export const ComponentTipoCampo = ({campo, dataProyectoSeleccionado, values, ind
     setTotalSize(_totalSize);
   };
 
-  const onTemplateUpload = (e) => {
+  const onTemplateUpload = async (e) => {
     let _totalSize = 0;
-    e.files.forEach((file) => {
-        _totalSize += file.size || 0;
+
+    const uploadPromises = e.files.map((file) => {
+        return new Promise((resolve) => {
+            const formData = new FormData();
+            formData.append("file", file);
+
+            // Reemplaza "/api/upload" con la URL de tu API de carga de imágenes
+            fetch("/api/upload", {
+                method: "POST",
+                body: formData,
+            })
+            .then((response) => response.json())
+            .then((data) => {
+                // Suponemos que la API devuelve la URL de la imagen en la propiedad "imageUrl"
+                file.imageUrl = data.imageUrl;
+                _totalSize += file.size || 0;
+                resolve();
+            });
+        });
     });
+
+    await Promise.all(uploadPromises);
+
     setTotalSize(_totalSize);
+    setUploadedFiles([...e.files]);
     toast.current.show({ severity: 'info', summary: 'Success', detail: 'File Uploaded' });
-  };
+};
+
 
   const onTemplateRemove = (file, callback) => {
     setTotalSize(totalSize - file.size);
@@ -102,24 +130,30 @@ export const ComponentTipoCampo = ({campo, dataProyectoSeleccionado, values, ind
     return (
         <div className="flex align-items-center flex-wrap">
             <div className="flex align-items-center" style={{ width: '40%' }}>
-                <img alt={file.name} role="presentation" src={file.objectURL} width={100} />
-                <span className="flex flex-column text-left ml-4">
+                {file.imageUrl && <img alt={file.name} role="presentation" src={file.imageUrl} width={100} />}
+                <span className="flex flex-column text-left ml-3">
                     {file.name}
-                    <small className='ml-4'>{new Date().toLocaleDateString()}</small>
+                    <small>{new Date().toLocaleDateString()}</small>
                 </span>
             </div>
-            <Tag value={props.formatSize} severity="warning" className="px-3 py-2 ml-6" />
-            <Button type="button" icon="pi pi-times" className="p-button-outlined p-button-rounded p-button-danger ml-auto" onClick={() => onTemplateRemove(file, props.onRemove)} />
+            <Tag value={props.formatSize} severity="warning" className="px-3 py-2" />
+            <Button
+                type="button"
+                icon="pi pi-times"
+                className="p-button-outlined p-button-rounded p-button-danger ml-auto"
+                onClick={() => onTemplateRemove(file, props.onRemove)}
+            />
         </div>
     );
-  };
+};
+
 
   const emptyTemplate = () => {
     return (
         <div className="flex align-items-center flex-column">
             <i className="pi pi-image mt-3 p-5" style={{ fontSize: '5em', borderRadius: '50%', backgroundColor: 'var(--surface-b)', color: 'var(--surface-d)' }}></i>
             <span style={{ fontSize: '1.2em', color: 'var(--text-color-secondary)' }} className="my-5">
-                Drag and Drop Image Here
+                Arrastra la o las imagenes aqui
             </span>
         </div>
     );
@@ -384,7 +418,7 @@ export const ComponentTipoCampo = ({campo, dataProyectoSeleccionado, values, ind
           </div>
         )} */}
 
-        {/* {campo.tipoCampo === 'CHECKBOX-EVIDENCIA' && (
+        {campo.tipoCampo === 'CHECKBOX-EVIDENCIA' && (
           <div>
             <button 
               className="m-auto h-10 px-4 py-1 bg-[#245A95] hover:bg-[#1F4973] text-white text-lg font-bold rounded-full shadow-md transition duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-[#245A95]"
@@ -395,7 +429,7 @@ export const ComponentTipoCampo = ({campo, dataProyectoSeleccionado, values, ind
               <ion-icon name="images"></ion-icon> Subir evidencia
             </button>
           </div>
-        )} */}
+        )}
     
       </div>
 
@@ -431,6 +465,7 @@ export const ComponentTipoCampo = ({campo, dataProyectoSeleccionado, values, ind
         alt='Firma'
       />
     </Dialog>
+
     {/* MODAL SUBIR EVIDENCIA */}
     <Dialog header='Evidencia' visible={modalEvidencia} style={{ width: '50vw' }} onHide={() => setModalEvidencia(false)}>
     <span className='p-float-label relative'>

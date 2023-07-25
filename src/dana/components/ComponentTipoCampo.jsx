@@ -4,7 +4,7 @@ import { InputText } from 'primereact/inputtext'
 import { Dropdown } from 'primereact/dropdown';
 import { Checkbox } from 'primereact/checkbox';
 import { InputNumber } from 'primereact/inputnumber';       
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import SignatureCanvas from 'react-signature-canvas'
 
 import { FileUpload } from 'primereact/fileupload';
@@ -16,15 +16,27 @@ import { Tag } from 'primereact/tag';
 import { Dialog } from 'primereact/dialog';
 
 import '../../styles/sigCanvas.css'
-import { format } from 'date-fns';
+import {parse, format, isValid, parseISO } from 'date-fns';
 
 
 export const ComponentTipoCampo = ({campo, dataProyectoSeleccionado, values, indexAgrupacion, indexCampo, itemagrupacion}) => {
 
   const { setFieldValue } = useFormikContext();
 
-   // State del Calendar
-   const [selectedDate, setSelectedDate] = useState(new Date(campo.valor));
+  const [selectedDate, setSelectedDate] = useState(campo.valor);
+
+  // Función para convertir la fecha en formato válido
+  const parseDate = (dateString) => {
+    const parsedDate = parse(dateString, 'dd/MM/yyyy', new Date());
+    return parsedDate;
+  };
+
+  // Función para formatear la fecha a string
+  const formatDateToString = (date) => {
+    const formattedDate = format(date, 'dd/MM/yyyy');
+    return formattedDate;
+  };
+
   const [selectedValueCatalogo, setSelectedValueCatalogo] = useState(campo.valor);
   const [selectedValueCatalogoInput, setSelectedValueCatalogoInput] = useState(campo.valor);
   const [inputNumerico, setInputNumerico] = useState(campo.valor);
@@ -41,7 +53,18 @@ export const ComponentTipoCampo = ({campo, dataProyectoSeleccionado, values, ind
   
   const fileUploadRef = useRef(null);
 
-  const [hora, setHora] = useState(parseHora(campo.valor));
+  // const [hora, setHora] = useState(parseHora(campo.valor));
+
+  const [hora, setHora] = useState(() => {
+    const parsedHora = parseHora(campo.valor);
+
+    if (isValid(parsedHora)) {
+      return parsedHora;
+    } else {
+      // Si no se puede obtener una hora válida desde campo.valor, usar la hora actual
+      return new Date();
+    }
+  });
 
   function parseHora(horaString) {
     const [hora, minutos] = horaString.split(':');
@@ -50,9 +73,9 @@ export const ComponentTipoCampo = ({campo, dataProyectoSeleccionado, values, ind
     fechaActual.setMinutes(minutos);
     return fechaActual;
   }
-  ///////////////////////////////////////////////
-  // Funciones y estados para el FileUpload/////
-  /////////////////////////////////////////////
+  //////////////////////////////////////////////////
+  ///// Funciones y estados para el FileUpload/////
+  ////////////////////////////////////////////////
 
   const [totalSize, setTotalSize] = useState(0);
   const [uploadedFiles, setUploadedFiles] = useState([]);
@@ -163,8 +186,13 @@ export const ComponentTipoCampo = ({campo, dataProyectoSeleccionado, values, ind
   const uploadOptions = { icon: 'pi pi-fw pi-cloud-upload', iconOnly: true, className: 'custom-upload-btn p-button-success p-button-rounded p-button-outlined' };
   const cancelOptions = { icon: 'pi pi-fw pi-times', iconOnly: true, className: 'custom-cancel-btn p-button-danger p-button-rounded p-button-outlined' };
 
-  const [inputValue, setInputValue] = useState(campo.valor);
+  const currentCatalogo = dataProyectoSeleccionado?.catalogos?.[campo?.nombreCampo]?.catalogo || [];
+  const defaultOption = selectedValueCatalogoInput || '';
 
+  // Si selectedValueCatalogoInput no está en el arreglo del catálogo, agregarlo
+  if (selectedValueCatalogoInput && !currentCatalogo.includes(selectedValueCatalogoInput)) {
+    currentCatalogo.push(selectedValueCatalogoInput);
+  }
 
   return (
     <>
@@ -176,12 +204,12 @@ export const ComponentTipoCampo = ({campo, dataProyectoSeleccionado, values, ind
               {({ field, form }) => (
                 <Calendar
                   className="w-full appearance-none focus:outline-none bg-transparent"
-                  value={selectedDate}
-                  dateFormat="dd/mm/yy"
+                  value={selectedDate ? parseDate(selectedDate) : null}
+                  dateFormat="dd/MM/yy"
                   onChange={(e) => {
-                    const formattedDate = format(e.value, 'dd/MM/yy');
-                    setSelectedDate(e.value); // Actualiza la variable de estado con la fecha seleccionada
-                    form.setFieldValue(field.name, formattedDate);
+                    const formattedDate = formatDateToString(e.value);
+                    setSelectedDate(formattedDate); // Actualiza la variable de estado con la fecha seleccionada
+                    form.setFieldValue(field.name, formattedDate); // Aquí asumo que tienes la variable 'form' disponible en el scope de tu componente
                   }}
                 />
               )}
@@ -329,8 +357,8 @@ export const ComponentTipoCampo = ({campo, dataProyectoSeleccionado, values, ind
               className="w-full appearance-none focus:outline-none bg-transparent"
               as={Dropdown}
               name={campo.nombreCampo}
-              value={selectedValueCatalogoInput}
-              options={dataProyectoSeleccionado?.catalogos[campo?.nombreCampo].catalogo.map(option => ({
+              value={defaultOption}
+              options={currentCatalogo.map(option => ({
                 label: option,
                 value: option
               }))} 

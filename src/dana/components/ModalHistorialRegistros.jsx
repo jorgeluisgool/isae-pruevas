@@ -6,10 +6,31 @@ export const ModalHistorialRegistros = ({modalHistorialAbrirCerrar, setModalHist
 
   const { data: historialCambiosData, loading } = useFetchHistorialCambios(proyectoSeleccionado, modalHistorialAbrirCerrar);
 
-  console.log(historialCambiosData);
+  // console.log(historialCambiosData);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+
+  const [cargando, setCargando] = useState(false);
+
+  const totalRows = historialCambiosData.length;
+  const totalPages = Math.ceil(totalRows / rowsPerPage);
+
+  // Obtener índice del último registro en la página actual
+  const indexOfLastRow = currentPage * rowsPerPage;
+  // Obtener índice del primer registro en la página actual
+  const indexOfFirstRow = indexOfLastRow - rowsPerPage;
+  // Obtener los registros para la página actual
+  const currentRows = historialCambiosData.slice(indexOfFirstRow, indexOfLastRow);
+
+  // Función para cambiar de página
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  // console.log(usuariosSeleccionados[0].idusuario)
 
   return (
-    <Dialog header='Historial de cambios' visible={modalHistorialAbrirCerrar} style={{ width: '70vw' }} onHide={() => setModalHistorialAbrirCerrar(false)}>
+    <>
+      <Dialog header='Historial de cambios' visible={modalHistorialAbrirCerrar} style={{ width: '90vw', height: '190vw' }} onHide={() => setModalHistorialAbrirCerrar(false)}>
       <table className="min-w-full bg-white rounded-lg overflow-hidden shadow-md mb-6">
       <thead className="bg-[#245A95] text-white uppercase">
         <tr className='text-left'>
@@ -33,9 +54,9 @@ export const ModalHistorialRegistros = ({modalHistorialAbrirCerrar, setModalHist
               <span>Nuevo</span>
             </div>
           </th>
-          <th scope="col" className="relative px-6 py-3">
+          <th scope="col" className="relative px-6 py-3 nav-item transition duration-500 ease-in-out transform hover:-translate-y-2 hover:shadow-2xl mr-3 cursor-pointer">
             <div className="items-center">
-              <span>Fecha_cambio</span>
+              <span>Fecha_cambio <i className="pi pi-angle-down"></i></span>
             </div>
           </th>
           <th scope="col" className="relative px-6 py-3">
@@ -52,10 +73,10 @@ export const ModalHistorialRegistros = ({modalHistorialAbrirCerrar, setModalHist
       </thead>
         <tbody className="divide-y divide-gray-200" >
           {
-            historialCambiosData.slice().reverse().map((historialCambio, index) =>(
+            currentRows.reverse().map((historialCambio, index) =>(
               <tr 
                 key={index} 
-                className='cursor-pointer hover:bg-[#E2E2E2]'
+                className='hover:bg-[#E2E2E2]'
               >
                 <td className="px-6">
                   <div className="flex space-x-4">
@@ -104,7 +125,57 @@ export const ModalHistorialRegistros = ({modalHistorialAbrirCerrar, setModalHist
           }
           
         </tbody>
-      </table>   
+      </table> 
+      <div className="flex items-center justify-between mt-4">
+        <div className="flex items-center">
+          <span className="mr-2 text-[#245A95] font-bold text-lg">Filas por página:</span>
+          <select
+            className="border border-gray-300 rounded px-3 py-1"
+            value={rowsPerPage}
+            onChange={(e) => setRowsPerPage(Number(e.target.value))}
+          >
+            <option value={5}>5</option>
+            <option value={10}>10</option>
+            <option value={15}>15</option>
+            <option value={20}>20</option>
+          </select>
+        </div>
+        <h1 className='text-[#245A95] font-bold text-lg'> 
+          Total de registros:
+          <span className='text-gray-700'> {totalRows}</span> 
+        </h1>
+        <div className="flex items-center pl-4">
+          <span className="mr-2 text-[#245A95] font-bold text-lg">
+            Página <span className='text-gray-700'>{currentPage}</span> de <span className='text-gray-700'>{totalPages}</span>
+          </span>
+          <nav className="relative z-0 inline-flex shadow-sm rounded-md">
+            <button
+              onClick={() => paginate(currentPage - 1)}
+              disabled={currentPage === 1}
+              className={`px-3 py-1 rounded-l-md focus:outline-none ${
+                currentPage === 1 ? 'bg-gray-300 cursor-not-allowed' : 'bg-white hover:bg-[#245A95]'
+              }`}
+            >
+              <div className='text-[#245A95] hover:text-white'>
+              <ion-icon name="caret-back-circle"></ion-icon>
+              </div>
+            </button>
+            <span className="px-3 py-1 bg-gray-300 text-gray-700">{currentPage}</span>
+            <button
+              onClick={() => paginate(currentPage + 1)}
+              disabled={indexOfLastRow >= totalRows}
+              className={`px-3 py-1 rounded-r-md focus:outline-none ${
+                indexOfLastRow >= totalRows ? 'bg-gray-300 cursor-not-allowed' : 'bg-white hover:bg-[#245A95]'
+              }`}
+            >
+              <div className='text-[#245A95] hover:text-white'>
+              <ion-icon name="caret-forward-circle"></ion-icon>
+              </div>
+            </button>
+          </nav>
+        </div>
+      </div>  
     </Dialog>
+    </>
   )
 }

@@ -13,6 +13,7 @@ import { useNavigate } from 'react-router-dom';
 import { useFetchProjetsClientes } from '../hooks/useFetchProjetsClientes';
 import useAuth from '../hooks/useAuth';
 import { ModalHistorialRegistros } from '../components/ModalHistorialRegistros';
+import { useEffect } from 'react';
 
 export const RegistrosPage = () => {
 
@@ -93,17 +94,20 @@ export const RegistrosPage = () => {
     navigate('/clientes');
   };
 
+  
+  
   const handleReset = (historialCambio) => {
-    console.log(historialCambio);
-    
-    const newData = { ...dataProyectoSeleccionado }
+      // console.log(historialCambio)
+      const newData = { ...dataProyectoSeleccionado }
       newData.listaAgrupaciones.forEach((agrupacion) => {
         agrupacion.campos.forEach((campo) => {
-          campo.valor = historialCambio.valoranterior;  
+          if (historialCambio.campo.idcamposproyecto === campo.idCampo) {
+            campo.valor = historialCambio.valoranterior; 
+           } 
         });
       });
-      
-    console.log(newData);
+
+      setDataProyectoSeleccionado(newData);
   }
 
   return (
@@ -138,7 +142,7 @@ export const RegistrosPage = () => {
     </div>
     {/* MODAL DE SELECCION DEL PROYECTO */}
     
-    <Dialog header={`PROYECTO: ${proyectoSeleccionado?.proyecto?.proyecto}`} visible={modalAbrirCerrar} style={{ width: '90vw' }} onHide={() => setModalAbrirCerrar(false)}>
+    <Dialog header={`PROYECTO: ${proyectoSeleccionado?.proyecto?.proyecto}`} visible={modalAbrirCerrar} style={{ width: '90vw', height: '190vw'}} onHide={() => setModalAbrirCerrar(false)}>
       <h1 className='text-lg font-bold xl:mx-36'>Registro: {proyectoSeleccionado ? proyectoSeleccionado.folio : 'Cargando...'}</h1>
       <Formik initialValues={{}} onSubmit={handleSubmit}>
       {({ values }) => (

@@ -10,7 +10,7 @@ export const getHistorialCambios = async (api, proyectoSeleccionado) =>{
         body: JSON.stringify(proyectoSeleccionado)
     };
 
-    const data = await fetch(url,options).then((resp)=>{
+    const data = await fetch(url, options).then((resp)=>{
         return resp.json();
     }
     ).catch((resp)=>{

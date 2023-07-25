@@ -35,13 +35,26 @@ export const ClientesRegistrosPage = () => {
                   <div className="px-6 py-2 bg-[#E2E2E2]">
                     <div className="font-bold text-sm xl:text-2xl mb-2 text-[#245A95]">{cliente.cliente}</div>
                   </div>
-                  <img className="p-3 w-full h-full object-cover transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-75" src={cliente.urllogo} alt="Random image" />
+                  <div className="relative" style={{ height: '200px' }}>
+                    {cliente.urllogo ? (
+                      <img
+                        className="absolute inset-0 w-full h-full object-contain transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-75"
+                        src={cliente.urllogo}
+                        alt="Random image"
+                      />
+                    ) : (
+                      <div className="flex items-center justify-center absolute inset-0 w-full h-full text-[#245A95] font-bold text-3xl">
+                        {cliente.cliente}
+                      </div>
+                    )}
+                  </div>
                 </div>
               </Link>
             ))
           }
         </div>
       </div>
+
     </>
   )
 }

@@ -14,6 +14,8 @@ import { useFetchProjetsClientes } from '../hooks/useFetchProjetsClientes';
 import useAuth from '../hooks/useAuth';
 import { ModalHistorialRegistros } from '../components/ModalHistorialRegistros';
 import { useEffect } from 'react';
+import { api } from '../helpers/variablesGlobales';
+import { DialogConfirmacion } from '../../ui/components/DialogConfirmacion';
 
 export const RegistrosPage = () => {
 
@@ -23,13 +25,17 @@ export const RegistrosPage = () => {
   const [usuariosSeleccionados, setUsuariosSeleccionados] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
   const [modalAbrirCerrar, setModalAbrirCerrar] = useState(false);
-  const [modalHistorialAbrirCerrar, setModalHistorialAbrirCerrar] = useState(false); 
+  const [modalHistorialAbrirCerrar, setModalHistorialAbrirCerrar] = useState(false);
+  const [modalAceptarAbrirCerrar, setModaAceptarlAbrirCerrar] = useState(false); 
   
   const [listaRegistros, setListaRegistros] = useState([]);
 
   const [proyectoSeleccionado, setProyectoSeleccionado] = useState(null);
   const [dataProyectoSeleccionado, setDataProyectoSeleccionado] = useState([]);
   const [showAcordion, setShowAcordion] = useState(null);
+  const [ventanaCarga, setVentanaCarga] = useState(false);
+
+  const [arregloDuplicidad, setArregloDuplicidad] = useState([])
 
   const toggleShow = (index) => {
     if (index === showAcordion) {
@@ -41,8 +47,9 @@ export const RegistrosPage = () => {
    
   console.log(dataProyectoSeleccionado);
 
+
   // Aqui obtengo el context del cliente seleccionado
-  const { clienteSeleccionado } = useAuth();
+  const { clienteSeleccionado, userAuth } = useAuth();
 
   const { data: usuarios, loading } = useFetchUsers();
   const { data: proyectosClientes, loadingProyectosClientes } = useFetchProjetsClientes(clienteSeleccionado);
@@ -70,23 +77,89 @@ export const RegistrosPage = () => {
     setEditIndex(null);
   };
 
-  const isSelected = (index) => {
-    return selectedRows.includes(index);
-  };
+  const isSelected = (index) => (selectedRows.includes(index));
+
+
+  const handleMensajeAceptar = (values) => {
+    
+    setVentanaCarga(true);
+    setModaAceptarlAbrirCerrar(false);
+
+    // Suponiendo que tienes dataProyectoSeleccionado y deseas filtrar los campos válidos duplicados
+    const arregloDuplicidad = dataProyectoSeleccionado.listaAgrupaciones.flatMap((agrupacion) =>
+      agrupacion.campos.filter((item) => item.validarduplicidad === 'TRUE')
+    );
+
+    // console.log(arregloDuplicidad);
+
+    fetch(`${api}/validar/valores/duplicados/${proyectoSeleccionado.proyecto.idproyecto}/${proyectoSeleccionado.idinventario}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json' 
+      },
+      body: JSON.stringify(arregloDuplicidad) 
+    })
+      .then(response => response.json())
+      .then(responseData => {
+        // Lógica adicional después de enviar los datos a la API
+        // ...
+        console.log('Respuesta de la API:', responseData);
+
+        setVentanaCarga(false);
+      })
+      .catch(error => console.log(error));
+
+      // setShowDialog(true);
+
+
+    // const newData = { ...dataProyectoSeleccionado }
+    //       newData.listaAgrupaciones.forEach((agrupacion) => {
+    //         agrupacion.campos.forEach((campo) => {
+    //           if (values.hasOwnProperty(campo.nombreCampo)) {
+    //             campo.valor = values[campo.nombreCampo];
+    //           }
+    //         });
+    //       });
+
+    //     console.log(newData);
+        
+
+    //     const dataColeccion = {
+    //       ind: 0,
+    //       inventario: proyectoSeleccionado,
+    //       usuario: usuariosSeleccionados.length === 0 ? userAuth[0] : usuariosSeleccionados[0],
+    //       estatus: proyectoSeleccionado.estatus,
+    //       listaAgrupaciones: newData.listaAgrupaciones,
+    //     }
+
+    //     console.log(dataColeccion);
+
+    //     fetch(`${api}/inventario/actualizar/valores`, {
+    //       method: 'POST',
+    //       headers: {
+    //         'Content-Type': 'application/json' 
+    //       },
+    //       body: JSON.stringify(dataColeccion) 
+    //     })
+    //       .then(response => response.json())
+    //       .then(responseData => {
+    //         // Lógica adicional después de enviar los datos a la API
+    //         // ...
+    //         console.log('Respuesta de la API:', responseData);
+
+    //         setVentanaCarga(false);
+    //       })
+    //       .catch(error => console.log(error));
+  
+          // setShowDialog(true);
+  }
 
   const handleSubmit = (values) => {
+
+    setModaAceptarlAbrirCerrar(true);
+    
+    
     // console.log(values);
-
-        const newData = { ...dataProyectoSeleccionado }
-          newData.listaAgrupaciones.forEach((agrupacion) => {
-            agrupacion.campos.forEach((campo) => {
-              if (values.hasOwnProperty(campo.nombreCampo)) {
-                campo.valor = values[campo.nombreCampo];
-              }
-            });
-          });
-
-        console.log(newData);
   };
 
   const handleClickRegresar = () => {
@@ -112,6 +185,19 @@ export const RegistrosPage = () => {
 
   return (
     <>
+    {ventanaCarga && (
+      <div className="fixed top-0 left-0 right-0 bottom-0 bg-slate-200 bg-opacity-50 flex items-center justify-center z-50">
+        <div className="flex items-center transition duration-500 ease-in-out">
+          <span className="hover:text-gray-400 duration-500 text-3xl text-slate-50">
+            <img src="/src/assets/isae.png" alt="Icono" className="h-20 xl:h-40 mr-1 animate-spin"/>
+          </span>
+          <img src="/src/assets/letras_isae.png" alt="Icono" className="h-20 xl:h-40 mr-2" />
+        </div>
+        <div className='fixed pt-36 xl:pt-60'>
+        <h1 className='text-[#C41420] text-4xl font-black animate-pulse'>Cargando...</h1>
+        </div>
+      </div>
+    )}
     <h1 className="pt-6 pl-3 xl:pl-20 text-4xl font-black text-[#245A95]">Registros</h1>
     <div className="container mx-auto">
         <RegistrosForm 
@@ -142,9 +228,9 @@ export const RegistrosPage = () => {
     </div>
     {/* MODAL DE SELECCION DEL PROYECTO */}
     
-    <Dialog header={`PROYECTO: ${proyectoSeleccionado?.proyecto?.proyecto}`} visible={modalAbrirCerrar} style={{ width: '90vw', height: '190vw'}} onHide={() => setModalAbrirCerrar(false)}>
+    <Dialog header={`PROYECTO: ${proyectoSeleccionado?.proyecto?.proyecto}`} visible={modalAbrirCerrar} baseZIndex={-1} style={{ width: '70vw', height: '40vw' }} onHide={() => setModalAbrirCerrar(false)} className='mt-16'>
       <h1 className='text-lg font-bold xl:mx-36'>Registro: {proyectoSeleccionado ? proyectoSeleccionado.folio : 'Cargando...'}</h1>
-      <Formik initialValues={{}} onSubmit={handleSubmit}>
+      <Formik initialValues={{}} onSubmit={handleMensajeAceptar}>
       {({ values }) => (
       <Form >
       {dataProyectoSeleccionado.listaAgrupaciones && dataProyectoSeleccionado.listaAgrupaciones.length > 0 && (
@@ -193,22 +279,25 @@ export const RegistrosPage = () => {
           </div>
         ))
         )}
-        <div className="absolute inset-x-0 bottom-4 left-4 flex gap-3">
+        <div className="cursor-pointer absolute inset-x-0 bottom-4 left-4 flex gap-3">
           <button
-            type="submit"
-            className="hover:shadow-slate-600 border h-10 px-4 bg-[#245A95] hover:bg-[#1F4973] text-white text-lg font-bold rounded-full shadow-md transition duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-[#245A95]"
+            type="button"
+            className="hover:shadow-slate-600 border h-10 px-4 bg-[#245A95] text-white text-lg font-bold rounded-full shadow-md duration-150 ease-in-out focus:outline-none active:scale-[1.20] transition-all hover:bg-sky-600"
+            onClick={() => setModaAceptarlAbrirCerrar(true)}
           >
             Aceptar
           </button>
           <button
-            className="hover:shadow-slate-600 border h-10 px-4 bg-[#245A95] hover:bg-[#1F4973] text-white text-lg font-bold rounded-full shadow-md transition duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-[#245A95]"
-            onClick={() => console.log('Cancelar')}
+            className="hover:shadow-slate-600 border h-10 px-4 bg-[#245A95] text-white text-lg font-bold rounded-full shadow-md duration-150 ease-in-out focus:outline-none active:scale-[1.20] transition-all hover:bg-sky-600"
+            onClick={() => setModalAbrirCerrar(false)}
+            type='button'
           >
             Cancelar
           </button>
 
           <div className="flex ml-auto pr-8">
             <button
+              type='button'
               className="hover:shadow-slate-600 border h-10 px-4 bg-[#245A95] hover:bg-[#1F4973] text-white text-lg font-bold rounded-full shadow-md transition duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-[#245A95] ml-auto"
               onClick={() => setModalHistorialAbrirCerrar(true)}
             >
@@ -216,6 +305,7 @@ export const RegistrosPage = () => {
             </button>
           </div>
         </div>
+        <DialogConfirmacion handleMensajeAceptar={handleMensajeAceptar} modaAceptarlAbrirCerrar={modalAceptarAbrirCerrar} setModaAceptarlAbrirCerrar={setModaAceptarlAbrirCerrar}/>
         </Form> 
         )}
         </Formik>    
@@ -228,7 +318,9 @@ export const RegistrosPage = () => {
       handleReset={handleReset}
     />
 
-    <BotonFlotanteRegresar onClick={handleClickRegresar} />
+    <BotonFlotanteRegresar  onClick={handleClickRegresar} />
+
+    
     </>
     
   )

@@ -3,19 +3,17 @@ import RegistrosForm from '../components/RegistrosForm'
 import TableRegistros from '../components/TablaRegistros'
 import { Dialog } from 'primereact/dialog';
 import { useFetchUsers } from '../hooks/useFetchUsers';
-import { Field, Form, Formik } from 'formik';
-import { InputText } from 'primereact/inputtext';
-import { Calendar } from 'primereact/calendar';
+import { Form, Formik } from 'formik';
 import { ComponentTipoCampo } from '../components/ComponentTipoCampo';
-import { useForm, Controller } from 'react-hook-form';
 import { BotonFlotanteRegresar } from '../components/BotonFlotanteRegresar';
 import { useNavigate } from 'react-router-dom';
 import { useFetchProjetsClientes } from '../hooks/useFetchProjetsClientes';
 import useAuth from '../hooks/useAuth';
 import { ModalHistorialRegistros } from '../components/ModalHistorialRegistros';
-import { useEffect } from 'react';
 import { api } from '../helpers/variablesGlobales';
 import { DialogConfirmacion } from '../../ui/components/DialogConfirmacion';
+import { DialogDuplicidad } from '../../ui/components/DialogDuplicidad';
+import { DialogRegistroGuardado } from '../../ui/components/DialogRegistroGuardado';
 
 export const RegistrosPage = () => {
 
@@ -27,15 +25,17 @@ export const RegistrosPage = () => {
   const [modalAbrirCerrar, setModalAbrirCerrar] = useState(false);
   const [modalHistorialAbrirCerrar, setModalHistorialAbrirCerrar] = useState(false);
   const [modalAceptarAbrirCerrar, setModaAceptarlAbrirCerrar] = useState(false); 
-  
+  const [modalMensajeDuplicidad, setModalMensajeDuplicidad] = useState(false);
+  const [dataMensajeDuplicidad, setDataMensajeDuplicidad] = useState('');
+  const [modalRegistroGuardado, setModalRegistroGuardado ] = useState(false)
+  const [dataMensajeRegistroGuardado, setdataMensajeRegistroGuardado] = useState('');
+
   const [listaRegistros, setListaRegistros] = useState([]);
 
   const [proyectoSeleccionado, setProyectoSeleccionado] = useState(null);
   const [dataProyectoSeleccionado, setDataProyectoSeleccionado] = useState([]);
   const [showAcordion, setShowAcordion] = useState(null);
   const [ventanaCarga, setVentanaCarga] = useState(false);
-
-  const [arregloDuplicidad, setArregloDuplicidad] = useState([])
 
   const toggleShow = (index) => {
     if (index === showAcordion) {
@@ -45,7 +45,7 @@ export const RegistrosPage = () => {
     }
   }
    
-  console.log(dataProyectoSeleccionado);
+  // console.log(dataProyectoSeleccionado);
 
 
   // Aqui obtengo el context del cliente seleccionado
@@ -79,18 +79,26 @@ export const RegistrosPage = () => {
 
   const isSelected = (index) => (selectedRows.includes(index));
 
-
-  const handleMensajeAceptar = (values) => {
-    
+// FUNCION DE CONFIMACION DE ACEPTAR CAMBIOS
+  const handleMensajeAceptar = (values) => { 
     setVentanaCarga(true);
     setModaAceptarlAbrirCerrar(false);
 
+    const newData = { ...dataProyectoSeleccionado }
+          newData.listaAgrupaciones.forEach((agrupacion) => {
+            agrupacion.campos.forEach((campo) => {
+              if (values.hasOwnProperty(campo.nombreCampo)) {
+                campo.valor = values[campo.nombreCampo];
+              }
+            });
+          });
+
+        console.log(newData);
+
     // Suponiendo que tienes dataProyectoSeleccionado y deseas filtrar los campos válidos duplicados
-    const arregloDuplicidad = dataProyectoSeleccionado.listaAgrupaciones.flatMap((agrupacion) =>
+    const arregloDuplicidad = newData.listaAgrupaciones.flatMap((agrupacion) =>
       agrupacion.campos.filter((item) => item.validarduplicidad === 'TRUE')
     );
-
-    // console.log(arregloDuplicidad);
 
     fetch(`${api}/validar/valores/duplicados/${proyectoSeleccionado.proyecto.idproyecto}/${proyectoSeleccionado.idinventario}`, {
       method: 'POST',
@@ -99,76 +107,57 @@ export const RegistrosPage = () => {
       },
       body: JSON.stringify(arregloDuplicidad) 
     })
-      .then(response => response.json())
+      .then(response => response.text())
       .then(responseData => {
         // Lógica adicional después de enviar los datos a la API
-        // ...
-        console.log('Respuesta de la API:', responseData);
+        // console.log('Respuesta de la API:', responseData);
 
-        setVentanaCarga(false);
+        if (responseData != 'SIN DUPLICADOS') {
+          setModalMensajeDuplicidad(true);
+          setDataMensajeDuplicidad(responseData);
+        }else{
+
+          const dataColeccion = {
+            ind: 0,
+            inventario: proyectoSeleccionado,
+            usuario: usuariosSeleccionados.length === 0 ? userAuth[0] : usuariosSeleccionados[0],
+            estatus: proyectoSeleccionado.estatus,
+            listaAgrupaciones: newData.listaAgrupaciones,
+          }
+ 
+          fetch(`${api}/inventario/actualizar/valores`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json' 
+            },
+            body: JSON.stringify(dataColeccion) 
+          })
+            .then(response => response.json())
+            .then(responseData => {
+              // Lógica adicional después de enviar los datos a la API
+              console.log('Respuesta de la API:', responseData);
+ 
+              setVentanaCarga(false);
+              setModalAbrirCerrar(false);
+              setModalRegistroGuardado(true);
+              setdataMensajeRegistroGuardado('Datos guardados')
+            })
+            .catch(error => {
+              console.log(error);
+              setModalRegistroGuardado();
+              setdataMensajeRegistroGuardado('Datos no guardados')
+            });
+
+        }
       })
       .catch(error => console.log(error));
-
-      // setShowDialog(true);
-
-
-    // const newData = { ...dataProyectoSeleccionado }
-    //       newData.listaAgrupaciones.forEach((agrupacion) => {
-    //         agrupacion.campos.forEach((campo) => {
-    //           if (values.hasOwnProperty(campo.nombreCampo)) {
-    //             campo.valor = values[campo.nombreCampo];
-    //           }
-    //         });
-    //       });
-
-    //     console.log(newData);
-        
-
-    //     const dataColeccion = {
-    //       ind: 0,
-    //       inventario: proyectoSeleccionado,
-    //       usuario: usuariosSeleccionados.length === 0 ? userAuth[0] : usuariosSeleccionados[0],
-    //       estatus: proyectoSeleccionado.estatus,
-    //       listaAgrupaciones: newData.listaAgrupaciones,
-    //     }
-
-    //     console.log(dataColeccion);
-
-    //     fetch(`${api}/inventario/actualizar/valores`, {
-    //       method: 'POST',
-    //       headers: {
-    //         'Content-Type': 'application/json' 
-    //       },
-    //       body: JSON.stringify(dataColeccion) 
-    //     })
-    //       .then(response => response.json())
-    //       .then(responseData => {
-    //         // Lógica adicional después de enviar los datos a la API
-    //         // ...
-    //         console.log('Respuesta de la API:', responseData);
-
-    //         setVentanaCarga(false);
-    //       })
-    //       .catch(error => console.log(error));
-  
-          // setShowDialog(true);
   }
-
-  const handleSubmit = (values) => {
-
-    setModaAceptarlAbrirCerrar(true);
-    
-    
-    // console.log(values);
-  };
 
   const handleClickRegresar = () => {
     // Acciones a realizar cuando se hace clic en el botón flotante izquierdo
     navigate('/clientes');
   };
 
-  
-  
   const handleReset = (historialCambio) => {
       // console.log(historialCambio)
       const newData = { ...dataProyectoSeleccionado }
@@ -226,8 +215,8 @@ export const RegistrosPage = () => {
           />
     </div>
     </div>
-    {/* MODAL DE SELECCION DEL PROYECTO */}
-    
+
+    {/* MODAL DE SELECCION DEL PROYECTO */} 
     <Dialog header={`PROYECTO: ${proyectoSeleccionado?.proyecto?.proyecto}`} visible={modalAbrirCerrar} baseZIndex={-1} style={{ width: '70vw', height: '40vw' }} onHide={() => setModalAbrirCerrar(false)} className='mt-16'>
       <h1 className='text-lg font-bold xl:mx-36'>Registro: {proyectoSeleccionado ? proyectoSeleccionado.folio : 'Cargando...'}</h1>
       <Formik initialValues={{}} onSubmit={handleMensajeAceptar}>
@@ -250,8 +239,6 @@ export const RegistrosPage = () => {
               <div className='pr-10'>
               </div>
             </div>
-            
-              
               {
                 showAcordion === indexAgrupacion && (
                   <div className='px-2 xl:px-10 py-3'>
@@ -273,9 +260,7 @@ export const RegistrosPage = () => {
                     }    
                   </div>
                 )
-              }
-              
-                
+              }   
           </div>
         ))
         )}
@@ -298,18 +283,29 @@ export const RegistrosPage = () => {
           <div className="flex ml-auto pr-8">
             <button
               type='button'
-              className="hover:shadow-slate-600 border h-10 px-4 bg-[#245A95] hover:bg-[#1F4973] text-white text-lg font-bold rounded-full shadow-md transition duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-[#245A95] ml-auto"
+              className="hover:shadow-slate-600 border h-10 px-4 bg-[#245A95] text-white text-lg font-bold rounded-full shadow-md duration-150 ease-in-out focus:outline-none active:scale-[1.20] transition-all hover:bg-sky-600"
               onClick={() => setModalHistorialAbrirCerrar(true)}
             >
               <i className="pi pi-history"></i>
             </button>
           </div>
         </div>
-        <DialogConfirmacion handleMensajeAceptar={handleMensajeAceptar} modaAceptarlAbrirCerrar={modalAceptarAbrirCerrar} setModaAceptarlAbrirCerrar={setModaAceptarlAbrirCerrar}/>
+          <DialogConfirmacion handleMensajeAceptar={handleMensajeAceptar} modaAceptarlAbrirCerrar={modalAceptarAbrirCerrar} setModaAceptarlAbrirCerrar={setModaAceptarlAbrirCerrar}/>
         </Form> 
         )}
         </Formik>    
     </Dialog>
+
+    <DialogDuplicidad 
+      modalMensajeDuplicidad={modalMensajeDuplicidad} 
+      setModalMensajeDuplicidad={setModalMensajeDuplicidad}
+      dataMensajeDuplicidad={dataMensajeDuplicidad}
+    />
+    <DialogRegistroGuardado
+      modalRegistroGuardado={modalRegistroGuardado}
+      setModalRegistroGuardado={setModalRegistroGuardado}
+      dataMensajeRegistroGuardado={dataMensajeRegistroGuardado}
+    />
 
     <ModalHistorialRegistros 
       modalHistorialAbrirCerrar={modalHistorialAbrirCerrar} 
@@ -319,8 +315,6 @@ export const RegistrosPage = () => {
     />
 
     <BotonFlotanteRegresar  onClick={handleClickRegresar} />
-
-    
     </>
     
   )

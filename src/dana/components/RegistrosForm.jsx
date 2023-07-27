@@ -370,11 +370,11 @@ const handleUsuarioChange = (usuario) => {
                           }       
                         </div>
                     </div>
-                    <div className="flex py-2">
+                    <div className="flex py-2 mt-6 justify-end">
                       <button
                         type="submit"
                         // disabled={!formik.dirty || formik.isSubmitting}
-                        className="m-auto h-12 px-4 py-2 bg-[#245A95] hover:bg-[#1F4973] text-white text-lg font-bold rounded-full uppercase shadow-md transition duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-[#245A95] mt-4"
+                        className="hover:shadow-slate-600 border h-10 px-4 bg-[#245A95] text-white text-lg font-bold rounded-full shadow-md duration-150 ease-in-out focus:outline-none active:scale-[1.20] transition-all hover:bg-sky-600"
                         onClick={()=>{
                           console.log(listaRegistrosValor);
                           setListaRegistros(listaRegistrosValor);

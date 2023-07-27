@@ -4,14 +4,13 @@ import { useFetchHistorialCambios } from '../hooks/useFetchHistorialCambios';
 
 export const ModalHistorialRegistros = ({modalHistorialAbrirCerrar, setModalHistorialAbrirCerrar, proyectoSeleccionado, handleReset}) => {
 
-  const { data: historialCambiosData, loading } = useFetchHistorialCambios(proyectoSeleccionado, modalHistorialAbrirCerrar);
+  const { data: historialCambiosData } = useFetchHistorialCambios(proyectoSeleccionado, modalHistorialAbrirCerrar);
 
-  // console.log(historialCambiosData);
+  // Invierte los registros antes de utilizarlos para el cálculo de las páginas y registros actuales
+  const historialCambiosDataReversed = [...historialCambiosData].reverse();
 
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-
-  const [cargando, setCargando] = useState(false);
 
   const totalRows = historialCambiosData.length;
   const totalPages = Math.ceil(totalRows / rowsPerPage);
@@ -21,12 +20,10 @@ export const ModalHistorialRegistros = ({modalHistorialAbrirCerrar, setModalHist
   // Obtener índice del primer registro en la página actual
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
   // Obtener los registros para la página actual
-  const currentRows = historialCambiosData.slice(indexOfFirstRow, indexOfLastRow);
+  const currentRows = historialCambiosDataReversed.slice(indexOfFirstRow, indexOfLastRow);
 
   // Función para cambiar de página
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
-
-  // console.log(usuariosSeleccionados[0].idusuario)
 
   return (
     <>
@@ -54,9 +51,9 @@ export const ModalHistorialRegistros = ({modalHistorialAbrirCerrar, setModalHist
               <span>Nuevo</span>
             </div>
           </th>
-          <th scope="col" className="relative px-6 py-3 nav-item transition duration-500 ease-in-out transform hover:-translate-y-2 hover:shadow-2xl mr-3 cursor-pointer">
+          <th scope="col" className="relative px-6 py-3">
             <div className="items-center">
-              <span>Fecha_cambio <i className="pi pi-angle-down"></i></span>
+              <span>Fecha_cambio</span>
             </div>
           </th>
           <th scope="col" className="relative px-6 py-3">
@@ -73,7 +70,7 @@ export const ModalHistorialRegistros = ({modalHistorialAbrirCerrar, setModalHist
       </thead>
         <tbody className="divide-y divide-gray-200" >
           {
-            currentRows.reverse().map((historialCambio, index) =>(
+            currentRows.map((historialCambio, index) =>(
               <tr 
                 key={index} 
                 className='hover:bg-[#E2E2E2]'

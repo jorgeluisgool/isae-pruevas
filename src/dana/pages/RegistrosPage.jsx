@@ -93,7 +93,7 @@ export const RegistrosPage = () => {
             });
           });
 
-        console.log(newData);
+        // console.log(newData);
 
     // Suponiendo que tienes dataProyectoSeleccionado y deseas filtrar los campos válidos duplicados
     const arregloDuplicidad = newData.listaAgrupaciones.flatMap((agrupacion) =>
@@ -135,12 +135,27 @@ export const RegistrosPage = () => {
             .then(response => response.json())
             .then(responseData => {
               // Lógica adicional después de enviar los datos a la API
-              console.log('Respuesta de la API:', responseData);
- 
-              setVentanaCarga(false);
-              setModalAbrirCerrar(false);
-              setModalRegistroGuardado(true);
-              setdataMensajeRegistroGuardado('Datos guardados')
+              // console.log('Respuesta de la API:', responseData);
+
+              fetch(`${api}/generar/nuevo/documento/${proyectoSeleccionado.idinventario}`, {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json' 
+                },
+                // body: JSON.stringify(arregloDuplicidad) 
+              })
+                .then(response => response.text())
+                .then(responseData => {
+                  // Lógica adicional después de enviar los datos a la API
+                  // console.log('Respuesta de la API:', responseData);
+                  setVentanaCarga(false);
+                  setModalAbrirCerrar(false);
+                  setModalRegistroGuardado(true);
+                  setdataMensajeRegistroGuardado('Datos guardados')
+                  
+                })
+                .catch(error => console.log(error));
+
             })
             .catch(error => {
               console.log(error);
@@ -151,6 +166,10 @@ export const RegistrosPage = () => {
         }
       })
       .catch(error => console.log(error));
+
+      
+
+
   }
 
   const handleClickRegresar = () => {

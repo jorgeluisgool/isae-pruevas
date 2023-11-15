@@ -65,14 +65,14 @@ const handleUsuarioChange = (usuario) => {
 
   if (usuario.target.value.length !== 0) {
     setCargando(true); // Activar ventana de carga
-    const fetchPromises = usuario.target.value.map((usuario) => {
-      return fetch(`${api}/obtener/registros/asignados/usuario/proyecto/${usuario.idusuario}/${proyectosSeleccionados[0].idproyecto}`, {
+    const fetchPromises = usuario.target.value.map(async (usuario) => {
+      const response = await fetch(`${api}/obtener/registros/asignados/usuario/proyecto/${usuario.idusuario}/${proyectosSeleccionados[0].idproyecto}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
         },
-      })
-        .then((response) => response.json());
+      });
+      return await response.json();
     });
 
     Promise.all(fetchPromises)

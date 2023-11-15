@@ -332,7 +332,7 @@ export const ComponentTipoCampo = ({campo, dataProyectoSeleccionado, values, ind
               as={Dropdown}
               name={campo.nombreCampo}
               value={selectedValueCatalogo}
-              options={dataProyectoSeleccionado?.catalogos[campo?.nombreCampo].catalogo.map(option => ({
+              options={dataProyectoSeleccionado?.catalogos[campo?.nombreCampo]?.catalogo.map(option => ({
                 label: option,
                 value: option
               }))}

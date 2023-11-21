@@ -122,6 +122,20 @@ export const CrearProyectoForm = () => {
         navigate('/camposproyecto');
     }
 
+    const handleDownloadPlantilla = () => {
+      const csvList = [
+        ['campo', 'tipocampo', 'agrupacion', 'restriccion', 'longitud'],
+        ['(NOMBRE DEL CAMPO)', '(TIPO DEL CAMPO (NUMERICO,ALFANUMERICO,CORREO,ALFABETICO,CATALOGO,FIRMA,FOTO,CALENDARIO,CHECKBOX))', '(NOMBRE DE LA AGRUPACION DE LOS CAMPOS)', '(CARACTERES A UTILIZAR)', '(10)'],
+      ];
+    
+      const csv = csvList.map(row => row.map(cell => `"${cell}"`).join(',')).join('\n');
+      const content = btoa(unescape(encodeURIComponent(csv)));
+      const anchor = document.createElement('a');
+      anchor.href = `data:application/octet-stream;charset=utf-16le;base64,${content}`;
+      anchor.download = 'PantillaCamposProyecto.csv';
+      anchor.click();
+    }
+    
     return (
         <>
         <Formik 
@@ -175,7 +189,7 @@ export const CrearProyectoForm = () => {
                     </label>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                         <div className="mt-8 flex flex-col gap-y-4">
-                            <button download="" className="shadow-md bg-transparent hover:bg-[#245A95] hover:text-white text-[#245A95] scroll-ml-5 w-14 h-14 active:scale-[.98] transition-all py-3 rounded-xl bg-[#245A95] text-4xl font-bold">
+                            <button onClick={handleDownloadPlantilla} className="shadow-md bg-transparent hover:bg-[#245A95] hover:text-white text-[#245A95] scroll-ml-5 w-14 h-14 active:scale-[.98] transition-all py-3 rounded-xl bg-[#245A95] text-4xl font-bold">
                                 <ion-icon name="archive-sharp"></ion-icon>
                             </button>
                         </div>

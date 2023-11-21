@@ -124,8 +124,11 @@ export const RegistrosPage = () => {
             estatus: proyectoSeleccionado.estatus,
             listaAgrupaciones: newData.listaAgrupaciones,
           }
+
+
+          console.log(dataColeccion);
  
-          fetch(`${api}/inventario/actualizar/valores`, {
+          /* fetch(`${api}/inventario/actualizar/valores`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json' 
@@ -161,7 +164,7 @@ export const RegistrosPage = () => {
               console.log(error);
               setModalRegistroGuardado();
               setdataMensajeRegistroGuardado('Datos no guardados')
-            });
+            }); */
 
         }
       })

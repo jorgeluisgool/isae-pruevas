@@ -25,6 +25,9 @@ export const ComponentTipoCampo = ({campo, dataProyectoSeleccionado, values, ind
 
   const [selectedDate, setSelectedDate] = useState(campo.valor);
 
+  const [filesArray, setFilesArray] = useState([]);
+
+
   // Función para convertir la fecha en formato válido
   const parseDate = (dateString) => {
     const parsedDate = parse(dateString, 'dd/MM/yyyy', new Date());
@@ -149,26 +152,152 @@ export const ComponentTipoCampo = ({campo, dataProyectoSeleccionado, values, ind
     );
   };
 
-  const itemTemplate = (file, props) => {
+/*   const itemTemplate = (file, props) => {
+    const isImage = file.type.startsWith('image');
+    const isPDF = file.type === 'application/pdf';
+
     return (
         <div className="flex align-items-center flex-wrap">
-            <div className="flex align-items-center" style={{ width: '40%' }}>
-                {file.imageUrl && <img alt={file.name} role="presentation" src={file.imageUrl} width={100} />}
-                <span className="flex flex-column text-left ml-3">
-                    {file.name}
+          
+          {isImage ? (<div className="flex align-items-center" style={{ width: '65%' }}>
+                {URL.createObjectURL(file) && <img alt={file.name} role="presentation" src={URL.createObjectURL(file)} style={{width: '300px', height: '200px'}}/>}
+                
+                <span className="d-flex flex-colum text-left ml-3">
+                    <small className='mr-2'>{file.name}</small>
+                    <br></br>
                     <small>{new Date().toLocaleDateString()}</small>
                 </span>
-            </div>
-            <Tag value={props.formatSize} severity="warning" className="px-3 py-2" />
-            <Button
+            </div>) : isPDF ? (
+              <div className="flex align-items-center" style={{ width: '65%' }}>
+              <i className="pi pi-file-pdf p-mr-1" style={{ fontSize: '7rem', color: '#ff0000' }} />
+              <span className="d-flex flex-colum text-left ml-3">
+                  <small className='mr-2'>{file.name}</small>
+                  <br></br>
+                  <small>{new Date().toLocaleDateString()}</small>
+              </span>
+          </div>
+          
+        ) : (
+          <></>
+        )}
+            
+            <Tag value={props.formatSize} severity="warning" className="px-3 py-2 h-10 m-auto" />
+            <button
                 type="button"
                 icon="pi pi-times"
-                className="p-button-outlined p-button-rounded p-button-danger ml-auto"
+                className="p-button p-button-danger p-button-text"
                 onClick={() => onTemplateRemove(file, props.onRemove)}
-            />
+            >
+            <i className="pi pi-trash" />
+            </button>
         </div>
     );
+}; */
+
+const itemTemplate = (file, props) => {
+  const isImage = file.type.startsWith('image');
+  const isPDF = file.type === 'application/pdf';
+
+  return (
+    <div className="flex align-items-center flex-wrap" style={{ position: 'relative'}}>
+      {isImage ? (
+        <div className="image-container" style={{ position: 'relative', width: "300px", backgroundColor: "green", margin: "auto"}}>
+         
+          <small  style={{ position: 'absolute', bottom: 0, left: 0, zIndex: 1, backgroundColor: '#010a1c', width: '300px', height:'55px', paddingRight: 12, color: "white"}}>{file.name}</small>
+          <button
+            type="button"
+            icon="pi pi-times"
+            className="p-button p-button-danger p-button-text"
+            style={{ position: 'absolute', bottom: 2, right: 20, zIndex: 1, backgroundColor: '#fa7878', borderRadius: "50%", width: '35px', height:'35px', paddingLeft: 9, color: "white"}}
+            onClick={() => onTemplateRemove(file, props.onRemove)}
+          >
+            <i className="pi pi-trash" />
+          </button>
+          <button
+            type="button"
+            icon="pi pi-download"
+            className="p-button p-button-info p-button-text"
+            style={{ position: 'absolute', bottom: 2, right: 60, zIndex: 1, backgroundColor: '#7eb9f7', borderRadius: "50%", width: '35px', height:'35px', paddingLeft: 9, color: "white"}}
+            
+          >
+            <i className="pi pi-download" />
+          </button>
+          <Tag value={props.formatSize} severity="warning" className="px-3 py-2 h-7 m-auto" style={{ position: 'absolute', bottom: 5, left: 10, zIndex: 1, }} />
+          {URL.createObjectURL(file) && (
+            <img alt={file.name} role="presentation" src={URL.createObjectURL(file)} style={{ width: '300px', height: '200px', zIndex: 0 }} />
+          )}
+        </div>
+      ) : isPDF ? (
+        <div className="image-container" style={{ position: 'relative', width: "300px", margin: "auto"}}>
+         
+          <small  style={{ position: 'absolute', bottom: 0, left: 0, zIndex: 1, backgroundColor: '#010a1c', width: '300px', height:'55px', paddingRight: 12, color: "white"}}>{file.name}</small>
+          <button
+            type="button"
+            icon="pi pi-times"
+            className="p-button p-button-danger p-button-text"
+            style={{ position: 'absolute', bottom: 2, right: 20, zIndex: 1, backgroundColor: '#fa7878', borderRadius: "50%", width: '35px', height:'35px', paddingLeft: 9, color: "white"}}
+            onClick={() => onTemplateRemove(file, props.onRemove)}
+          >
+            <i className="pi pi-trash" />
+          </button>
+          <button
+            type="button"
+            icon="pi pi-download"
+            className="p-button p-button-info p-button-text"
+            style={{ position: 'absolute', bottom: 2, right: 60, zIndex: 1, backgroundColor: '#7eb9f7', borderRadius: "50%", width: '35px', height:'35px', paddingLeft: 9, color: "white"}}
+            
+          >
+            <i className="pi pi-download" />
+          </button>
+          <Tag value={props.formatSize} severity="warning" className="px-3 py-2 h-7 m-auto" style={{ position: 'absolute', bottom: 5, left: 10, zIndex: 1, }} />
+          <div style={{width: "300px", height: "200px"}}>
+          <i className="pi pi-file-pdf p-mr-1" style={{ fontSize: '7rem', color: '#ff0000', zIndex: 0, textAlign: "center"}} />
+          </div>
+          
+        </div>
+      ) : (
+        <></>
+      )}
+    </div>
+  );
 };
+
+
+
+
+
+/* const itemTemplate = (file) => {
+  const isImage = file.type.startsWith('image');
+  const isPDF = file.type === 'application/pdf';
+
+  return (
+    <div className="p-d-flex p-ai-center p-flex-wrap">
+      <div className="p-mr-2">
+        {isImage ? (
+          <img
+            src={URL.createObjectURL(file)}
+            alt={file.name}
+            style={{ maxWidth: '500px', maxHeight: '500px', marginRight: '5px' }}
+          />
+        ) : isPDF ? (
+          <i className="pi pi-file-pdf p-mr-1" style={{ fontSize: '2rem', color: '#ff0000' }} />
+        ) : (
+          <i className="pi pi-file p-mr-1" style={{ fontSize: '2rem' }} />
+        )}
+      </div>
+      <div>
+        <div>{file.name}</div>
+        <small>{file.size} bytes</small>
+      </div>
+      <div>
+      <button className="p-button p-button-danger p-button-text">
+          <i className="pi pi-trash" />
+      </button>
+      </div>
+    </div>
+  );
+};
+ */
 
 
   const emptyTemplate = () => {
@@ -193,6 +322,48 @@ export const ComponentTipoCampo = ({campo, dataProyectoSeleccionado, values, ind
   if (selectedValueCatalogoInput && !currentCatalogo.includes(selectedValueCatalogoInput)) {
     currentCatalogo.push(selectedValueCatalogoInput);
   }
+
+  /* const handlebtnEvidencias = () =>{
+    setModalEvidencia(true)
+    dataProyectoSeleccionado.respuestaCheckboxEvidencia.map((evidence)=>{
+      console.log(evidence.url);
+    })
+  } */
+
+  const handlebtnEvidencias = async () => {
+    setModalEvidencia(true);
+    var cont = 0;
+    // Array para almacenar objetos File
+    const filesArray = [];
+  
+    // Función para descargar un archivo desde la URL y convertirlo en un objeto File
+    const downloadAndCreateFile = async (url) => {
+      try {
+        const response = await fetch(url);
+        const blob = await response.blob();
+        const filename = url.substring(url.lastIndexOf('/') + 1);
+        const file = new File([blob], filename);
+        filesArray.push(file);
+      } catch (error) {
+        console.error(`Error al descargar el archivo desde ${url}:`, error);
+      }
+    };
+  
+    // Iterar sobre las URLs y descargar los archivos
+    await Promise.all(
+      dataProyectoSeleccionado.respuestaCheckboxEvidencia.map((evidence) =>
+        {downloadAndCreateFile(evidence.url);
+        cont++;}
+      )
+    );
+  
+    // Ahora filesArray contiene objetos File descargados desde las URLs
+    console.log(filesArray);
+    setFilesArray(filesArray);
+    
+  };
+  
+
 
   return (
     <>
@@ -327,6 +498,7 @@ export const ComponentTipoCampo = ({campo, dataProyectoSeleccionado, values, ind
 
         {campo.tipoCampo === 'CATALOGO' && (
           <span className='p-float-label relative'>
+            {console.log(dataProyectoSeleccionado)}
             <Field
               className="w-full appearance-none focus:outline-none bg-transparent"
               as={Dropdown}
@@ -449,9 +621,10 @@ export const ComponentTipoCampo = ({campo, dataProyectoSeleccionado, values, ind
         {campo.tipoCampo === 'CHECKBOX-EVIDENCIA' && (
           <div>
             <button 
+            type='button'
               className="m-auto h-10 px-4 py-1 bg-[#245A95] hover:bg-[#1F4973] text-white text-lg font-bold rounded-full shadow-md transition duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-[#245A95]"
               onClick={()=>{
-                setModalEvidencia(true)
+                handlebtnEvidencias();
               }}
             >
               <ion-icon name="images"></ion-icon> Subir evidencia
@@ -495,7 +668,7 @@ export const ComponentTipoCampo = ({campo, dataProyectoSeleccionado, values, ind
     </Dialog>
 
     {/* MODAL SUBIR EVIDENCIA */}
-    <Dialog header='Evidencia' visible={modalEvidencia} style={{ width: '50vw' }} onHide={() => setModalEvidencia(false)}>
+    <Dialog header='Evidencia' visible={modalEvidencia} style={{ width: '40vw' }} onHide={() => setModalEvidencia(false)}>
     <span className='p-float-label relative'>
       <Toast ref={toast}></Toast>
 
@@ -506,7 +679,7 @@ export const ComponentTipoCampo = ({campo, dataProyectoSeleccionado, values, ind
       <FileUpload ref={fileUploadRef} name="demo[]" url="/api/upload" multiple accept="image/*" maxFileSize={1000000}
         onUpload={onTemplateUpload} onSelect={onTemplateSelect} onError={onTemplateClear} onClear={onTemplateClear}
         headerTemplate={headerTemplate} itemTemplate={itemTemplate} emptyTemplate={emptyTemplate}
-        chooseOptions={chooseOptions} uploadOptions={uploadOptions} cancelOptions={cancelOptions} 
+        chooseOptions={chooseOptions} uploadOptions={uploadOptions} cancelOptions={cancelOptions}
       />
       
     </span>

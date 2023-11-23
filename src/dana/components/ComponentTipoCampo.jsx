@@ -27,6 +27,90 @@ export const ComponentTipoCampo = ({campo, dataProyectoSeleccionado, values, ind
 
   const [filesArray, setFilesArray] = useState([]);
 
+  const [archivos, setArchivos] = useState([]);
+
+  const [archivosSeleccionados, setArchivosSeleccionados] = useState([]);
+  const dropAreaRef = useRef(null);
+
+  // Agregar eventos de arrastrar y soltar
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    dropAreaRef.current.classList.add('active');
+  };
+
+  const handleDragLeave = () => {
+    dropAreaRef.current.classList.remove('active');
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    dropAreaRef.current.classList.remove('active');
+
+    // Obtener la lista de archivos soltados
+    const files = e.dataTransfer.files;
+
+    // Procesar los archivos (puedes enviarlos al servidor aquí)
+    subirArchivos(files);
+  };
+  
+
+
+  /* const subirArchivos= e =>{
+    setArchivos(e);
+    setArchivosSeleccionados(Array.from(e));
+
+  }
+  
+  const insertarArchivos = async()=>{
+    const f = new FormData();
+    for(let index = 0; index < archivos.length; index++){
+      f.append("files", archivos[index]);
+    }
+
+    console.log(archivos);
+  } */
+
+  const handleDescargarArchivo = (archivo) => {
+    // Simular la descarga de archivo
+    const url = URL.createObjectURL(archivo);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = archivo.name;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const handleRemoveArchivo = (index) => {
+    // Crear una copia de archivos seleccionados y eliminar el archivo en el índice dado
+    const nuevosArchivos = [...archivosSeleccionados];
+    nuevosArchivos.splice(index, 1);
+    setArchivosSeleccionados(nuevosArchivos);
+  };
+
+  const subirArchivos = (e) => {
+    const nuevosArchivos = Array.from(e);
+    setArchivos((archivosAnteriores) => [...archivosAnteriores, ...nuevosArchivos]);
+    setArchivosSeleccionados((archivosAnteriores) => [...archivosAnteriores, ...nuevosArchivos]);
+  };
+
+  const insertarArchivos = async () => {
+    if (archivos.length > 0) {
+      const f = new FormData();
+      for (let index = 0; index < archivos.length; index++) {
+        f.append("files", archivos[index]);
+      }
+      console.log(archivos);
+      // Aquí podrías realizar la lógica para enviar los archivos al servidor
+    } else {
+      console.log("No se han seleccionado archivos.");
+    }
+    setArchivos([]);
+    setArchivosSeleccionados([]);
+  };
+
+
+
 
   // Función para convertir la fecha en formato válido
   const parseDate = (dateString) => {
@@ -87,6 +171,12 @@ export const ComponentTipoCampo = ({campo, dataProyectoSeleccionado, values, ind
     let _totalSize = totalSize;
     let files = e.files;
 
+    if(filesArray.length > 0){
+    const archivosSimulados = [...filesArray,...e.files];
+    e.files = archivosSimulados;
+    files = e.files;
+    }
+
     Object.keys(files).forEach((key) => {
         _totalSize += files[key].size || 0;
     });
@@ -97,10 +187,19 @@ export const ComponentTipoCampo = ({campo, dataProyectoSeleccionado, values, ind
   const onTemplateUpload = async (e) => {
     let _totalSize = 0;
 
+
+    if(filesArray.length > 0){
+      const archivosSimulados = [...filesArray,...e.files];
+      e.files = archivosSimulados;
+      }
+
     const uploadPromises = e.files.map((file) => {
+
         return new Promise((resolve) => {
             const formData = new FormData();
             formData.append("file", file);
+
+            console.log(file);
 
             // Reemplaza "/api/upload" con la URL de tu API de carga de imágenes
             fetch("/api/upload", {
@@ -197,6 +296,8 @@ export const ComponentTipoCampo = ({campo, dataProyectoSeleccionado, values, ind
 const itemTemplate = (file, props) => {
   const isImage = file.type.startsWith('image');
   const isPDF = file.type === 'application/pdf';
+
+  console.log(file);
 
   return (
     <div className="flex align-items-center flex-wrap" style={{ position: 'relative'}}>
@@ -331,7 +432,7 @@ const itemTemplate = (file, props) => {
   } */
 
   const handlebtnEvidencias = async () => {
-    setModalEvidencia(true);
+    
     var cont = 0;
     // Array para almacenar objetos File
     const filesArray = [];
@@ -341,25 +442,54 @@ const itemTemplate = (file, props) => {
       try {
         const response = await fetch(url);
         const blob = await response.blob();
-        const filename = url.substring(url.lastIndexOf('/') + 1);
-        const file = new File([blob], filename);
+
+         console.log(url);
+    
+        // Obtener el tipo de contenido del encabezado de la respuesta
+        var contentType = response.headers.get('content-type') || '';
+
+       
+    
+        // Obtener el nombre del archivo de la URL
+        var filename = url.substring(url.lastIndexOf('/') + 1);
+
+        if (url.toLowerCase().includes('media&token')) {
+          filename = url.substring(url.lastIndexOf('=') + 1);
+        }
+
+        if (url.toLowerCase().includes('.pdf')) {
+          filename = url.substring(url.lastIndexOf('=') + 1).replace('.png', '.pdf');
+          contentType = "application/pdf"
+        }
+    
+        // Crear el objeto File con el tipo y el nombre correctos
+        const file = new File([blob], filename, { type: contentType });
         filesArray.push(file);
       } catch (error) {
         console.error(`Error al descargar el archivo desde ${url}:`, error);
       }
     };
+    
   
     // Iterar sobre las URLs y descargar los archivos
-    await Promise.all(
+     await Promise.all(
       dataProyectoSeleccionado.respuestaCheckboxEvidencia.map((evidence) =>
         {downloadAndCreateFile(evidence.url);
+          //console.log(evidence.url);
         cont++;}
       )
     );
   
     // Ahora filesArray contiene objetos File descargados desde las URLs
     console.log(filesArray);
-    setFilesArray(filesArray);
+    setArchivosSeleccionados(filesArray);
+    setArchivos(filesArray);
+
+    setTimeout(() => {
+      setModalEvidencia(true);
+    }, 1000);
+
+
     
   };
   
@@ -498,7 +628,7 @@ const itemTemplate = (file, props) => {
 
         {campo.tipoCampo === 'CATALOGO' && (
           <span className='p-float-label relative'>
-            {console.log(dataProyectoSeleccionado)}
+          {/* {console.log(dataProyectoSeleccionado)} */}
             <Field
               className="w-full appearance-none focus:outline-none bg-transparent"
               as={Dropdown}
@@ -668,7 +798,7 @@ const itemTemplate = (file, props) => {
     </Dialog>
 
     {/* MODAL SUBIR EVIDENCIA */}
-    <Dialog header='Evidencia' visible={modalEvidencia} style={{ width: '40vw' }} onHide={() => setModalEvidencia(false)}>
+    {/* <Dialog header='Evidencia' visible={modalEvidencia} style={{ width: '40vw' }} onHide={() => setModalEvidencia(false)}>
     <span className='p-float-label relative'>
       <Toast ref={toast}></Toast>
 
@@ -676,11 +806,120 @@ const itemTemplate = (file, props) => {
       <Tooltip target=".custom-upload-btn" content="Upload" position="bottom" />
       <Tooltip target=".custom-cancel-btn" content="Clear" position="bottom" />
 
-      <FileUpload ref={fileUploadRef} name="demo[]" url="/api/upload" multiple accept="image/*" maxFileSize={1000000}
+      <FileUpload ref={fileUploadRef} name="demo[]" url="/api/upload" multiple accept="image/* ,application/pdf " maxFileSize={1000000}
         onUpload={onTemplateUpload} onSelect={onTemplateSelect} onError={onTemplateClear} onClear={onTemplateClear}
         headerTemplate={headerTemplate} itemTemplate={itemTemplate} emptyTemplate={emptyTemplate}
         chooseOptions={chooseOptions} uploadOptions={uploadOptions} cancelOptions={cancelOptions}
+        files={filesArray}
       />
+      
+    </span>
+    </Dialog>
+    </> */}
+    <Dialog header='Evidencia' visible={modalEvidencia} style={{ width: '75vw', height:'40vw' }} onHide={() => setModalEvidencia(false)}>
+    <span className='p-float-label relative'>
+      <Toast ref={toast}></Toast>
+
+
+
+     
+{/*       <button className="btn btn-outline btn-info" onClick={()=>insertarArchivos()} >Insertar Archivos</button>
+ */}
+      <div
+      id='drop-area'
+      onDragOver={(e)=> handleDragOver(e)}
+      onDragLeave={()=>handleDragLeave()}
+      onDrop={(e)=>handleDrop(e)}
+      ref={dropAreaRef}
+      style={{display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      border: '2px dashed #ccc',
+      padding: '20px',
+      textAlign: 'center',
+   }}
+      >
+        <h3>Arrastra y suelta tus archivos aquí</h3>
+        <p>o</p>
+        <input type='file' name='files' accept='image/*,application/pdf' onChange={(e)=> subirArchivos(e.target.files)} className="block text-sm text-slate-500
+      file:mr-4 file:py-2 file:px-4
+      file:rounded-full file:border-0
+      file:text-sm file:font-semibold
+      file:bg-blue-50 file:text-blue-700
+      hover:file:bg-blue-100" />
+         
+        
+
+      </div>
+
+    
+     
+  <div>
+  <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center', marginTop: '1rem', marginBottom: '1rem' }}>
+  <button
+    type="button"
+    onClick={() => insertarArchivos()}
+    className="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5"
+  >
+    Subir Evidencia
+  </button>
+  <button
+    type="button"
+    onClick={() => {
+      setArchivos([]);
+      setArchivosSeleccionados([]);
+    }}
+    className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-5 py-2.5"
+  >
+    Borrar Evidencia
+  </button>
+</div>
+  
+    <h4>Archivos Seleccionados:</h4>
+
+  <div className="flex align-items-center flex-wrap" style={{ position: 'relative', display: 'flex', flexWrap: 'wrap'}}>
+    {archivosSeleccionados.map((archivo, index) => (
+      <div key={index} className="image-container" style={{ position: 'relative', width: 'calc(33.33% - 10px)', margin: '5px', boxSizing: 'border-box' }}>
+        <small  style={{ position: 'absolute', bottom: 0, left: 0, zIndex: 1, backgroundColor: '#010a1c', width: '300px', height:'55px', paddingRight: 12, color: "white"}}>{archivo.name}</small>
+        <button
+          type="button"
+          className="p-button p-button-danger p-button-text"
+          style={{ position: 'absolute', bottom: 2, right: 20, zIndex: 1, backgroundColor: '#fa7878', borderRadius: "50%", width: '35px', height:'35px', paddingLeft: 9, color: "white"}}
+          onClick={() => handleRemoveArchivo(index)}
+        >
+          <i className="pi pi-trash" />
+        </button>
+        <button
+          type="button"
+          className="p-button p-button-info p-button-text"
+          style={{ position: 'absolute', bottom: 2, right: 60, zIndex: 1, backgroundColor: '#7eb9f7', borderRadius: "50%", width: '35px', height:'35px', paddingLeft: 9, color: "white"}}
+          onClick={() => handleDescargarArchivo(archivo)}
+        >
+          <i className="pi pi-download" />
+        </button>
+      
+        {archivo.type.startsWith('image/') && (
+          <img alt={archivo.name} role="presentation" src={URL.createObjectURL(archivo)} style={{ width: '300px', height: '200px', zIndex: 0 }} />
+        )}
+        {archivo.type === 'application/pdf' && (
+          <div style={{width: "300px", height: "200px"}}>
+              <iframe
+                  title={archivo.name}
+                  src={URL.createObjectURL(archivo)}
+                  width="100%"
+                  height="100%"
+                  style={{ border: 'none' }}
+                />
+          </div>
+        )}
+      </div>
+    ))}
+  </div>
+</div>
+
+     
+     
       
     </span>
     </Dialog>

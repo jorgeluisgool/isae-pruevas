@@ -81,7 +81,7 @@ export const RegistrosPage = () => {
 
 // FUNCION DE CONFIMACION DE ACEPTAR CAMBIOS
   const handleMensajeAceptar = (values) => { 
-    setVentanaCarga(true);
+    //setVentanaCarga(true);
     setModaAceptarlAbrirCerrar(false);
 
     const newData = { ...dataProyectoSeleccionado }

@@ -14,8 +14,12 @@ import { api } from '../helpers/variablesGlobales';
 import { DialogConfirmacion } from '../../ui/components/DialogConfirmacion';
 import { DialogDuplicidad } from '../../ui/components/DialogDuplicidad';
 import { DialogRegistroGuardado } from '../../ui/components/DialogRegistroGuardado';
+import { guardarEvidencias } from '../components/functions/Functions';
 
 export const RegistrosPage = () => {
+
+  const [files, setFiles] = useState([]);
+  const [idCampo, setIdCampo] = useState([]);
 
   const navigate = useNavigate();
 
@@ -37,6 +41,8 @@ export const RegistrosPage = () => {
   const [showAcordion, setShowAcordion] = useState(null);
   const [ventanaCarga, setVentanaCarga] = useState(false);
 
+  const mandarDatos = {};
+
   const toggleShow = (index) => {
     if (index === showAcordion) {
       setShowAcordion(null)
@@ -45,7 +51,7 @@ export const RegistrosPage = () => {
     }
   }
    
-  // console.log(dataProyectoSeleccionado);
+  console.log(dataProyectoSeleccionado);
 
 
   // Aqui obtengo el context del cliente seleccionado
@@ -93,7 +99,7 @@ export const RegistrosPage = () => {
             });
           });
 
-        // console.log(newData);
+    console.log(newData);
 
     // Suponiendo que tienes dataProyectoSeleccionado y deseas filtrar los campos válidos duplicados
     const arregloDuplicidad = newData.listaAgrupaciones.flatMap((agrupacion) =>
@@ -123,12 +129,14 @@ export const RegistrosPage = () => {
             usuario: usuariosSeleccionados.length === 0 ? userAuth[0] : usuariosSeleccionados[0],
             estatus: proyectoSeleccionado.estatus,
             listaAgrupaciones: newData.listaAgrupaciones,
+            evidencias: files
           }
 
-
+          
+          
           console.log(dataColeccion);
  
-          /* fetch(`${api}/inventario/actualizar/valores`, {
+          fetch(`${api}/inventario/actualizar/valores`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json' 
@@ -164,8 +172,8 @@ export const RegistrosPage = () => {
               console.log(error);
               setModalRegistroGuardado();
               setdataMensajeRegistroGuardado('Datos no guardados')
-            }); */
-
+            });
+         
         }
       })
       .catch(error => console.log(error));
@@ -267,13 +275,14 @@ export const RegistrosPage = () => {
                     {
                       itemagrupacion.campos.map((item, indexCampo) => (
                       <div key={item.idCampo} className="mt-8">
+                        {/*console.log(dataProyectoSeleccionado)*/}
                         <span className='p-float-label'>
                           <div className='grid grid-cols-2'>
                             <div className=''>
                               <p className='text-sm xl:text-base text-[#245A95] font-semibold text-right pr-5'>{item.nombreCampo}:</p>
                             </div>
                             <div className=''>
-                              <ComponentTipoCampo dataProyectoSeleccionado={dataProyectoSeleccionado} itemagrupacion={itemagrupacion} campo={item} indexAgrupacion={indexAgrupacion} indexCampo={indexCampo}/>
+                              <ComponentTipoCampo dataProyectoSeleccionado={dataProyectoSeleccionado} itemagrupacion={itemagrupacion} campo={item} indexAgrupacion={indexAgrupacion} indexCampo={indexCampo} setFiles={setFiles} setIdCampo={setIdCampo} files={files}/>
                             </div>
                           </div>
                         </span>

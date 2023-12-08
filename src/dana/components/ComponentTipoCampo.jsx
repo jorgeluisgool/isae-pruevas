@@ -6,7 +6,7 @@ import { Checkbox } from 'primereact/checkbox';
 import { InputNumber } from 'primereact/inputnumber';       
 import React, { useEffect, useRef, useState } from 'react';
 import SignatureCanvas from 'react-signature-canvas'
-
+import { api } from '../helpers/variablesGlobales';
 import { FileUpload } from 'primereact/fileupload';
 import { Toast } from 'primereact/toast';
 import { ProgressBar } from 'primereact/progressbar';
@@ -17,9 +17,10 @@ import { Dialog } from 'primereact/dialog';
 
 import '../../styles/sigCanvas.css'
 import {parse, format, isValid, parseISO } from 'date-fns';
+import { guardarEvidencias } from './functions/Functions';
 
 
-export const ComponentTipoCampo = ({campo, dataProyectoSeleccionado, values, indexAgrupacion, indexCampo, itemagrupacion}) => {
+export const ComponentTipoCampo = ({campo, dataProyectoSeleccionado, values, indexAgrupacion, indexCampo, itemagrupacion, setFiles, setIdCampo, files}) => {
 
   const { setFieldValue } = useFormikContext();
 
@@ -29,6 +30,8 @@ export const ComponentTipoCampo = ({campo, dataProyectoSeleccionado, values, ind
 
   const [archivos, setArchivos] = useState([]);
 
+  const [idFiles, setIdFiles] =  useState([]);
+  const [archivosEliminar, setArchivosEliminar] = useState([]);
   const [archivosSeleccionados, setArchivosSeleccionados] = useState([]);
   const dropAreaRef = useRef(null);
 
@@ -52,23 +55,19 @@ export const ComponentTipoCampo = ({campo, dataProyectoSeleccionado, values, ind
     // Procesar los archivos (puedes enviarlos al servidor aquí)
     subirArchivos(files);
   };
-  
 
 
-  /* const subirArchivos= e =>{
-    setArchivos(e);
-    setArchivosSeleccionados(Array.from(e));
-
+  const borrarEvidencia = () =>{
+    fetch(`${api}/eliminar/evidencias/web`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json' 
+      },
+      body: JSON.stringify(archivosEliminar)
+    })
+      .then(response => response.text())
   }
-  
-  const insertarArchivos = async()=>{
-    const f = new FormData();
-    for(let index = 0; index < archivos.length; index++){
-      f.append("files", archivos[index]);
-    }
 
-    console.log(archivos);
-  } */
 
   const handleDescargarArchivo = (archivo) => {
     // Simular la descarga de archivo
@@ -84,8 +83,16 @@ export const ComponentTipoCampo = ({campo, dataProyectoSeleccionado, values, ind
   const handleRemoveArchivo = (index) => {
     // Crear una copia de archivos seleccionados y eliminar el archivo en el índice dado
     const nuevosArchivos = [...archivosSeleccionados];
+    const nuevosIds = [...idFiles];
     nuevosArchivos.splice(index, 1);
+    nuevosIds.splice(index, 1);
+    setArchivosEliminar(prevEliminar => [...prevEliminar, idFiles[index]])
+    console.log(archivosEliminar);
+    console.log(idFiles[index]);
     setArchivosSeleccionados(nuevosArchivos);
+    setArchivos(nuevosArchivos);
+    setIdFiles(nuevosIds);
+    console.log(idFiles[index]);
   };
 
   const subirArchivos = (e) => {
@@ -96,17 +103,46 @@ export const ComponentTipoCampo = ({campo, dataProyectoSeleccionado, values, ind
 
   const insertarArchivos = async () => {
     if (archivos.length > 0) {
-      const f = new FormData();
-      for (let index = 0; index < archivos.length; index++) {
-        f.append("files", archivos[index]);
+      async function construirDataColeccion() {
+        try {
+          // Esperar a que se resuelva la promesa
+          const evidenciasConvertidas = await guardarEvidencias(
+            archivos,
+            dataProyectoSeleccionado.listaAgrupaciones[0].idInventario,
+            campo.idCampo
+          );
+      
+          // Asignar la evidencia al objeto dataColeccion
+          return evidenciasConvertidas;
+
+        } catch (error) {
+          console.error('Error al obtener evidencias:', error);
+        }
       }
-      console.log(archivos);
-      // Aquí podrías realizar la lógica para enviar los archivos al servidor
+      
+      // Llamar a la función
+      construirDataColeccion().then((dataColeccionResuelta =>{
+
+        const archivosFiltrados = dataColeccionResuelta.filter((archivo) =>{
+          return !filesArray.some((file) => file.name === archivo.nombreEvidencia);
+        })
+
+        const archivosEnFilesArrayNoEnData = filesArray.filter((file)=>{
+          return !dataColeccionResuelta.some((archivo) => archivo.nombreEvidencia === file.name);
+        })
+
+        //setFiles(dataColeccionResuelta);
+        setFiles(archivosFiltrados);
+        console.log(files);
+        console.log(archivosEnFilesArrayNoEnData);
+      }))
+      
     } else {
       console.log("No se han seleccionado archivos.");
     }
     setArchivos([]);
     setArchivosSeleccionados([]);
+    setArchivosEliminar([]);
   };
 
 
@@ -138,7 +174,6 @@ export const ComponentTipoCampo = ({campo, dataProyectoSeleccionado, values, ind
 
   const toast = useRef(null);
   
-  const fileUploadRef = useRef(null);
 
   // const [hora, setHora] = useState(parseHora(campo.valor));
 
@@ -160,261 +195,6 @@ export const ComponentTipoCampo = ({campo, dataProyectoSeleccionado, values, ind
     fechaActual.setMinutes(minutos);
     return fechaActual;
   }
-  //////////////////////////////////////////////////
-  ///// Funciones y estados para el FileUpload/////
-  ////////////////////////////////////////////////
-
-  const [totalSize, setTotalSize] = useState(0);
-  const [uploadedFiles, setUploadedFiles] = useState([]);
-
-  const onTemplateSelect = (e) => {
-    let _totalSize = totalSize;
-    let files = e.files;
-
-    if(filesArray.length > 0){
-    const archivosSimulados = [...filesArray,...e.files];
-    e.files = archivosSimulados;
-    files = e.files;
-    }
-
-    Object.keys(files).forEach((key) => {
-        _totalSize += files[key].size || 0;
-    });
-
-    setTotalSize(_totalSize);
-  };
-
-  const onTemplateUpload = async (e) => {
-    let _totalSize = 0;
-
-
-    if(filesArray.length > 0){
-      const archivosSimulados = [...filesArray,...e.files];
-      e.files = archivosSimulados;
-      }
-
-    const uploadPromises = e.files.map((file) => {
-
-        return new Promise((resolve) => {
-            const formData = new FormData();
-            formData.append("file", file);
-
-            console.log(file);
-
-            // Reemplaza "/api/upload" con la URL de tu API de carga de imágenes
-            fetch("/api/upload", {
-                method: "POST",
-                body: formData,
-            })
-            .then((response) => response.json())
-            .then((data) => {
-                // Suponemos que la API devuelve la URL de la imagen en la propiedad "imageUrl"
-                file.imageUrl = data.imageUrl;
-                _totalSize += file.size || 0;
-                resolve();
-            });
-        });
-    });
-
-    await Promise.all(uploadPromises);
-
-    setTotalSize(_totalSize);
-    setUploadedFiles([...e.files]);
-    toast.current.show({ severity: 'info', summary: 'Success', detail: 'File Uploaded' });
-};
-
-
-  const onTemplateRemove = (file, callback) => {
-    setTotalSize(totalSize - file.size);
-    callback();
-  };
-
-  const onTemplateClear = () => {
-    setTotalSize(0);
-  };
-
-  const headerTemplate = (options) => {
-    const { className, chooseButton, uploadButton, cancelButton } = options;
-    const value = totalSize / 10000;
-    const formatedValue = fileUploadRef && fileUploadRef.current ? fileUploadRef.current.formatSize(totalSize) : '0 B';
-
-    return (
-        <div className={className} style={{ backgroundColor: 'transparent', display: 'flex', alignItems: 'center' }}>
-            {chooseButton}
-            {uploadButton}
-            {cancelButton}
-            <div className="flex align-items-center gap-3 ml-auto">
-                <span>{formatedValue} / 1 MB</span>
-                <ProgressBar value={value} showValue={false} style={{ width: '10rem', height: '12px' }}></ProgressBar>
-            </div>
-        </div>
-    );
-  };
-
-/*   const itemTemplate = (file, props) => {
-    const isImage = file.type.startsWith('image');
-    const isPDF = file.type === 'application/pdf';
-
-    return (
-        <div className="flex align-items-center flex-wrap">
-          
-          {isImage ? (<div className="flex align-items-center" style={{ width: '65%' }}>
-                {URL.createObjectURL(file) && <img alt={file.name} role="presentation" src={URL.createObjectURL(file)} style={{width: '300px', height: '200px'}}/>}
-                
-                <span className="d-flex flex-colum text-left ml-3">
-                    <small className='mr-2'>{file.name}</small>
-                    <br></br>
-                    <small>{new Date().toLocaleDateString()}</small>
-                </span>
-            </div>) : isPDF ? (
-              <div className="flex align-items-center" style={{ width: '65%' }}>
-              <i className="pi pi-file-pdf p-mr-1" style={{ fontSize: '7rem', color: '#ff0000' }} />
-              <span className="d-flex flex-colum text-left ml-3">
-                  <small className='mr-2'>{file.name}</small>
-                  <br></br>
-                  <small>{new Date().toLocaleDateString()}</small>
-              </span>
-          </div>
-          
-        ) : (
-          <></>
-        )}
-            
-            <Tag value={props.formatSize} severity="warning" className="px-3 py-2 h-10 m-auto" />
-            <button
-                type="button"
-                icon="pi pi-times"
-                className="p-button p-button-danger p-button-text"
-                onClick={() => onTemplateRemove(file, props.onRemove)}
-            >
-            <i className="pi pi-trash" />
-            </button>
-        </div>
-    );
-}; */
-
-const itemTemplate = (file, props) => {
-  const isImage = file.type.startsWith('image');
-  const isPDF = file.type === 'application/pdf';
-
-  console.log(file);
-
-  return (
-    <div className="flex align-items-center flex-wrap" style={{ position: 'relative'}}>
-      {isImage ? (
-        <div className="image-container" style={{ position: 'relative', width: "300px", backgroundColor: "green", margin: "auto"}}>
-         
-          <small  style={{ position: 'absolute', bottom: 0, left: 0, zIndex: 1, backgroundColor: '#010a1c', width: '300px', height:'55px', paddingRight: 12, color: "white"}}>{file.name}</small>
-          <button
-            type="button"
-            icon="pi pi-times"
-            className="p-button p-button-danger p-button-text"
-            style={{ position: 'absolute', bottom: 2, right: 20, zIndex: 1, backgroundColor: '#fa7878', borderRadius: "50%", width: '35px', height:'35px', paddingLeft: 9, color: "white"}}
-            onClick={() => onTemplateRemove(file, props.onRemove)}
-          >
-            <i className="pi pi-trash" />
-          </button>
-          <button
-            type="button"
-            icon="pi pi-download"
-            className="p-button p-button-info p-button-text"
-            style={{ position: 'absolute', bottom: 2, right: 60, zIndex: 1, backgroundColor: '#7eb9f7', borderRadius: "50%", width: '35px', height:'35px', paddingLeft: 9, color: "white"}}
-            
-          >
-            <i className="pi pi-download" />
-          </button>
-          <Tag value={props.formatSize} severity="warning" className="px-3 py-2 h-7 m-auto" style={{ position: 'absolute', bottom: 5, left: 10, zIndex: 1, }} />
-          {URL.createObjectURL(file) && (
-            <img alt={file.name} role="presentation" src={URL.createObjectURL(file)} style={{ width: '300px', height: '200px', zIndex: 0 }} />
-          )}
-        </div>
-      ) : isPDF ? (
-        <div className="image-container" style={{ position: 'relative', width: "300px", margin: "auto"}}>
-         
-          <small  style={{ position: 'absolute', bottom: 0, left: 0, zIndex: 1, backgroundColor: '#010a1c', width: '300px', height:'55px', paddingRight: 12, color: "white"}}>{file.name}</small>
-          <button
-            type="button"
-            icon="pi pi-times"
-            className="p-button p-button-danger p-button-text"
-            style={{ position: 'absolute', bottom: 2, right: 20, zIndex: 1, backgroundColor: '#fa7878', borderRadius: "50%", width: '35px', height:'35px', paddingLeft: 9, color: "white"}}
-            onClick={() => onTemplateRemove(file, props.onRemove)}
-          >
-            <i className="pi pi-trash" />
-          </button>
-          <button
-            type="button"
-            icon="pi pi-download"
-            className="p-button p-button-info p-button-text"
-            style={{ position: 'absolute', bottom: 2, right: 60, zIndex: 1, backgroundColor: '#7eb9f7', borderRadius: "50%", width: '35px', height:'35px', paddingLeft: 9, color: "white"}}
-            
-          >
-            <i className="pi pi-download" />
-          </button>
-          <Tag value={props.formatSize} severity="warning" className="px-3 py-2 h-7 m-auto" style={{ position: 'absolute', bottom: 5, left: 10, zIndex: 1, }} />
-          <div style={{width: "300px", height: "200px"}}>
-          <i className="pi pi-file-pdf p-mr-1" style={{ fontSize: '7rem', color: '#ff0000', zIndex: 0, textAlign: "center"}} />
-          </div>
-          
-        </div>
-      ) : (
-        <></>
-      )}
-    </div>
-  );
-};
-
-
-
-
-
-/* const itemTemplate = (file) => {
-  const isImage = file.type.startsWith('image');
-  const isPDF = file.type === 'application/pdf';
-
-  return (
-    <div className="p-d-flex p-ai-center p-flex-wrap">
-      <div className="p-mr-2">
-        {isImage ? (
-          <img
-            src={URL.createObjectURL(file)}
-            alt={file.name}
-            style={{ maxWidth: '500px', maxHeight: '500px', marginRight: '5px' }}
-          />
-        ) : isPDF ? (
-          <i className="pi pi-file-pdf p-mr-1" style={{ fontSize: '2rem', color: '#ff0000' }} />
-        ) : (
-          <i className="pi pi-file p-mr-1" style={{ fontSize: '2rem' }} />
-        )}
-      </div>
-      <div>
-        <div>{file.name}</div>
-        <small>{file.size} bytes</small>
-      </div>
-      <div>
-      <button className="p-button p-button-danger p-button-text">
-          <i className="pi pi-trash" />
-      </button>
-      </div>
-    </div>
-  );
-};
- */
-
-
-  const emptyTemplate = () => {
-    return (
-        <div className="flex align-items-center flex-column">
-            <i className="pi pi-image mt-3 p-5" style={{ fontSize: '5em', borderRadius: '50%', backgroundColor: 'var(--surface-b)', color: 'var(--surface-d)' }}></i>
-            <span style={{ fontSize: '1.2em', color: 'var(--text-color-secondary)' }} className="my-5">
-                Arrastra la o las imagenes aqui
-            </span>
-        </div>
-    );
-  };
-
-  const chooseOptions = { icon: 'pi pi-fw pi-images', iconOnly: true, className: 'custom-choose-btn p-button-rounded p-button-outlined' };
-  const uploadOptions = { icon: 'pi pi-fw pi-cloud-upload', iconOnly: true, className: 'custom-upload-btn p-button-success p-button-rounded p-button-outlined' };
-  const cancelOptions = { icon: 'pi pi-fw pi-times', iconOnly: true, className: 'custom-cancel-btn p-button-danger p-button-rounded p-button-outlined' };
 
   const currentCatalogo = dataProyectoSeleccionado?.catalogos?.[campo?.nombreCampo]?.catalogo || [];
   const defaultOption = selectedValueCatalogoInput || '';
@@ -431,19 +211,21 @@ const itemTemplate = (file, props) => {
     })
   } */
 
-  const handlebtnEvidencias = async () => {
+  const handlebtnEvidencias = async (campo) => {
+
+    setIdCampo(campo.idCampo);
     
     var cont = 0;
     // Array para almacenar objetos File
     const filesArray = [];
+    const idFiles = [];
   
     // Función para descargar un archivo desde la URL y convertirlo en un objeto File
-    const downloadAndCreateFile = async (url) => {
+    const downloadAndCreateFile = async (url, id) => {
       try {
         const response = await fetch(url);
         const blob = await response.blob();
 
-         console.log(url);
     
         // Obtener el tipo de contenido del encabezado de la respuesta
         var contentType = response.headers.get('content-type') || '';
@@ -465,6 +247,8 @@ const itemTemplate = (file, props) => {
         // Crear el objeto File con el tipo y el nombre correctos
         const file = new File([blob], filename, { type: contentType });
         filesArray.push(file);
+        idFiles.push(id);
+        console.log(idFiles);
       } catch (error) {
         console.error(`Error al descargar el archivo desde ${url}:`, error);
       }
@@ -474,7 +258,7 @@ const itemTemplate = (file, props) => {
     // Iterar sobre las URLs y descargar los archivos
      await Promise.all(
       dataProyectoSeleccionado.respuestaCheckboxEvidencia.map((evidence) =>
-        {downloadAndCreateFile(evidence.url);
+        {downloadAndCreateFile(evidence.url, evidence.idfoto);
           //console.log(evidence.url);
         cont++;}
       )
@@ -482,9 +266,12 @@ const itemTemplate = (file, props) => {
   
     // Ahora filesArray contiene objetos File descargados desde las URLs
     console.log(filesArray);
+    
+    setIdFiles(idFiles);
     setArchivosSeleccionados(filesArray);
+    setFilesArray(filesArray);
     setArchivos(filesArray);
-
+    setArchivosEliminar([]);
     setTimeout(() => {
       setModalEvidencia(true);
     }, 1000);
@@ -754,7 +541,7 @@ const itemTemplate = (file, props) => {
             type='button'
               className="m-auto h-10 px-4 py-1 bg-[#245A95] hover:bg-[#1F4973] text-white text-lg font-bold rounded-full shadow-md transition duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-[#245A95]"
               onClick={()=>{
-                handlebtnEvidencias();
+                handlebtnEvidencias(campo);
               }}
             >
               <ion-icon name="images"></ion-icon> Subir evidencia
@@ -765,7 +552,7 @@ const itemTemplate = (file, props) => {
       </div>
 
   {/* MODAL GENERAR FIRMA */}
-  <Dialog header='' visible={modalFirmaAbrirCerrar} style={{ width: '50vw' }} onHide={() => setModalFirmaAbrirCerrar(false)}>
+  <Dialog header='' visible={modalFirmaAbrirCerrar} style={{ width: '40vw' }} onHide={() => setModalFirmaAbrirCerrar(false)}>
       <SignatureCanvas 
         ref={sigCanvas}
         canvasProps={{
@@ -816,7 +603,7 @@ const itemTemplate = (file, props) => {
     </span>
     </Dialog>
     </> */}
-    <Dialog header='Evidencia' visible={modalEvidencia} style={{ width: '75vw', height:'40vw' }} onHide={() => setModalEvidencia(false)}>
+    <Dialog header='Evidencia' visible={modalEvidencia} style={{ width: '70vw', height:'40vw' }} onHide={() => setModalEvidencia(false)}>
     <span className='p-float-label relative'>
       <Toast ref={toast}></Toast>
 
@@ -867,8 +654,7 @@ const itemTemplate = (file, props) => {
   <button
     type="button"
     onClick={() => {
-      setArchivos([]);
-      setArchivosSeleccionados([]);
+      borrarEvidencia();
     }}
     className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-5 py-2.5"
   >
@@ -881,7 +667,7 @@ const itemTemplate = (file, props) => {
   <div className="flex align-items-center flex-wrap" style={{ position: 'relative', display: 'flex', flexWrap: 'wrap'}}>
     {archivosSeleccionados.map((archivo, index) => (
       <div key={index} className="image-container" style={{ position: 'relative', width: 'calc(33.33% - 10px)', margin: '5px', boxSizing: 'border-box' }}>
-        <small  style={{ position: 'absolute', bottom: 0, left: 0, zIndex: 1, backgroundColor: '#010a1c', width: '300px', height:'55px', paddingRight: 12, color: "white"}}>{archivo.name}</small>
+        <small  style={{ position: 'absolute', bottom: 0, left: 0, zIndex: 1, backgroundColor: '#010a1c', width: '100%', height:'55px', paddingRight: 12, color: "white"}}>{archivo.name}</small>
         <button
           type="button"
           className="p-button p-button-danger p-button-text"
@@ -900,10 +686,10 @@ const itemTemplate = (file, props) => {
         </button>
       
         {archivo.type.startsWith('image/') && (
-          <img alt={archivo.name} role="presentation" src={URL.createObjectURL(archivo)} style={{ width: '300px', height: '200px', zIndex: 0 }} />
+          <img alt={archivo.name} role="presentation" src={URL.createObjectURL(archivo)} style={{ width: '100%', height: '200px', zIndex: 0 }} />
         )}
         {archivo.type === 'application/pdf' && (
-          <div style={{width: "300px", height: "200px"}}>
+          <div style={{width: "100%", height: "200px"}}>
               <iframe
                   title={archivo.name}
                   src={URL.createObjectURL(archivo)}

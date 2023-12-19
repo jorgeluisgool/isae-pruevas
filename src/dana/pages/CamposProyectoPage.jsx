@@ -70,7 +70,7 @@ const CamposProyectoPage = () => {
         })
         .catch(error => console.log(error));
 
-        setShowDialog(true);
+        // setShowDialog(true);
   }; 
 
   const handleDialogClose = () => {

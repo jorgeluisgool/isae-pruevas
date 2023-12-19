@@ -118,7 +118,8 @@ const AcordionCampos = ({ arreglo2, dataArchivoExcel, data, index, setDataArchiv
           <div className="flex items-center justify-around">
             <div
               onClick={() => toggleShow(index)}
-              className="hs-accordion-toggle hs-accordion-active:text-blue-600 py-3 inline-flex items-center gap-x-3 w-full text-left text-gray-800 transition text-lg font-black hover:text-gray-500 dark:hs-accordion-active:text-blue-500 dark:text-gray-200 dark:hover:text-gray-400"
+              className="hs-accordion-toggle hs-accordion-active:text-blue-600 py-3 inline-flex items-center gap-x-3 w-full text-left
+               transition text-lg font-black hover:text-gray-500 dark:hs-accordion-active:text-blue-500 text-[#245A95] dark:hover:text-gray-400"
               aria-controls="hs-basic-nested-collapse-one"
             >
               <div className={`text-2xl text-[#245A95] ${show === index ? "rotate-180" : ""}`}>

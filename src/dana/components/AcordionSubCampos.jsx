@@ -91,7 +91,7 @@ const AcordionSubCampos = ({data, acordionEstate, index,indPadre}) => {
             <ion-icon name="reorder-three-outline"></ion-icon>
           </span>
           <div className='flex items-center justify-around'>
-            <div onClick={() => toggleShow(index)} className="rounded p-4 hs-accordion-toggle hs-accordion-active:text-blue-600 py-1 inline-flex items-center gap-x-2 w-full font-black text-left text-[#245A95] text-xl transition hover:text-gray-500 dark:hs-accordion-active:text-blue-500 dark:text-gray-200 dark:hover:text-gray-400" aria-controls="hs-basic-nested-sub-collapse-one">
+            <div onClick={() => toggleShow(index)} className="rounded p-4 hs-accordion-toggle hs-accordion-active:text-blue-600 py-1 inline-flex items-center gap-x-2 w-full font-black text-left text-[#245A95] text-xl transition hover:text-gray-500 dark:hs-accordion-active:text-blue-500" aria-controls="hs-basic-nested-sub-collapse-one">
               <div className={`text-2xl text-[#245A95] p-2 right-12 ${showSub ? "rotate-180" : ""}`}>
                 <ion-icon name="chevron-down"></ion-icon>
               </div>

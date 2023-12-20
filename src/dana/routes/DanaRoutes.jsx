@@ -11,6 +11,7 @@ import EjemploFormularioRegistros from '../components/EjemploFormularioRegistros
 import { ClientesRegistrosPage } from '../pages/ClientesRegistrosPage'
 import { EjemploMultiFile } from '../components/ejemploMultiFile'
 import { MultiFile } from '../components/MultiFile'
+import { UsuariosPage } from '../pages/UsuariosPage'
 
 export const DanaRoutes = () => {
 
@@ -27,6 +28,7 @@ export const DanaRoutes = () => {
               <Route path='camposproyecto' element={ <CamposProyectoPage/>}/>
               <Route path='registros' element={ <RegistrosPage/>}/>
               <Route path='clientes' element={ <ClientesRegistrosPage/>}/>
+              <Route path='usuarios' element={ <UsuariosPage />}/>
               <Route path='/' element={<Navigate to='menu'/>}/>
             </Route>
           </Routes>

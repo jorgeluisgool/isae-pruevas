@@ -23,6 +23,29 @@ export const ClientesRegistrosPage = () => {
      fetchData();
    }, []);
 
+   // funcion que hace que al hacer refesh se mantenga el usuario activo
+   useEffect(() => {
+    const loggedInUser = localStorage.getItem("user");
+  
+    const fetchData = () => {
+      if (loggedInUser) {
+        const foundUser = JSON.parse(loggedInUser);
+        console.log(foundUser);
+        setUserAuth(foundUser);
+      }
+    };
+  
+    // Ejecutar fetchData después de 1 segundo
+    const timeoutId = setTimeout(() => {
+      fetchData();
+    }, 2000);
+  
+    // Limpiar el temporizador en caso de que el componente se desmonte antes de que se complete el tiempo de espera
+    // return () => clearTimeout(timeoutId);
+  
+  }, []); 
+  
+
   return (
     <>
       <h1 className="pt-6 pl-3 xl:pl-20 text-4xl font-black text-[#245A95]">Clientes</h1>

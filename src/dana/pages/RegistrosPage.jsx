@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import RegistrosForm from '../components/RegistrosForm'
 import TableRegistros from '../components/TablaRegistros'
 import { Dialog } from 'primereact/dialog';
@@ -57,7 +57,7 @@ export const RegistrosPage = () => {
   }
 
   // Aqui obtengo el context del cliente seleccionado
-  const { clienteSeleccionado, userAuth } = useAuth();
+  const { clienteSeleccionado, setUserAuth, userAuth } = useAuth();
 
   const { data: usuarios, loading } = useFetchUsers();
   const { data: proyectosClientes, loadingProyectosClientes } = useFetchProjetsClientes(clienteSeleccionado);
@@ -229,6 +229,17 @@ export const RegistrosPage = () => {
 
       setDataProyectoSeleccionado(newData);
   }
+
+  // funcion que hace que al hacer refesh se mantenga el usuario activo
+  useEffect(() => {
+    const loggedInUser = localStorage.getItem("user");
+
+    if (loggedInUser) {
+      const foundUser = JSON.parse(loggedInUser);
+      console.log(foundUser)
+      setUserAuth(foundUser);
+    }
+  }, []);
 
   
 

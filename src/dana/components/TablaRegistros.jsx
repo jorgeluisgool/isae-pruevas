@@ -23,6 +23,38 @@ const TableRegistros = ({data, headers, onDelete, onEdit, selectedRows, isSelect
 
   // console.log(usuariosSeleccionados[0].idusuario)
 
+
+  const handlePDF = (event, registro) => {
+    // Lógica específica del botón
+    event.preventDefault(); // Si es necesario
+    event.stopPropagation(); // Si es necesario
+    
+    fetch(`${api}/generar/nuevo/documento/${registro.idinventario}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json' 
+      },
+       
+    })
+      .then(response => console.log(response.text()))
+      .then(respuesta => console.log(respuesta))
+      .catch(error => console.log(error));
+
+      //  if (registro.estatus==='CERRADO') {
+         event.stopPropagation();
+          fetch(`${api}/abrir/documento/inventario/${registro.idinventario}`, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json' 
+            },
+            //  body: JSON.stringify(usuario.target.value) 
+          })
+            .then(response => console.log(response.blob))
+            .catch(error => console.log(error));
+         window.open(`${api}/abrir/documento/inventario/${registro.idinventario}`,'_blank')
+      //  }
+  };
+
   return (
     <>
     {cargando && (
@@ -150,8 +182,9 @@ const TableRegistros = ({data, headers, onDelete, onEdit, selectedRows, isSelect
               <div className="flex space-x-4">
                 <button 
                   onClick={ (event)=>{
-                      if (registro.estatus==='CERRADO') {
-                        event.stopPropagation();
+                    handlePDF(event, registro);
+                    //event.stopPropagation();
+                      /* if (registro.estatus==='CERRADO') {
                         // fetch(`${api}/abrir/documento/inventario/${registro.idinventario}`, {
                         //   method: 'GET',
                         //   headers: {
@@ -162,10 +195,10 @@ const TableRegistros = ({data, headers, onDelete, onEdit, selectedRows, isSelect
                         //   .then(response => console.log(response.blob))
                         //   .catch(error => console.log(error));
                         window.open(`${api}/abrir/documento/inventario/${registro.idinventario}`,'_blank')
-                      }
+                      } */
                     }
                   }
-                  className="w-14 h-14 object-cover active:scale-[.98] py-3 bg-transparent hover:bg-[#245A95] hover:text-white text-[#245A95] text-2xl font-bold inline-block rounded-full bg-primary p-2 uppercase leading-normal shadow-md transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] mt-4">
+                  className="w-14 h-14 object-cover active:scale-[.98] py-3 bg-transparent hover:bg-[#245A95] hover:text-white text-[#245A95] text-2xl font-bold inline-block rounded-full bg-primary p-2 uppercase leading-normal shadow-md transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] mt-4 ">
                   <i className="pi pi-file-pdf" style={{ fontSize: '1.5rem' }}></i>
                 </button>
               </div>
@@ -173,7 +206,7 @@ const TableRegistros = ({data, headers, onDelete, onEdit, selectedRows, isSelect
             <td className="px-6">
               <div className="flex space-x-4">        
               <button
-                type="submit"
+                type="button"
                 onClick={() => { setModalAbrirCerrar(true)}}
                 className="w-14 h-14 object-cover active:scale-[.98] py-3 bg-transparent hover:bg-[#245A95] hover:text-white text-[#245A95] text-2xl font-bold inline-block rounded-full bg-primary p-2 uppercase leading-normal shadow-md transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] mt-4">
                 <ion-icon name="document-attach"></ion-icon>

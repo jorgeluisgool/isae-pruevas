@@ -17,10 +17,12 @@ import { Dialog } from 'primereact/dialog';
 
 import '../../styles/sigCanvas.css'
 import {parse, format, isValid, parseISO } from 'date-fns';
-import { guardarEvidencias } from './functions/Functions';
+import { guardarEvidencias, savePhotosFromURL, saveSignatureFromURL } from './functions/Functions';
 
 
-export const ComponentTipoCampo = ({campo, dataProyectoSeleccionado, values, indexAgrupacion, indexCampo, itemagrupacion, setFiles, setIdCampo, files}) => {
+export const ComponentTipoCampo = ({campo, dataProyectoSeleccionado, values, indexAgrupacion, indexCampo, itemagrupacion, setFiles, setIdCampo, files, signatures, setSignatures, photos, setPhotos}) => {
+
+  console.log(dataProyectoSeleccionado);
 
   const { setFieldValue } = useFormikContext();
 
@@ -29,6 +31,10 @@ export const ComponentTipoCampo = ({campo, dataProyectoSeleccionado, values, ind
   const [filesArray, setFilesArray] = useState([]);
 
   const [archivos, setArchivos] = useState([]);
+
+  const [photoURL, setPhotoURL] = useState("");
+  const [booleanPhoto, setBooleanPhoto] = useState("");
+  const [booleanSignature, setBooleanSiganture] = useState("");
 
   const [idFiles, setIdFiles] =  useState([]);
   const [archivosEliminar, setArchivosEliminar] = useState([]);
@@ -87,12 +93,10 @@ export const ComponentTipoCampo = ({campo, dataProyectoSeleccionado, values, ind
     nuevosArchivos.splice(index, 1);
     nuevosIds.splice(index, 1);
     setArchivosEliminar(prevEliminar => [...prevEliminar, idFiles[index]])
-    console.log(archivosEliminar);
-    console.log(idFiles[index]);
     setArchivosSeleccionados(nuevosArchivos);
     setArchivos(nuevosArchivos);
     setIdFiles(nuevosIds);
-    console.log(idFiles[index]);
+    
   };
 
   const subirArchivos = (e) => {
@@ -145,6 +149,37 @@ export const ComponentTipoCampo = ({campo, dataProyectoSeleccionado, values, ind
     setArchivosEliminar([]);
   };
 
+  const getSiganture = () =>{
+    dataProyectoSeleccionado.respuestaFirmas.map((firm)=>{
+      if(firm.camposProyecto.idcamposproyecto == campo.idCampo){
+        setImageURL(firm.url);
+      }
+      if(firm.url!==''){
+        setBooleanSiganture("#5DC460");
+      }else{
+        setBooleanSiganture("#f44336");
+      }
+    })
+  }
+
+  const getPhoto = () =>{
+    dataProyectoSeleccionado.respuestaFotos.map((firm)=>{
+      if(firm.campoProyecto.idcamposproyecto == campo.idCampo){
+        setPhotoURL(firm.url);
+      }
+      if(firm.url!==''){
+        setBooleanPhoto("#5DC460");
+      }else{
+        setBooleanPhoto("#f44336");
+      }
+    })
+  }
+
+  useEffect(() => {
+    getSiganture();
+    getPhoto();
+  }, []);
+  
 
 
 
@@ -166,11 +201,80 @@ export const ComponentTipoCampo = ({campo, dataProyectoSeleccionado, values, ind
 
   const [imageURL, setImageURL] = useState(null);
   const [modalAbrirFirma, setModalAbrirFirma] = useState(false);
+  const [modalAbrirFoto, setModalAbrirFoto] = useState(false);
   const [modalFirmaAbrirCerrar, setModalFirmaAbrirCerrar] = useState(false);
   const [modalEvidencia, setModalEvidencia] = useState(false) 
   const sigCanvas = useRef({})
   const limpiar = () => sigCanvas.current.clear()
-  const guardar = () => setImageURL(sigCanvas.current.getTrimmedCanvas().toDataURL("image/png"))
+ /*  const guardar = (campo, idInventario) => {
+
+  setSignatures(saveSignatureFromURL(sigCanvas.current.getTrimmedCanvas().toDataURL("image/png"), campo, idInventario));
+
+  console.log(signatures);
+  setImageURL(sigCanvas.current.getTrimmedCanvas().toDataURL("image/png"))
+  setModalFirmaAbrirCerrar(false);
+} */
+
+const guardar = async (campo, idInventario) => {
+  try {
+    // Obtener la firma actual o inicializar un array vacío si es nulo o no es un array
+    const currentSignatures = Array.isArray(signatures) ? [...signatures] : [];
+
+    // Esperar a que la promesa se resuelva
+    const signatureData = await saveSignatureFromURL(
+      sigCanvas.current.getTrimmedCanvas().toDataURL("image/png"),
+      campo,
+      idInventario
+    );
+
+    // Agregar la nueva firma al array existente
+    currentSignatures.push(signatureData);
+
+    // Actualizar el estado con el nuevo array de firmas
+    setSignatures(currentSignatures);
+    console.log(currentSignatures);
+
+    setImageURL(sigCanvas.current.getTrimmedCanvas().toDataURL("image/png"));
+    setModalFirmaAbrirCerrar(false);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const inputFileRef = React.createRef();
+
+  // Función para abrir la ventana de selección de archivo
+  const handleClick = () => {
+    inputFileRef.current.click();
+  };
+
+  // Función que se ejecuta al seleccionar un archivo
+  const handleFileChange = async (event, campo, idInventario) => {
+    const selectedFile = event.target.files[0];
+    if (selectedFile) {
+      try{
+      const url = URL.createObjectURL(selectedFile);
+      setPhotoURL(url);
+
+      const currentPhotos = Array.isArray(photos) ? [...photos] : [];
+
+      const photoData = await savePhotosFromURL(url,campo, idInventario);
+
+      currentPhotos.push(photoData);
+
+      setPhotos(currentPhotos);
+
+      console.log(currentPhotos);
+
+        
+    }catch(error){
+      console.log(error);
+    }
+    }
+    // Puedes manejar el archivo seleccionado aquí, por ejemplo, subirlo a un servidor
+    console.log('Archivo seleccionado:', selectedFile);
+  };
+
 
   const toast = useRef(null);
   
@@ -178,7 +282,7 @@ export const ComponentTipoCampo = ({campo, dataProyectoSeleccionado, values, ind
   // const [hora, setHora] = useState(parseHora(campo.valor));
 
   const [hora, setHora] = useState(() => {
-    const parsedHora = parseHora(campo.valor);
+    const parsedHora = parseHora(campo.valor || "");
 
     if (isValid(parsedHora)) {
       return parsedHora;
@@ -279,6 +383,8 @@ export const ComponentTipoCampo = ({campo, dataProyectoSeleccionado, values, ind
 
     
   };
+
+  
   
 
 
@@ -485,46 +591,56 @@ export const ComponentTipoCampo = ({campo, dataProyectoSeleccionado, values, ind
 
         {campo.tipoCampo === 'FOTO' && (
           <span className='p-float-label relative'>
-            <span className="bg-[#4CAF50] border border-gray-300 p-2 rounded-md">
+           {/*  <span className="bg-[#4CAF50] border border-gray-300 p-2 rounded-md">
               <i className="pi pi-check-square text-white font-bold text-2xl"></i>
-            </span>
+            </span> */}
             <Field
-              className="w-full appearance-none focus:outline-none bg-transparent"
+              className="w-full appearance-none focus:outline-none bg-transparent ml-1 mr-1"
               as={InputText}
               name={campo.nombreCampo}
               defaultValue={campo.valor}
               maxLength={campo.longitud}
               keyfilter={RegExp(`[0-9A-Za-z ${campo.restriccion.replace('[','').replace(']','')}]`)}
               // onChange={''} 
-            />
-            <span className="hover:bg-[#245A95] hover:text-white cursor-pointer border border-[#245A95] p-2 rounded-md">
-              <i className="pi pi-camera font-bold text-2xl"></i>
-            </span>
-            <span className="hover:bg-[#245A95] hover:text-white cursor-pointer border border-[#245A95] p-2 rounded-md">
-              <i className="pi pi-image font-bold text-2xl"></i>
-            </span>
+            />   
+            
+
+<div className="flex">
+
+   
+  <span
+    className="hover:bg-[#245A95] hover:text-white cursor-pointer border border-[#245A95] p-2 rounded-md mr-2 ml-2"
+    onClick={handleClick}
+  >
+    <i className="pi pi-camera font-bold text-2xl"></i>
+  </span>
+
+  <input
+    type="file"
+    ref={inputFileRef}
+    style={{ display: 'none'}}
+    onChange={(event) => handleFileChange(event, campo, dataProyectoSeleccionado.listaAgrupaciones[0].idInventario)}
+  />
+
+  <span className="hover:bg-[#245A95] hover:text-[#245A95] cursor-pointer border border-[#fff] p-2 rounded-md ml-2 text-white hover:border-[#245A95]"
+  style={{background: booleanPhoto,
+  }} 
+    onClick={() => {
+      setModalAbrirFoto(true);
+    }}
+  >
+    <i className="pi pi-image font-bold text-2xl"></i>
+  </span>
+</div>
+
           </span>
         )}
-
-        {/* {campo.tipoCampo === 'FIRMA' && (
-          <div className='grid grid-cols-2'>
-            <div>
-              <span className="bg-[#4CAF50] border border-gray-300 p-2 rounded-md mr-1">
-                <i className="pi pi-check-square text-white text-2xl"></i>
-              </span>
-              <button
-                type="submit"
-                className="m-auto h-10 px-4 py-1 bg-[#245A95] hover:bg-[#1F4973] text-white text-lg font-bold rounded-md shadow-md transition duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-[#245A95]"
-                onClick={()=>{
-                  setModalFirmaAbrirCerrar(true);
-                }}
-              >
-                <ion-icon name="create"></ion-icon> Firmar
-              </button>
-            </div>
+          {/* <div className='grid grid-cols-2'> */}
+         {campo.tipoCampo === 'FIRMA' && (          
+            <div className='grid h-30 '>
             <div>
               <img
-                className='h-30 w-35 bg-white p-2 cursor-pointer'
+                className='h-30 w-35 bg-white p-2 cursor-pointer rounded-md shadow-md'
                 src={imageURL}
                 alt='Firma'
                 onClick={()=>{
@@ -532,8 +648,28 @@ export const ComponentTipoCampo = ({campo, dataProyectoSeleccionado, values, ind
                 }}
               />
             </div>
+            <div className='m-auto mt-3'>
+             
+              <button
+                type="button"
+                className="m-auto h-10 px-4 py-1 bg-[#245A95] hover:bg-[#1F4973] text-white text-lg font-bold rounded-md shadow-md transition duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-[#245A95]"
+                onClick={()=>{
+                  setModalFirmaAbrirCerrar(true);
+                }}
+              >
+                <ion-icon name="create"></ion-icon> Firmar
+              </button>
+              <span className=" border border-gray-300 p-2 rounded-md mr-1"
+              style={{background: booleanSignature,
+              }} >
+                <i className="pi pi-check-square text-white text-2xl"></i>
+              </span>
+            </div>
+            
           </div>
-        )} */}
+      
+
+        )} 
 
         {campo.tipoCampo === 'CHECKBOX-EVIDENCIA' && (
           <div>
@@ -552,7 +688,7 @@ export const ComponentTipoCampo = ({campo, dataProyectoSeleccionado, values, ind
       </div>
 
   {/* MODAL GENERAR FIRMA */}
-  <Dialog header='' visible={modalFirmaAbrirCerrar} style={{ width: '40vw' }} onHide={() => setModalFirmaAbrirCerrar(false)}>
+  <Dialog header={campo.nombreCampo} visible={modalFirmaAbrirCerrar} style={{ width: '40vw', backgroundColor: "blue" }} onHide={() => setModalFirmaAbrirCerrar(false)} className="bg-[#245A95]">
       <SignatureCanvas 
         ref={sigCanvas}
         canvasProps={{
@@ -561,16 +697,16 @@ export const ComponentTipoCampo = ({campo, dataProyectoSeleccionado, values, ind
       <button 
         className="m-auto h-10 px-4 py-1 mt-2 bg-[#245A95] hover:bg-[#1F4973] text-white text-lg font-bold rounded-full shadow-md transition duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-[#245A95]"
         onClick={() => {
-          setModalFirmaAbrirCerrar(false);
           limpiar();
         }}
       >
         <ion-icon name="trash"></ion-icon> Limpiar
       </button>
       
-        <button 
+        <button
+        type='button'
           className="m-auto h-10 px-4 py-1 mt-2 ml-2 bg-[#245A95] hover:bg-[#1F4973] text-white text-lg font-bold rounded-full shadow-md transition duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-[#245A95]"
-          onClick={guardar}
+          onClick={() =>guardar(campo, dataProyectoSeleccionado.listaAgrupaciones[0].idInventario)}
         >
           <ion-icon name="checkmark"></ion-icon> Aceptar
         </button>
@@ -584,34 +720,22 @@ export const ComponentTipoCampo = ({campo, dataProyectoSeleccionado, values, ind
       />
     </Dialog>
 
-    {/* MODAL SUBIR EVIDENCIA */}
-    {/* <Dialog header='Evidencia' visible={modalEvidencia} style={{ width: '40vw' }} onHide={() => setModalEvidencia(false)}>
-    <span className='p-float-label relative'>
-      <Toast ref={toast}></Toast>
-
-      <Tooltip target=".custom-choose-btn" content="Choose" position="bottom" />
-      <Tooltip target=".custom-upload-btn" content="Upload" position="bottom" />
-      <Tooltip target=".custom-cancel-btn" content="Clear" position="bottom" />
-
-      <FileUpload ref={fileUploadRef} name="demo[]" url="/api/upload" multiple accept="image/* ,application/pdf " maxFileSize={1000000}
-        onUpload={onTemplateUpload} onSelect={onTemplateSelect} onError={onTemplateClear} onClear={onTemplateClear}
-        headerTemplate={headerTemplate} itemTemplate={itemTemplate} emptyTemplate={emptyTemplate}
-        chooseOptions={chooseOptions} uploadOptions={uploadOptions} cancelOptions={cancelOptions}
-        files={filesArray}
+    {/* MODAL ABRIR IMAGEN */}
+    <Dialog header='FOTO' visible={modalAbrirFoto} style={{ width: '40vw' }} onHide={() => setModalAbrirFoto(false)}>
+    <div className=''>
+    <img
+        className='bg-white p-2 m-auto'
+        src={photoURL}
+        alt='Foto'
+        style={{ width: '50%' }}
       />
-      
-    </span>
+      </div>
     </Dialog>
-    </> */}
+
     <Dialog header='Evidencia' visible={modalEvidencia} style={{ width: '70vw', height:'40vw' }} onHide={() => setModalEvidencia(false)}>
     <span className='p-float-label relative'>
       <Toast ref={toast}></Toast>
 
-
-
-     
-{/*       <button className="btn btn-outline btn-info" onClick={()=>insertarArchivos()} >Insertar Archivos</button>
- */}
       <div
       id='drop-area'
       onDragOver={(e)=> handleDragOver(e)}
@@ -635,9 +759,6 @@ export const ComponentTipoCampo = ({campo, dataProyectoSeleccionado, values, ind
       file:text-sm file:font-semibold
       file:bg-blue-50 file:text-blue-700
       hover:file:bg-blue-100" />
-         
-        
-
       </div>
 
     

@@ -12,7 +12,7 @@ import { api } from '../helpers/variablesGlobales';
     console.log(values);
   };
 
-const RegistrosForm = ({usuarios, listaRegistros, setListaRegistros, usuariosSeleccionados, setUsuariosSeleccionados, proyectosClientes}) => {
+const RegistrosForm = ({usuarios, listaRegistros, setListaRegistros, usuariosSeleccionados, setUsuariosSeleccionados, proyectosClientes, setDataProyectoSeleccionado, setModalAbrirCerrar, setProyectoSeleccionado}) => {
 
   const [listaRegistrosValor, setListaRegistrosValor] = useState([]);
   const [listaProyectos, setListaProyectos] = useState([]);
@@ -37,7 +37,67 @@ const RegistrosForm = ({usuarios, listaRegistros, setListaRegistros, usuariosSel
     index === self.findIndex((o) => o.valor.trim() === obj.valor.trim())
   ); 
 
-  // console.log(listaRegistrosValor);
+  console.log(proyectosSeleccionados);
+
+  const handleDataProyecto = () =>{
+    const data = {
+      idproyecto: proyectosSeleccionados[0].idproyecto,
+      proyecto: proyectosSeleccionados[0].proyecto,
+      descripcion: proyectosSeleccionados[0].tipoproyecto.descripcion,
+      fechacreacion: proyectosSeleccionados[0].fechacreacion,
+    }
+
+    const fechaActual = new Date();
+
+
+    const año = fechaActual.getFullYear();
+    const mes = (fechaActual.getMonth() + 1).toString().padStart(2, '0'); // Los meses van de 0 a 11, por lo que sumamos 1
+    const dia = fechaActual.getDate().toString().padStart(2, '0');
+
+    // Formatear la fecha en el formato deseado (YYYY-MM-DD)
+    const fechaFormateada = `${año}-${mes}-${dia}`;
+
+    const newProject = {
+      estatus: "NUEVO",
+      fechacreacion: fechaFormateada,
+      folio: "REGISTRO",
+      idinventario: 0,
+      proyecto: proyectosSeleccionados[0]
+      
+
+    }
+
+    console.log("antes del fetch");
+
+    fetch(`${api}/obtener/datos/nuevo/registro`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    }).then((response) => response.json())
+    .then((responseData) => {
+      console.log(responseData);
+      setDataProyectoSeleccionado(responseData);
+      setProyectoSeleccionado(newProject);
+      setModalAbrirCerrar(true);
+    })
+    .catch((error) => console.log(error))
+    
+    
+    /* fetch(`${api}/obtener/datos/nuevo/registro`,{
+      method: 'POST',
+      headers:{
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data),
+    }).then((response) => response.json()).
+    then((responseData) =>{
+      setDataProyectoSeleccionado(responseData);
+      setModaAceptarlAbrirCerrar(true);
+    }).catch((error) => console.log(error)); */
+    
+  }
 
 
   const handleProyectoCliente = (proyecto) => {
@@ -62,7 +122,6 @@ const RegistrosForm = ({usuarios, listaRegistros, setListaRegistros, usuariosSel
 
 const handleUsuarioChange = (usuario) => {
   setUsuariosSeleccionados(usuario.target.value);
-
   if (usuario.target.value.length !== 0) {
     setCargando(true); // Activar ventana de carga
     const fetchPromises = usuario.target.value.map(async (usuario) => {
@@ -94,6 +153,8 @@ const handleUsuarioChange = (usuario) => {
   const handleProyectoChange = (proyecto) => {
     
     setProyectosSeleccionados([proyecto.target.value]);
+    setProyectoSeleccionado([proyecto.target.value]);
+    console.log([proyecto.target.value]);
     setCargando(true); // Activar ventana de carga
 
     const ListaUsuariosProyectos = {
@@ -132,26 +193,51 @@ const handleUsuarioChange = (usuario) => {
   const handleCampoChange = (campo) => {
     setCampoSeleccionado(campo.target.value);
     setCargando(true); // Activar ventana de carga
+    console.log(usuariosSeleccionados.length);
+    console.log(proyectosSeleccionados.idproyecto);
+    console.log(campo.target.value.campo);
 
-    fetch(`${api}/obtener/valores/busqueda`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        usuarios: usuariosSeleccionados,
-        proyecto: proyectosSeleccionados,
-        campo: campo.target.value,
-      }),
-    })
-      .then((response) => response.json())
-      .then((responseData) => {
-        setListaValores(responseData);
+    /* if(usuariosSeleccionados == 0){
+      fetch(`${api}/obtener/valores/busqueda/141/0`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: campo.target.value.campo,
       })
-      .catch((error) => console.log(error))
-      .finally(() => {
-        setCargando(false); // Desactivar ventana de carga una vez que se complete la carga
-      });
+        .then((response) => response.json())
+        .then((responseData) => {
+          console.log(responseData);
+          setListaValores(responseData);
+        })
+        .catch((error) => console.log(error))
+        .finally(() => {
+          setCargando(false); // Desactivar ventana de carga una vez que se complete la carga
+        });
+    } */
+      fetch(`${api}/obtener/valores/busqueda`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          usuarios: usuariosSeleccionados ? usuariosSeleccionados : [],
+          proyecto: proyectosSeleccionados,
+          campo: campo.target.value,
+        }),
+      })
+        .then((response) => response.json())
+        .then((responseData) => {
+          console.log(responseData);
+          setListaValores(responseData);
+        })
+        .catch((error) => console.log(error))
+        .finally(() => {
+          setCargando(false); // Desactivar ventana de carga una vez que se complete la carga
+        });
+    
+
+   
   };
 
   return (
@@ -334,7 +420,7 @@ const handleUsuarioChange = (usuario) => {
                         </div>
                         <div className="mt-8 mx-4 flex flex-col">
                           {
-                            listaValores.length === 0 ? <></> :
+                            listaValores.length === 0 ? <div></div> :
                             <div className='p-inputgroup flex-1'>
                                 <span className='p-float-label relative'>
                                   <Field
@@ -382,7 +468,16 @@ const handleUsuarioChange = (usuario) => {
                       >
                         <ion-icon name="eye" className="mr-2 text-2xl"></ion-icon> Ver todos
                       </button>
+                      <button
+                        type="button"
+                        // disabled={!formik.dirty || formik.isSubmitting}
+                        className="hover:shadow-slate-600 border h-10 px-4 bg-[#245A95] text-white text-lg font-bold rounded-full shadow-md duration-150 ease-in-out focus:outline-none active:scale-[1.20] transition-all hover:bg-sky-600"
+                        onClick={()=>handleDataProyecto()}
+                      >
+                        <ion-icon name="eye" className="mr-2 text-2xl"></ion-icon> Nuevo registro
+                      </button>
                     </div>
+                    
                     {/* <div className="flex">
                         <button type="submit" disabled={!formik.dirty || formik.isSubmitting} className="ml-auto w-14 h-14 object-cover active:scale-[.98] py-3 bg-transparent hover:bg-[#245A95] hover:text-white text-[#245A95] text-2xl font-bold inline-block rounded-full bg-primary p-2 uppercase leading-normal shadow-md transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] mt-4">
                             <ion-icon name="search"></ion-icon>

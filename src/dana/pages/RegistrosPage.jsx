@@ -14,11 +14,13 @@ import { api } from '../helpers/variablesGlobales';
 import { DialogConfirmacion } from '../../ui/components/DialogConfirmacion';
 import { DialogDuplicidad } from '../../ui/components/DialogDuplicidad';
 import { DialogRegistroGuardado } from '../../ui/components/DialogRegistroGuardado';
-import { guardarEvidencias } from '../components/functions/Functions';
+import { guardarEvidencias, newRegister, updateRegister } from '../components/functions/Functions';
 
 export const RegistrosPage = () => {
 
   const [files, setFiles] = useState([]);
+  const [signatures, setSignatures] = useState([]);
+  const [photos, setPhotos] = useState([]);
   const [idCampo, setIdCampo] = useState([]);
 
   const navigate = useNavigate();
@@ -41,6 +43,8 @@ export const RegistrosPage = () => {
   const [showAcordion, setShowAcordion] = useState(null);
   const [ventanaCarga, setVentanaCarga] = useState(false);
 
+
+
   const mandarDatos = {};
 
   const toggleShow = (index) => {
@@ -50,9 +54,6 @@ export const RegistrosPage = () => {
       setShowAcordion(index)
     }
   }
-   
-  console.log(dataProyectoSeleccionado);
-
 
   // Aqui obtengo el context del cliente seleccionado
   const { clienteSeleccionado, setUserAuth, userAuth } = useAuth();
@@ -61,6 +62,8 @@ export const RegistrosPage = () => {
   const { data: proyectosClientes, loadingProyectosClientes } = useFetchProjetsClientes(clienteSeleccionado);
 
   // console.log(proyectosClientes);
+  //console.log(dataProyectoSeleccionado);
+  //console.log(listaRegistros);
 
   const handleSelectedRow = (index) => {
     if (selectedRows.includes(index)) {
@@ -129,58 +132,82 @@ export const RegistrosPage = () => {
             usuario: usuariosSeleccionados.length === 0 ? userAuth[0] : usuariosSeleccionados[0],
             estatus: proyectoSeleccionado.estatus,
             listaAgrupaciones: newData.listaAgrupaciones,
-            evidencias: files
+            evidencias: files,
+            firmas: signatures,
+            fotos: photos,
           }
 
-          
-          
           console.log(dataColeccion);
- 
-          fetch(`${api}/inventario/actualizar/valores`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json' 
-            },
-            body: JSON.stringify(dataColeccion) 
-          })
-            .then(response => response.json())
-            .then(responseData => {
-              // Lógica adicional después de enviar los datos a la API
-              // console.log('Respuesta de la API:', responseData);
+          
 
-              fetch(`${api}/generar/nuevo/documento/${proyectoSeleccionado.idinventario}`, {
-                method: 'GET',
-                headers: {
-                  'Content-Type': 'application/json' 
-                },
-                // body: JSON.stringify(arregloDuplicidad) 
-              })
-                .then(response => response.text())
-                .then(responseData => {
-                  // Lógica adicional después de enviar los datos a la API
-                  // console.log('Respuesta de la API:', responseData);
+          if(dataColeccion.inventario.idinventario===0){
+            newRegister(dataColeccion,proyectoSeleccionado);
+          }else{
+         
+                if(updateRegister(dataColeccion, proyectoSeleccionado)){
+                  console.log("todo ok");
                   setVentanaCarga(false);
                   setModalAbrirCerrar(false);
                   setModalRegistroGuardado(true);
                   setdataMensajeRegistroGuardado('Datos guardados')
-                  
-                })
-                .catch(error => console.log(error));
+                  setSignatures([]);
+                }else{
+                  console.log("todo no ok");
+                  setModalRegistroGuardado();
+                  setdataMensajeRegistroGuardado('Datos no guardados')
+                }
+              
+          }
 
+          
+
+          /* if(dataColeccion.inventario.idinventario!=0){
+
+            fetch(`${api}/inventario/actualizar/valores`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json' 
+              },
+              body: JSON.stringify(dataColeccion) 
             })
-            .catch(error => {
-              console.log(error);
-              setModalRegistroGuardado();
-              setdataMensajeRegistroGuardado('Datos no guardados')
-            });
+              .then(response => response.json())
+              .then(responseData => {
+                // Lógica adicional después de enviar los datos a la API
+                // console.log('Respuesta de la API:', responseData);
+  
+                fetch(`${api}/generar/nuevo/documento/${proyectoSeleccionado.idinventario}`, {
+                  method: 'GET',
+                  headers: {
+                    'Content-Type': 'application/json' 
+                  },
+                  // body: JSON.stringify(arregloDuplicidad) 
+                })
+                  .then(response => response.text())
+                  .then(responseData => {
+                    // Lógica adicional después de enviar los datos a la API
+                    // console.log('Respuesta de la API:', responseData);
+                    setVentanaCarga(false);
+                    setModalAbrirCerrar(false);
+                    setModalRegistroGuardado(true);
+                    setdataMensajeRegistroGuardado('Datos guardados')
+                    setSignatures([]);
+                    
+                  })
+                  .catch(error => console.log(error));
+  
+              })
+              .catch(error => {
+                console.log(error);
+                setModalRegistroGuardado();
+                setdataMensajeRegistroGuardado('Datos no guardados')
+              });
+          }
+  */
+          
          
         }
       })
       .catch(error => console.log(error));
-
-      
-
-
   }
 
   const handleClickRegresar = () => {
@@ -238,6 +265,9 @@ export const RegistrosPage = () => {
           listaRegistros={listaRegistros} 
           setListaRegistros={setListaRegistros}
           proyectosClientes={proyectosClientes}
+          setDataProyectoSeleccionado={setDataProyectoSeleccionado}
+          setModalAbrirCerrar={setModalAbrirCerrar}
+          setProyectoSeleccionado={setProyectoSeleccionado}
         />
     </div>
     <div className="overflow-x-auto">
@@ -256,6 +286,8 @@ export const RegistrosPage = () => {
           />
     </div>
     </div>
+
+    {console.log(proyectoSeleccionado)}
 
     {/* MODAL DE SELECCION DEL PROYECTO */} 
     <Dialog header={`PROYECTO: ${proyectoSeleccionado?.proyecto?.proyecto}`} visible={modalAbrirCerrar} baseZIndex={-1} style={{ width: '70vw', height: '40vw' }} onHide={() => setModalAbrirCerrar(false)} className='mt-16'>
@@ -293,7 +325,7 @@ export const RegistrosPage = () => {
                               <p className='text-sm xl:text-base text-[#245A95] font-semibold text-right pr-5'>{item.nombreCampo}:</p>
                             </div>
                             <div className=''>
-                              <ComponentTipoCampo dataProyectoSeleccionado={dataProyectoSeleccionado} itemagrupacion={itemagrupacion} campo={item} indexAgrupacion={indexAgrupacion} indexCampo={indexCampo} setFiles={setFiles} setIdCampo={setIdCampo} files={files}/>
+                              <ComponentTipoCampo dataProyectoSeleccionado={dataProyectoSeleccionado} itemagrupacion={itemagrupacion} campo={item} indexAgrupacion={indexAgrupacion} indexCampo={indexCampo} setFiles={setFiles} setIdCampo={setIdCampo} files={files} signatures={signatures} setSignatures={setSignatures} photos={photos} setPhotos={setPhotos} />
                             </div>
                           </div>
                         </span>
@@ -310,13 +342,17 @@ export const RegistrosPage = () => {
           <button
             type="button"
             className="hover:shadow-slate-600 border h-10 px-4 bg-[#245A95] text-white text-lg font-bold rounded-full shadow-md duration-150 ease-in-out focus:outline-none active:scale-[1.20] transition-all hover:bg-sky-600"
-            onClick={() => setModaAceptarlAbrirCerrar(true)}
+            onClick={() =>{
+               setModaAceptarlAbrirCerrar(true)}}
           >
             Aceptar
           </button>
           <button
             className="hover:shadow-slate-600 border h-10 px-4 bg-[#245A95] text-white text-lg font-bold rounded-full shadow-md duration-150 ease-in-out focus:outline-none active:scale-[1.20] transition-all hover:bg-sky-600"
-            onClick={() => setModalAbrirCerrar(false)}
+            onClick={() => {
+              setSignatures([]);
+              setModalAbrirCerrar(false)
+            }}
             type='button'
           >
             Cancelar

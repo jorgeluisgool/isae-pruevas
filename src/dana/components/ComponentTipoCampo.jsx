@@ -22,6 +22,8 @@ import { guardarEvidencias, savePhotosFromURL, saveSignatureFromURL } from './fu
 
 export const ComponentTipoCampo = ({campo, dataProyectoSeleccionado, values, indexAgrupacion, indexCampo, itemagrupacion, setFiles, setIdCampo, files, signatures, setSignatures, photos, setPhotos}) => {
 
+  console.log(dataProyectoSeleccionado);
+
   const { setFieldValue } = useFormikContext();
 
   const [selectedDate, setSelectedDate] = useState(campo.valor);
@@ -32,6 +34,7 @@ export const ComponentTipoCampo = ({campo, dataProyectoSeleccionado, values, ind
 
   const [photoURL, setPhotoURL] = useState("");
   const [booleanPhoto, setBooleanPhoto] = useState("");
+  const [booleanSignature, setBooleanSiganture] = useState("");
 
   const [idFiles, setIdFiles] =  useState([]);
   const [archivosEliminar, setArchivosEliminar] = useState([]);
@@ -151,6 +154,11 @@ export const ComponentTipoCampo = ({campo, dataProyectoSeleccionado, values, ind
       if(firm.camposProyecto.idcamposproyecto == campo.idCampo){
         setImageURL(firm.url);
       }
+      if(firm.url!==''){
+        setBooleanSiganture("#5DC460");
+      }else{
+        setBooleanSiganture("#f44336");
+      }
     })
   }
 
@@ -158,6 +166,8 @@ export const ComponentTipoCampo = ({campo, dataProyectoSeleccionado, values, ind
     dataProyectoSeleccionado.respuestaFotos.map((firm)=>{
       if(firm.campoProyecto.idcamposproyecto == campo.idCampo){
         setPhotoURL(firm.url);
+      }
+      if(firm.url!==''){
         setBooleanPhoto("#5DC460");
       }else{
         setBooleanPhoto("#f44336");
@@ -625,13 +635,21 @@ const inputFileRef = React.createRef();
 
           </span>
         )}
-
-         {campo.tipoCampo === 'FIRMA' && (
-          <div className='grid grid-cols-2'>
+          {/* <div className='grid grid-cols-2'> */}
+         {campo.tipoCampo === 'FIRMA' && (          
+            <div className='grid h-30 '>
             <div>
-              <span className="bg-[#4CAF50] border border-gray-300 p-2 rounded-md mr-1">
-                <i className="pi pi-check-square text-white text-2xl"></i>
-              </span>
+              <img
+                className='h-30 w-35 bg-white p-2 cursor-pointer rounded-md shadow-md'
+                src={imageURL}
+                alt='Firma'
+                onClick={()=>{
+                  setModalAbrirFirma(true);
+                }}
+              />
+            </div>
+            <div className='m-auto mt-3'>
+             
               <button
                 type="button"
                 className="m-auto h-10 px-4 py-1 bg-[#245A95] hover:bg-[#1F4973] text-white text-lg font-bold rounded-md shadow-md transition duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-[#245A95]"
@@ -641,18 +659,16 @@ const inputFileRef = React.createRef();
               >
                 <ion-icon name="create"></ion-icon> Firmar
               </button>
+              <span className=" border border-gray-300 p-2 rounded-md mr-1"
+              style={{background: booleanSignature,
+              }} >
+                <i className="pi pi-check-square text-white text-2xl"></i>
+              </span>
             </div>
-            <div>
-              <img
-                className='h-30 w-35 bg-white p-2 cursor-pointer'
-                src={imageURL}
-                alt='Firma'
-                onClick={()=>{
-                  setModalAbrirFirma(true);
-                }}
-              />
-            </div>
+            
           </div>
+      
+
         )} 
 
         {campo.tipoCampo === 'CHECKBOX-EVIDENCIA' && (

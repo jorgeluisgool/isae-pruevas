@@ -14,7 +14,7 @@ import { api } from '../helpers/variablesGlobales';
 import { DialogConfirmacion } from '../../ui/components/DialogConfirmacion';
 import { DialogDuplicidad } from '../../ui/components/DialogDuplicidad';
 import { DialogRegistroGuardado } from '../../ui/components/DialogRegistroGuardado';
-import { guardarEvidencias } from '../components/functions/Functions';
+import { guardarEvidencias, newRegister, updateRegister } from '../components/functions/Functions';
 
 export const RegistrosPage = () => {
 
@@ -137,51 +137,73 @@ export const RegistrosPage = () => {
             fotos: photos,
           }
 
-          
-          
           console.log(dataColeccion);
- 
-           fetch(`${api}/inventario/actualizar/valores`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json' 
-            },
-            body: JSON.stringify(dataColeccion) 
-          })
-            .then(response => response.json())
-            .then(responseData => {
-              // Lógica adicional después de enviar los datos a la API
-              // console.log('Respuesta de la API:', responseData);
+          
 
-              fetch(`${api}/generar/nuevo/documento/${proyectoSeleccionado.idinventario}`, {
-                method: 'GET',
-                headers: {
-                  'Content-Type': 'application/json' 
-                },
-                // body: JSON.stringify(arregloDuplicidad) 
-              })
-                .then(response => response.text())
-                .then(responseData => {
-                  // Lógica adicional después de enviar los datos a la API
-                  // console.log('Respuesta de la API:', responseData);
+          if(dataColeccion.inventario.idinventario===0){
+            newRegister(dataColeccion,proyectoSeleccionado);
+          }else{
+         
+                if(updateRegister(dataColeccion, proyectoSeleccionado)){
+                  console.log("todo ok");
                   setVentanaCarga(false);
                   setModalAbrirCerrar(false);
                   setModalRegistroGuardado(true);
                   setdataMensajeRegistroGuardado('Datos guardados')
                   setSignatures([]);
-                  
-                })
-                .catch(error => console.log(error));
+                }else{
+                  console.log("todo no ok");
+                  setModalRegistroGuardado();
+                  setdataMensajeRegistroGuardado('Datos no guardados')
+                }
+              
+          }
 
+          
+
+          /* if(dataColeccion.inventario.idinventario!=0){
+
+            fetch(`${api}/inventario/actualizar/valores`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json' 
+              },
+              body: JSON.stringify(dataColeccion) 
             })
-            .catch(error => {
-              console.log(error);
-              setModalRegistroGuardado();
-              setdataMensajeRegistroGuardado('Datos no guardados')
-            });
- 
-
-
+              .then(response => response.json())
+              .then(responseData => {
+                // Lógica adicional después de enviar los datos a la API
+                // console.log('Respuesta de la API:', responseData);
+  
+                fetch(`${api}/generar/nuevo/documento/${proyectoSeleccionado.idinventario}`, {
+                  method: 'GET',
+                  headers: {
+                    'Content-Type': 'application/json' 
+                  },
+                  // body: JSON.stringify(arregloDuplicidad) 
+                })
+                  .then(response => response.text())
+                  .then(responseData => {
+                    // Lógica adicional después de enviar los datos a la API
+                    // console.log('Respuesta de la API:', responseData);
+                    setVentanaCarga(false);
+                    setModalAbrirCerrar(false);
+                    setModalRegistroGuardado(true);
+                    setdataMensajeRegistroGuardado('Datos guardados')
+                    setSignatures([]);
+                    
+                  })
+                  .catch(error => console.log(error));
+  
+              })
+              .catch(error => {
+                console.log(error);
+                setModalRegistroGuardado();
+                setdataMensajeRegistroGuardado('Datos no guardados')
+              });
+          }
+  */
+          
          
         }
       })

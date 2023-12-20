@@ -1,3 +1,5 @@
+import { api } from "../../helpers/variablesGlobales";
+
 // Función que convierte el array de files en array de files de 8 bits para mandarlos al backend
 export function guardarEvidencias(evidencias, idRegistro, idCampo) {
   const promesasDeConversion = [];
@@ -46,9 +48,6 @@ export function guardarEvidencias(evidencias, idRegistro, idCampo) {
     return Promise.resolve([]);
   }
 }
-
-
-
 //Funcion para las firmas
 
 export function saveSignatureFromURL(signatureURL, campo, idInventario) {
@@ -84,6 +83,8 @@ export function saveSignatureFromURL(signatureURL, campo, idInventario) {
   }
 }
 
+//Funcion para la foto 
+
 export function savePhotosFromURL(signatureURL, campo, idInventario) {
   if (signatureURL) {
     const conversionPromise = fetch(signatureURL)
@@ -116,9 +117,123 @@ export function savePhotosFromURL(signatureURL, campo, idInventario) {
     return Promise.resolve(null);
   }
 }
-
-
 function uint8ArrayAListaInt(uint8Array) {
   const listaInt =  Array.from(uint8Array, byte => byte);
   return listaInt;
+}
+
+//this function will be use for news register with same method 
+export function newRegister(dataColeccion, proyectoSeleccionado){
+
+  fetch(`${api}/registrar/inventario/${dataColeccion.listaAgrupaciones[0].campos[0].valor}/${dataColeccion.inventario.proyecto.idproyecto}`,{
+    method:'GET',
+    headers:{
+      'Content-Type': 'application/json' 
+    }
+  })
+  .then(response => response.json())
+  .then(responseData => {
+    console.log(responseData);
+    if(responseData[0]!=="existe"){
+      console.log(responseData);
+      dataColeccion.inventario.idinventario = responseData[0];
+
+      const valores = [];
+      
+      for(var i = 0; i < dataColeccion.listaAgrupaciones.length; i++){
+        dataColeccion.listaAgrupaciones[i].idInventario = responseData[0]; 
+        
+        for(var j = 0; j < dataColeccion.listaAgrupaciones[i].campos.length; j++){
+          const val = {
+          valor : dataColeccion.listaAgrupaciones[i].campos[j].valor || '',
+          idCampo: dataColeccion.listaAgrupaciones[i].campos[j].idCampo,
+          idInventario: responseData[0]
+        }
+        valores.push(val);
+        }
+      }
+
+      for(var i = 0; i < dataColeccion.firmas.length; i++){
+        dataColeccion.firmas[i].inventario.idinventario = responseData[0];
+      }
+
+      for(var i = 0; i < dataColeccion.evidencias.length; i++){
+        dataColeccion.evidencias[i].inventario.idinventario = responseData[0];
+      }
+
+      for(var i = 0; i < dataColeccion.fotos.length; i++){
+        dataColeccion.fotos[i].inventario.idinventario = responseData[0];
+      }
+
+      console.log(valores);
+
+      fetch(`${api}/registrar/campo/valores`,{
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(valores)        
+      })
+      .then(response => response.json())
+      .then(responseData => {
+        updateRegister(dataColeccion,proyectoSeleccionado);
+        console.log(responseData);
+      })
+      .catch(error => console.log(error));
+
+      fetch(`${api}/asignar/registro/${dataColeccion.usuario.idusuario}`,{
+        method: 'POST',
+        headers:{
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(responseData)
+      })
+      .then(response => response.text())
+      .then(responseData => console.log(responseData))
+      .catch(error => console.log(error));
+
+      console.log(dataColeccion);
+    }
+    
+  })
+  .catch(error => console.log(error));
+
+}
+
+export function updateRegister(dataColeccion, proyectoSeleccionado){
+  fetch(`${api}/inventario/actualizar/valores`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json' 
+    },
+    body: JSON.stringify(dataColeccion) 
+  })
+    .then(response => response.json())
+    .then(responseData => {
+      // Lógica adicional después de enviar los datos a la API
+      // console.log('Respuesta de la API:', responseData);
+
+      fetch(`${api}/generar/nuevo/documento/${proyectoSeleccionado.idinventario}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json' 
+        },
+        // body: JSON.stringify(arregloDuplicidad) 
+      })
+        .then(response => response.text())
+        .then(responseData => {
+          // Lógica adicional después de enviar los datos a la API
+          // console.log('Respuesta de la API:', responseData);
+        
+          
+        })
+        .catch(error => console.log(error));
+
+    })
+    .catch(error => {
+      console.log(error);
+      return false;
+    });
+
+    return true;
 }

@@ -55,6 +55,61 @@ const TableRegistros = ({data, headers, onDelete, onEdit, selectedRows, isSelect
       //  }
   };
 
+  const handleEvidences = (event, registro) =>{
+    event.preventDefault(); // Si es necesario
+    event.stopPropagation(); // Si es necesario
+
+    const filesRegister = [];
+
+    console.log(registro);
+    fetch(`${api}/obtener/firmas/proyecto/${registro.proyecto.idproyecto}/${registro.idinventario}`,
+    {method: 'GET', 
+    headers:{ 'Content-Type': 'application/json' }
+    })
+    .then(response => response.json())
+    .then(responseData => {
+      filesRegister.firmas = responseData;
+      console.log(responseData)
+    })
+    .catch(error => console.log(error));
+
+    fetch(`${api}/obtener/fotos/proyecto/${registro.proyecto.idproyecto}/${registro.idinventario}`,
+    {method: 'GET', 
+    headers:{ 'Content-Type': 'application/json' }
+    })
+    .then(response => response.json())
+    .then(responseData => {
+      filesRegister.fotos = responseData;
+      console.log(responseData)
+    })
+    .catch(error => console.log(error));
+
+    fetch(`${api}/obtener/campos/checkboxevidencia/proyecto/${registro.proyecto.idproyecto}/${registro.idinventario}`,
+    {method: 'GET', 
+    headers:{ 'Content-Type': 'application/json' }
+    })
+    .then(response => response.json())
+    .then(responseData => {
+      filesRegister.evidencia = responseData;
+      console.log(responseData)
+    })
+    .catch(error => console.log(error));
+
+    fetch(`${api}/obtener/documento/inventario/${registro.idinventario}`,
+    {method: 'GET', 
+    headers:{ 'Content-Type': 'application/json' }
+    })
+    .then(response => response.text())
+    .then(responseData => {
+      filesRegister.pdf = responseData;
+      console.log(responseData)
+    })
+    .catch(error => console.log(error));
+
+    console.log(filesRegister);
+
+  }
+
   return (
     <>
     {cargando && (
@@ -207,7 +262,7 @@ const TableRegistros = ({data, headers, onDelete, onEdit, selectedRows, isSelect
               <div className="flex space-x-4">        
               <button
                 type="button"
-                onClick={() => { setModalAbrirCerrar(true)}}
+                onClick={(event) => { handleEvidences(event, registro)}}
                 className="w-14 h-14 object-cover active:scale-[.98] py-3 bg-transparent hover:bg-[#245A95] hover:text-white text-[#245A95] text-2xl font-bold inline-block rounded-full bg-primary p-2 uppercase leading-normal shadow-md transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] mt-4">
                 <ion-icon name="document-attach"></ion-icon>
               </button>

@@ -35,6 +35,7 @@ export const RegistrosPage = () => {
   const [dataMensajeDuplicidad, setDataMensajeDuplicidad] = useState('');
   const [modalRegistroGuardado, setModalRegistroGuardado ] = useState(false)
   const [dataMensajeRegistroGuardado, setdataMensajeRegistroGuardado] = useState('');
+  const [modalEvidencias, setModalEvidencias] = useState("");
 
   const [listaRegistros, setListaRegistros] = useState([]);
 
@@ -229,6 +230,8 @@ export const RegistrosPage = () => {
       setDataProyectoSeleccionado(newData);
   }
 
+  
+
   return (
     <>
     {ventanaCarga && (
@@ -361,6 +364,10 @@ export const RegistrosPage = () => {
         </Form> 
         )}
         </Formik>    
+    </Dialog>
+
+    <Dialog header={`PROYECTO ${proyectoSeleccionado?.proyecto?.proyecto}`} visible={modalEvidencias} baseZIndex={-1} style={{width: '70vw', height: '40vw'}} onHide={() => setModalEvidencias(false)} className='mt-16'>
+
     </Dialog>
 
     <DialogDuplicidad 

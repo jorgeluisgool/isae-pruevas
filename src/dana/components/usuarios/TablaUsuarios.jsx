@@ -68,13 +68,13 @@ export const TablaUsuarios = ({searchTerm}) => {
                         onChange={() => onSelectedRow(index)}
                       />
                     </div> */}
-                    <div className="flex-shrink-0 h-10 w-10">
+                    {/* <div className="flex-shrink-0 h-10 w-10">
                       <img
                         className="h-10 w-10 rounded-full"
-                        src=""
+                        src="https://firebasestorage.googleapis.com/v0/b/isae-de6da.appspot.com/o/Sesion%2FUsuarios%2Febdicentral%2F1493-ebdicentral.png?alt=media&token=1493-ebdicentral.png.png"
                         alt=""
                       />
-                    </div>
+                    </div> */}
                     <div className="ml-8">
                       <div className="text-sm font-medium text-gray-900 cursor-pointer">{registro.idusuario}</div>
                       {/* <div className="text-sm text-gray-500">{registro.email}</div> */}
@@ -98,7 +98,7 @@ export const TablaUsuarios = ({searchTerm}) => {
         {/* PAGINATOR */}
         <div className="flex items-center justify-between mt-4">
             <div className="flex items-center">
-                <span className="mr-2 text-[#245A95] font-bold text-lg">Filas por página:</span>
+                <span className="mr-2 text-[#245A95] font-bold text-xs lg:text-lg">Filas por página:</span>
                 <select
                     className="border border-gray-300 rounded px-3 py-1"
                     value={rowsPerPage}
@@ -110,12 +110,12 @@ export const TablaUsuarios = ({searchTerm}) => {
                     <option value={20}>20</option>
                 </select>
             </div>
-            <h1 className='text-[#245A95] font-bold text-lg'>
+            <h1 className='text-[#245A95] font-bold text-xs lg:text-lg ml-24'>
                 Total de registros:
                 <span className='text-gray-700'> {totalRows}</span>
             </h1>
-            <div className="flex items-center pl-4">
-                <span className="mr-2 text-[#245A95] font-bold text-lg">
+            <div className="flex items-center">
+                <span className="mr-2 text-[#245A95] font-bold text-xs lg:text-lg ml-24">
                     Página <span className='text-gray-700'>{currentPage}</span> de <span className='text-gray-700'>{totalPages}</span>
                 </span>
                 <nav className="relative z-0 inline-flex shadow-sm rounded-md">

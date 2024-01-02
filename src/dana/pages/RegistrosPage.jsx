@@ -35,7 +35,6 @@ export const RegistrosPage = () => {
   const [dataMensajeDuplicidad, setDataMensajeDuplicidad] = useState('');
   const [modalRegistroGuardado, setModalRegistroGuardado ] = useState(false)
   const [dataMensajeRegistroGuardado, setdataMensajeRegistroGuardado] = useState('');
-  const [modalEvidencias, setModalEvidencias] = useState("");
 
   const [listaRegistros, setListaRegistros] = useState([]);
 
@@ -162,7 +161,7 @@ export const RegistrosPage = () => {
 
           
 
-          /* if(dataColeccion.inventario.idinventario!=0){
+          if(dataColeccion.inventario.idinventario!=0){
 
             fetch(`${api}/inventario/actualizar/valores`, {
               method: 'POST',
@@ -192,6 +191,8 @@ export const RegistrosPage = () => {
                     setModalRegistroGuardado(true);
                     setdataMensajeRegistroGuardado('Datos guardados')
                     setSignatures([]);
+                    setFiles([]);
+                    setPhotos([]);
                     
                   })
                   .catch(error => console.log(error));
@@ -203,7 +204,7 @@ export const RegistrosPage = () => {
                 setdataMensajeRegistroGuardado('Datos no guardados')
               });
           }
-  */
+ 
           
          
         }
@@ -293,18 +294,20 @@ export const RegistrosPage = () => {
     {console.log(proyectoSeleccionado)}
 
     {/* MODAL DE SELECCION DEL PROYECTO */} 
-    <Dialog header={`PROYECTO: ${proyectoSeleccionado?.proyecto?.proyecto}`} visible={modalAbrirCerrar} baseZIndex={-1} style={{ width: '70vw', height: '40vw' }} onHide={() => setModalAbrirCerrar(false)} className='mt-16'>
-      <h1 className='text-lg font-bold xl:mx-36'>Registro: {proyectoSeleccionado ? proyectoSeleccionado.folio : 'Cargando...'}</h1>
+    <Dialog header={`PROYECTO: ${proyectoSeleccionado?.proyecto?.proyecto}`} visible={modalAbrirCerrar} baseZIndex={-1} 
+    style={{ width: '90vw', maxWidth: '800px', height: '80vh', maxHeight: '600px' }}
+    onHide={() => setModalAbrirCerrar(false)} className='mt-16'>
+      <h1 className='xl:text-lg font-bold xl:mx-36'>Registro: {proyectoSeleccionado ? proyectoSeleccionado.folio : 'Cargando...'}</h1>
       <Formik initialValues={{}} onSubmit={handleMensajeAceptar}>
       {({ values }) => (
       <Form >
       {dataProyectoSeleccionado.listaAgrupaciones && dataProyectoSeleccionado.listaAgrupaciones.length > 0 && (
         dataProyectoSeleccionado.listaAgrupaciones.map((itemagrupacion, indexAgrupacion) => (
-          <div key={indexAgrupacion} className="bg-[#e2e2e2] rounded-md hs-accordion mt-7 xl:mx-36">
+          <div key={indexAgrupacion} className="bg-[#e2e2e2] rounded-md hs-accordion mt-4 xl:mx-36">
             <div className='bg-[#245A95] flex items-center justify-around rounded-md cursor-pointer shadow-slate-900 shadow-md' onClick={() => toggleShow(indexAgrupacion)}>
               <div 
                 // onClick={() => toggleShow(index)} 
-                className="rounded p-4 hs-accordion-toggle hs-accordion-active:text-blue-600 py-1 inline-flex items-center gap-x-2 w-full font-black text-left text-white text-xl transition hover:text-gray-300 dark:hs-accordion-active:text-blue-500 dark:text-gray-200 dark:hover:text-gray-400" 
+                className="rounded p-4 hs-accordion-toggle hs-accordion-active:text-blue-600 py-1 inline-flex items-center gap-x-2 w-full font-black text-left text-white xl:text-xl sm:text-sm transition hover:text-gray-300 dark:hs-accordion-active:text-blue-500 dark:text-gray-200 dark:hover:text-gray-400" 
                 aria-controls="hs-basic-nested-sub-collapse-one"
               >
                 <div className={`text-2xl text-white p-2 right-12 transform transition duration-300 ease-in-out ${showAcordion === indexAgrupacion ? "rotate-180" : ""}`}>
@@ -320,14 +323,14 @@ export const RegistrosPage = () => {
                   <div className='px-2 xl:px-10 py-3'>
                     {
                       itemagrupacion.campos.map((item, indexCampo) => (
-                      <div key={item.idCampo} className="mt-8">
+                      <div key={item.idCampo} className="mt-3">
                         {/*console.log(dataProyectoSeleccionado)*/}
                         <span className='p-float-label'>
-                          <div className='grid grid-cols-2'>
-                            <div className=''>
-                              <p className='text-sm xl:text-base text-[#245A95] font-semibold text-right pr-5'>{item.nombreCampo}:</p>
+                          <div className='grid xl:grid-cols-5 sm:grid-cols-1 '>
+                            <div className='col-span-2'>
+                              <p className='text-sm text-[#245A95] font-semibold xl:text-right sm:text-left pr-5'>{item.nombreCampo}:</p>
                             </div>
-                            <div className=''>
+                            <div className='col-span-3'>
                               <ComponentTipoCampo dataProyectoSeleccionado={dataProyectoSeleccionado} itemagrupacion={itemagrupacion} campo={item} indexAgrupacion={indexAgrupacion} indexCampo={indexCampo} setFiles={setFiles} setIdCampo={setIdCampo} files={files} signatures={signatures} setSignatures={setSignatures} photos={photos} setPhotos={setPhotos} />
                             </div>
                           </div>
@@ -377,9 +380,7 @@ export const RegistrosPage = () => {
         </Formik>    
     </Dialog>
 
-    <Dialog header={`PROYECTO ${proyectoSeleccionado?.proyecto?.proyecto}`} visible={modalEvidencias} baseZIndex={-1} style={{width: '70vw', height: '40vw'}} onHide={() => setModalEvidencias(false)} className='mt-16'>
-
-    </Dialog>
+    
 
     <DialogDuplicidad 
       modalMensajeDuplicidad={modalMensajeDuplicidad} 

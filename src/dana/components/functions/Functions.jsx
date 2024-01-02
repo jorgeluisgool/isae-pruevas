@@ -86,6 +86,7 @@ export function saveSignatureFromURL(signatureURL, campo, idInventario) {
 //Funcion para la foto 
 
 export function savePhotosFromURL(signatureURL, campo, idInventario) {
+  console.log("CAMPO",  campo);
   if (signatureURL) {
     const conversionPromise = fetch(signatureURL)
       .then((response) => {
@@ -237,3 +238,5 @@ export function updateRegister(dataColeccion, proyectoSeleccionado){
 
     return true;
 }
+
+

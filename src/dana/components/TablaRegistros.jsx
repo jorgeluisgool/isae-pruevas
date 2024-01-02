@@ -1,10 +1,17 @@
 import React, { useState } from 'react';
 import { api } from '../helpers/variablesGlobales';
+import { Dialog } from 'primereact/dialog';
+
 
 const TableRegistros = ({data, headers, onDelete, onEdit, selectedRows, isSelected, onSelectedRow, setModalAbrirCerrar, listaRegistros, setProyectoSeleccionado, setDataProyectoSeleccionado, usuariosSeleccionados}) => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+
+  const [modalEvidencias, setModalEvidencias] = useState("");
+  const [register, setRegister] = useState([]);
+  const [evidencesUrl, setEvidencesUrl] = useState([]);
+
 
   const [cargando, setCargando] = useState(false);
 
@@ -55,11 +62,35 @@ const TableRegistros = ({data, headers, onDelete, onEdit, selectedRows, isSelect
       //  }
   };
 
+  const descargarArchivo = (url, nombreArchivo) => {
+    fetch(url)
+      .then(response => response.blob())
+      .then(blob => {
+        const urlBlob = window.URL.createObjectURL(blob);
+  
+        const link = document.createElement('a');
+        link.href = urlBlob;
+        link.download = nombreArchivo;
+  
+        document.body.appendChild(link);
+        link.click();
+        
+        // Limpiar después de la descarga
+        window.URL.revokeObjectURL(urlBlob);
+        document.body.removeChild(link);
+      })
+      .catch(error => {
+        console.error('Error al descargar el archivo:', error);
+      });
+  };
+
   const handleEvidences = (event, registro) =>{
     event.preventDefault(); // Si es necesario
     event.stopPropagation(); // Si es necesario
 
     const filesRegister = [];
+
+    setRegister(registro);
 
     console.log(registro);
     fetch(`${api}/obtener/firmas/proyecto/${registro.proyecto.idproyecto}/${registro.idinventario}`,
@@ -73,7 +104,7 @@ const TableRegistros = ({data, headers, onDelete, onEdit, selectedRows, isSelect
     })
     .catch(error => console.log(error));
 
-    fetch(`${api}/obtener/fotos/proyecto/${registro.proyecto.idproyecto}/${registro.idinventario}`,
+  /*   fetch(`${api}/obtener/fotos/proyecto/${registro.proyecto.idproyecto}/${registro.idinventario}`,
     {method: 'GET', 
     headers:{ 'Content-Type': 'application/json' }
     })
@@ -82,7 +113,7 @@ const TableRegistros = ({data, headers, onDelete, onEdit, selectedRows, isSelect
       filesRegister.fotos = responseData;
       console.log(responseData)
     })
-    .catch(error => console.log(error));
+    .catch(error => console.log(error)); */
 
     fetch(`${api}/obtener/campos/checkboxevidencia/proyecto/${registro.proyecto.idproyecto}/${registro.idinventario}`,
     {method: 'GET', 
@@ -107,6 +138,13 @@ const TableRegistros = ({data, headers, onDelete, onEdit, selectedRows, isSelect
     .catch(error => console.log(error));
 
     console.log(filesRegister);
+
+    setEvidencesUrl(filesRegister);
+
+    setTimeout(() => {
+      setModalEvidencias(true);
+    }, 1500);
+
 
   }
 
@@ -322,6 +360,110 @@ const TableRegistros = ({data, headers, onDelete, onEdit, selectedRows, isSelect
           </nav>
         </div>
       </div>
+
+      {modalEvidencias && (
+  <Dialog header={`PROYECTO: ${register?.proyecto?.proyecto}`} visible={modalEvidencias} baseZIndex={-1} style={{ width: '70vw', height: '40vw' }} onHide={() => setModalEvidencias(false)} className='mt-16'>
+    <h3>FOLIO: {register.folio}</h3>
+    <div className='image-container' style={{ display: 'flex', flexWrap: 'wrap' }}>
+      
+
+      {evidencesUrl?.firmas && evidencesUrl.firmas.map((archivo, index) => (
+        <div key={index} style={{ position: 'relative', width: 'calc(33.33% - 10px)', margin: '5px', boxSizing: 'border-box' }}>
+          <small style={{ position: 'absolute', bottom: 0, left: 0, zIndex: 1, backgroundColor: '#010a1c', width: '100%', height: '55px', paddingRight: 12, color: "white" }}>{archivo.nombrefirma}</small>
+
+          <button
+            type="button"
+            className="p-button p-button-info p-button-text"
+            style={{ position: 'absolute', bottom: 2, right: 60, zIndex: 1, backgroundColor: '#7eb9f7', borderRadius: "50%", width: '35px', height: '35px', paddingLeft: 9, color: "white" }}
+            onClick={() => descargarArchivo(archivo.url, archivo.nombrefirma)}
+          >
+            <i className="pi pi-download" />
+          </button>
+
+          <img alt={archivo.nombrefirma} role="presentation" src={archivo.url} style={{ width: '100%', height: '200px', zIndex: 0 }} />
+        </div>
+      ))}
+
+      {evidencesUrl?.fotos && evidencesUrl.fotos.map((archivo, index) => (
+        <div key={index} style={{ position: 'relative', width: 'calc(33.33% - 10px)', margin: '5px', boxSizing: 'border-box' }}>
+          {archivo.url && (
+            <>
+              <small style={{ position: 'absolute', bottom: 0, left: 0, zIndex: 1, backgroundColor: '#010a1c', width: '100%', height: '55px', paddingRight: 12, color: 'white' }}>{archivo.nombrefoto}</small>
+
+              <button
+                type="button"
+                className="p-button p-button-info p-button-text"
+                style={{ position: 'absolute', bottom: 2, right: 60, zIndex: 1, backgroundColor: '#7eb9f7', borderRadius: '50%', width: '35px', height: '35px', paddingLeft: 9, color: 'white' }}
+                onClick={() => descargarArchivo(archivo.url, archivo.nombrefoto)}
+              >
+                <i className="pi pi-download" />
+              </button>
+
+              <img alt={archivo.nombrefoto} role="presentation" src={archivo.url} style={{ width: '100%', height: '200px', zIndex: 0 }} />
+            </>
+          )}
+        </div>
+      ))}
+
+{evidencesUrl?.evidencia && evidencesUrl.evidencia.map((archivo, index) => (
+  <div key={index} style={{ position: 'relative', width: 'calc(33.33% - 10px)', margin: '5px', boxSizing: 'border-box' }}>
+    {archivo.url && (
+      <>
+        <small style={{ position: 'absolute', bottom: 0, left: 0, zIndex: 1, backgroundColor: '#010a1c', width: '100%', height: '55px', paddingRight: 12, color: 'white' }}>{archivo.nombrefoto}</small>
+
+        <button
+          type="button"
+          className="p-button p-button-info p-button-text"
+          style={{ position: 'absolute', bottom: 2, right: 60, zIndex: 1, backgroundColor: '#7eb9f7', borderRadius: '50%', width: '35px', height: '35px', paddingLeft: 9, color: 'white' }}
+          onClick={() => descargarArchivo(archivo.url, archivo.nombrefoto)}
+        >
+          <i className="pi pi-download" />
+        </button>
+
+        {archivo.url.includes('.pdf') ? (
+          // Si es un archivo PDF
+          <div style={{ width: '100%', height: '200px', zIndex: 0, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <i className="pi pi-file-pdf" style={{ fontSize: '100px', color: 'red', marginRight: '5px', marginBottom: '50px' }} />
+          </div>
+        ) : (
+          // Si es una imagen
+          <img alt={archivo.nombrefoto} role="presentation" src={archivo.url} style={{ width: '100%', height: '200px', zIndex: 0 }} />
+        )}
+      </>
+    )}
+  </div>
+  ))}
+
+{evidencesUrl?.pdf &&  (
+        <div style={{ position: 'relative', width: 'calc(33.33% - 10px)', margin: '5px', boxSizing: 'border-box' }}>
+         
+            <>
+              <small style={{ position: 'absolute', bottom: 0, left: 0, zIndex: 1, backgroundColor: '#010a1c', width: '100%', height: '55px', paddingRight: 12, color: 'white' }}>PDF DEL INVENTARIO</small>
+
+              <button
+                type="button"
+                className="p-button p-button-info p-button-text"
+                style={{ position: 'absolute', bottom: 2, right: 60, zIndex: 1, backgroundColor: '#7eb9f7', borderRadius: '50%', width: '35px', height: '35px', paddingLeft: 9, color: 'white' }}
+                onClick={() => descargarArchivo(evidencesUrl.pdf, "PDF DEL INVENTARIO.pdf")}
+              >
+                <i className="pi pi-download" />
+              </button>
+
+              <iframe title={"PDF DEL INVENTARIO"} src={evidencesUrl.pdf} width="100%" height="200px"></iframe>
+
+            </>
+       
+        </div>
+      )}
+
+  
+
+    </div>
+  </Dialog>
+)}
+
+
+      
     </>
     
   );

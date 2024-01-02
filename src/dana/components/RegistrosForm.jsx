@@ -37,7 +37,7 @@ const RegistrosForm = ({usuarios, listaRegistros, setListaRegistros, usuariosSel
     index === self.findIndex((o) => o.valor.trim() === obj.valor.trim())
   ); 
 
-  console.log(proyectosSeleccionados);
+  //console.log(proyectosSeleccionados);
 
   const handleDataProyecto = () =>{
     const data = {
@@ -66,8 +66,6 @@ const RegistrosForm = ({usuarios, listaRegistros, setListaRegistros, usuariosSel
       
 
     }
-
-    console.log("antes del fetch");
 
     fetch(`${api}/obtener/datos/nuevo/registro`, {
       method: 'POST',

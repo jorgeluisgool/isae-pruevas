@@ -27,6 +27,7 @@ export const ComponentTipoCampo = ({campo, dataProyectoSeleccionado, values, ind
   const { setFieldValue } = useFormikContext();
 
   const [selectedDate, setSelectedDate] = useState(campo.valor);
+  const [valueCheckBox, setValueCheckBox] = useState(campo.valor.toLowerCase());
 
   const [filesArray, setFilesArray] = useState([]);
 
@@ -250,6 +251,7 @@ const inputFileRef = React.createRef();
 
   // Función que se ejecuta al seleccionar un archivo
   const handleFileChange = async (event, campo, idInventario) => {
+    console.log("Cuantas veces lo hace");
     const selectedFile = event.target.files[0];
     if (selectedFile) {
       try{
@@ -414,6 +416,8 @@ const inputFileRef = React.createRef();
           </span>
         )}
 
+        
+
         {campo.tipoCampo === 'HORA' && (
           <span className='p-float-label relative'>
             <Field name={campo.nombreCampo}>
@@ -571,16 +575,21 @@ const inputFileRef = React.createRef();
             </span>
           </span>
         )}
-
+        {console.log("CAMPO =>", campo)}
         {campo.tipoCampo === 'CHECKBOX' && (
           <span className='p-float-label relative'>
+            {console.log(": " + campo.valor)}
             <Field name={campo.nombreCampo}>
               {({ field, form }) => (
+                
                 <Checkbox
                 className="w-full appearance-none focus:outline-none bg-transparent"
-                checked={field.value === 'true'}
+                
+                /* checked={field.value === 'true'} */
+                checked={valueCheckBox === 'true'}
                 onChange={(e) => {
                   const stringValue = e.target.checked ? 'true' : 'false';
+                  setValueCheckBox(stringValue);
                   form.setFieldValue(field.name, stringValue);
                 }}
               />
@@ -688,7 +697,12 @@ const inputFileRef = React.createRef();
       </div>
 
   {/* MODAL GENERAR FIRMA */}
-  <Dialog header={campo.nombreCampo} visible={modalFirmaAbrirCerrar} style={{ width: '40vw', backgroundColor: "blue" }} onHide={() => setModalFirmaAbrirCerrar(false)} className="bg-[#245A95]">
+  <Dialog 
+  header={campo.nombreCampo} 
+  visible={modalFirmaAbrirCerrar} 
+  /* style={{ width: '40vw', backgroundColor: "blue" }}  */
+  onHide={() => setModalFirmaAbrirCerrar(false)} 
+  className="bg-[#245A95] w-11/12 sm:w-3/4 md:w-2/3 lg:w-1/2 xl:w-2/5 2xl:w-1/3 mx-auto">
       <SignatureCanvas 
         ref={sigCanvas}
         canvasProps={{
@@ -721,7 +735,7 @@ const inputFileRef = React.createRef();
     </Dialog>
 
     {/* MODAL ABRIR IMAGEN */}
-    <Dialog header='FOTO' visible={modalAbrirFoto} style={{ width: '40vw' }} onHide={() => setModalAbrirFoto(false)}>
+   {/*  <Dialog header='FOTO' visible={modalAbrirFoto} style={{ width: '40vw' }} onHide={() => setModalAbrirFoto(false)}>
     <div className=''>
     <img
         className='bg-white p-2 m-auto'
@@ -730,9 +744,35 @@ const inputFileRef = React.createRef();
         style={{ width: '50%' }}
       />
       </div>
-    </Dialog>
+    </Dialog> */}
 
-    <Dialog header='Evidencia' visible={modalEvidencia} style={{ width: '70vw', height:'40vw' }} onHide={() => setModalEvidencia(false)}>
+<Dialog
+  header='FOTO'
+  visible={modalAbrirFoto}
+  className='w-11/12 sm:w-3/4 md:w-1/2 lg:w-1/3 xl:w-1/4'
+  onHide={() => setModalAbrirFoto(false)}
+>
+  <div>
+    <img
+      className='bg-white p-2 m-auto w-full h-auto'
+      src={photoURL}
+      alt='Foto'
+    />
+  </div>
+</Dialog>
+
+
+
+
+    {/*subir evidencia */}
+    <Dialog 
+    header='Evidencia' 
+    visible={modalEvidencia}
+    
+    className="w-full md:w-3/4 lg:w-70vw h-auto md:h-40vw"
+    /* style={{ width: '70vw', height:'40vw' }}  */
+    onHide={() => setModalEvidencia(false)}>
+    
     <span className='p-float-label relative'>
       <Toast ref={toast}></Toast>
 
@@ -742,14 +782,15 @@ const inputFileRef = React.createRef();
       onDragLeave={()=>handleDragLeave()}
       onDrop={(e)=>handleDrop(e)}
       ref={dropAreaRef}
-      style={{display: 'flex',
+      className="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 p-5 text-center"
+      /* style={{display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
       border: '2px dashed #ccc',
       padding: '20px',
       textAlign: 'center',
-   }}
+   }} */
       >
         <h3>Arrastra y suelta tus archivos aquí</h3>
         <p>o</p>
@@ -764,7 +805,9 @@ const inputFileRef = React.createRef();
     
      
   <div>
-  <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center', marginTop: '1rem', marginBottom: '1rem' }}>
+  <div
+  className="flex justify-around items-center mt-4 mb-4" 
+  /* style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center', marginTop: '1rem', marginBottom: '1rem' }} */>
   <button
     type="button"
     onClick={() => insertarArchivos()}
@@ -787,12 +830,15 @@ const inputFileRef = React.createRef();
 
   <div className="flex align-items-center flex-wrap" style={{ position: 'relative', display: 'flex', flexWrap: 'wrap'}}>
     {archivosSeleccionados.map((archivo, index) => (
-      <div key={index} className="image-container" style={{ position: 'relative', width: 'calc(33.33% - 10px)', margin: '5px', boxSizing: 'border-box' }}>
-        <small  style={{ position: 'absolute', bottom: 0, left: 0, zIndex: 1, backgroundColor: '#010a1c', width: '100%', height:'55px', paddingRight: 12, color: "white"}}>{archivo.name}</small>
+      <div key={index} className="image-container relative w-full sm:w-1/3 p-2 relative box-border mb-4" /* style={{ position: 'relative', width: 'calc(33.33% - 10px)', margin: '5px', boxSizing: 'border-box' }} */>
+        <small
+          className="absolute -bottom-5 left-0 z-0 bg-[#010a1c] text-white  ml-2 p-2 rounded">
+          {archivo.name}
+        </small>
         <button
           type="button"
           className="p-button p-button-danger p-button-text"
-          style={{ position: 'absolute', bottom: 2, right: 20, zIndex: 1, backgroundColor: '#fa7878', borderRadius: "50%", width: '35px', height:'35px', paddingLeft: 9, color: "white"}}
+          style={{ position: 'absolute', bottom: 20, right: 15, zIndex: 1, backgroundColor: '#fa7878', borderRadius: "50%", width: '35px', height:'35px', paddingLeft: 9, color: "white"}}
           onClick={() => handleRemoveArchivo(index)}
         >
           <i className="pi pi-trash" />
@@ -800,7 +846,7 @@ const inputFileRef = React.createRef();
         <button
           type="button"
           className="p-button p-button-info p-button-text"
-          style={{ position: 'absolute', bottom: 2, right: 60, zIndex: 1, backgroundColor: '#7eb9f7', borderRadius: "50%", width: '35px', height:'35px', paddingLeft: 9, color: "white"}}
+          style={{ position: 'absolute', bottom: 20, right: 55, zIndex: 1, backgroundColor: '#7eb9f7', borderRadius: "50%", width: '35px', height:'35px', paddingLeft: 9, color: "white"}}
           onClick={() => handleDescargarArchivo(archivo)}
         >
           <i className="pi pi-download" />

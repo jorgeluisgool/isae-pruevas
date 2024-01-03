@@ -362,7 +362,13 @@ const TableRegistros = ({data, headers, onDelete, onEdit, selectedRows, isSelect
       </div>
 
       {modalEvidencias && (
-  <Dialog header={`PROYECTO: ${register?.proyecto?.proyecto}`} visible={modalEvidencias} baseZIndex={-1} style={{ width: '70vw', height: '40vw' }} onHide={() => setModalEvidencias(false)} className='mt-16'>
+  <Dialog 
+  header={`PROYECTO: ${register?.proyecto?.proyecto}`} 
+  visible={modalEvidencias} 
+  baseZIndex={-1} 
+  /* style={{ width: '70vw', height: '40vw' }}  */
+  onHide={() => setModalEvidencias(false)} 
+  className='w-full md:w-3/4 lg:w-70vw h-auto md:h-40vw'>
     <h3>FOLIO: {register.folio}</h3>
     <div className='image-container' style={{ display: 'flex', flexWrap: 'wrap' }}>
       

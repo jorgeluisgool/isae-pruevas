@@ -27,7 +27,7 @@ export const ComponentTipoCampo = ({campo, dataProyectoSeleccionado, values, ind
   const { setFieldValue } = useFormikContext();
 
   const [selectedDate, setSelectedDate] = useState(campo.valor);
-  const [valueCheckBox, setValueCheckBox] = useState(campo.valor.toLowerCase());
+  const [valueCheckBox, setValueCheckBox] = useState(campo.valor);
 
   const [filesArray, setFilesArray] = useState([]);
 
@@ -575,17 +575,15 @@ const inputFileRef = React.createRef();
             </span>
           </span>
         )}
-        {console.log("CAMPO =>", campo)}
-        {campo.tipoCampo === 'CHECKBOX' && (
+
+        {/* {campo.tipoCampo === 'CHECKBOX' && (
           <span className='p-float-label relative'>
-            {console.log(": " + campo.valor)}
             <Field name={campo.nombreCampo}>
               {({ field, form }) => (
                 
                 <Checkbox
                 className="w-full appearance-none focus:outline-none bg-transparent"
-                
-                /* checked={field.value === 'true'} */
+                checked={field.value === 'true'}
                 checked={valueCheckBox === 'true'}
                 onChange={(e) => {
                   const stringValue = e.target.checked ? 'true' : 'false';
@@ -596,7 +594,27 @@ const inputFileRef = React.createRef();
               )}
             </Field>
           </span>
-        )}
+        )} */}
+
+{campo.tipoCampo === 'CHECKBOX' && (
+  <span className='p-float-label relative'>
+    <Field name={campo.nombreCampo}>
+      {({ field, form }) => (
+        <Checkbox
+          className="w-full appearance-none focus:outline-none bg-transparent"
+          checked={field.value !== undefined ? field.value === 'TRUE' : valueCheckBox === 'TRUE'}
+          onChange={(e) => {
+            //form.setFieldValue(field.name, e.target.checked);
+            const stringValue = e.target.checked ? 'TRUE' : 'FALSE';
+            setValueCheckBox(stringValue);
+            form.setFieldValue(field.name, stringValue);
+          }}
+        />
+      )}
+    </Field>
+  </span>
+)}
+
 
         {campo.tipoCampo === 'FOTO' && (
           <span className='p-float-label relative'>

@@ -291,8 +291,6 @@ export const RegistrosPage = () => {
     </div>
     </div>
 
-    {console.log(proyectoSeleccionado)}
-
     {/* MODAL DE SELECCION DEL PROYECTO */} 
     <Dialog header={`PROYECTO: ${proyectoSeleccionado?.proyecto?.proyecto}`} visible={modalAbrirCerrar} baseZIndex={-1} 
     style={{ width: '90vw', maxWidth: '800px', height: '80vh', maxHeight: '600px' }}

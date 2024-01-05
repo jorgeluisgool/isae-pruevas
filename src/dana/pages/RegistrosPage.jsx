@@ -90,7 +90,7 @@ export const RegistrosPage = () => {
 
 // FUNCION DE CONFIMACION DE ACEPTAR CAMBIOS
   const handleMensajeAceptar = (values) => { 
-    //setVentanaCarga(true);
+    setVentanaCarga(true);
     setModaAceptarlAbrirCerrar(false);
 
     const newData = { ...dataProyectoSeleccionado }
@@ -161,7 +161,7 @@ export const RegistrosPage = () => {
 
           
 
-          if(dataColeccion.inventario.idinventario!=0){
+         /*  if(dataColeccion.inventario.idinventario!=0){
 
             fetch(`${api}/inventario/actualizar/valores`, {
               method: 'POST',
@@ -205,7 +205,7 @@ export const RegistrosPage = () => {
               });
           }
  
-          
+           */
          
         }
       })

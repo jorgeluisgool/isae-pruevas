@@ -374,8 +374,12 @@ const TableRegistros = ({data, headers, onDelete, onEdit, selectedRows, isSelect
       
 
       {evidencesUrl?.firmas && evidencesUrl.firmas.map((archivo, index) => (
-        <div key={index} style={{ position: 'relative', width: 'calc(33.33% - 10px)', margin: '5px', boxSizing: 'border-box' }}>
-          <small style={{ position: 'absolute', bottom: 0, left: 0, zIndex: 1, backgroundColor: '#010a1c', width: '100%', height: '55px', paddingRight: 12, color: "white" }}>{archivo.nombrefirma}</small>
+        <div key={index} 
+        className="relative w-full sm:w-1/3 p-2 relative box-border mb-4"
+        /* style={{ position: 'relative', width: 'calc(33.33% - 10px)', margin: '5px', boxSizing: 'border-box' }} */>
+          <small 
+          className="absolute -bottom-5 left-0 z-0 bg-[#010a1c] text-white  ml-2 p-2 rounded"
+          >{archivo.nombrefirma}</small>
 
           <button
             type="button"
@@ -391,15 +395,19 @@ const TableRegistros = ({data, headers, onDelete, onEdit, selectedRows, isSelect
       ))}
 
       {evidencesUrl?.fotos && evidencesUrl.fotos.map((archivo, index) => (
-        <div key={index} style={{ position: 'relative', width: 'calc(33.33% - 10px)', margin: '5px', boxSizing: 'border-box' }}>
+        <div key={index} 
+        className="relative w-full sm:w-1/3 p-2 relative box-border mb-4"
+        /* style={{ position: 'relative', width: 'calc(33.33% - 10px)', margin: '5px', boxSizing: 'border-box' }} */>
           {archivo.url && (
             <>
-              <small style={{ position: 'absolute', bottom: 0, left: 0, zIndex: 1, backgroundColor: '#010a1c', width: '100%', height: '55px', paddingRight: 12, color: 'white' }}>{archivo.nombrefoto}</small>
+              <small 
+              className="absolute -bottom-5 left-0 z-0 bg-[#010a1c] text-white  ml-2 p-2 rounded"
+              >{archivo.nombrefoto}</small>
 
               <button
                 type="button"
                 className="p-button p-button-info p-button-text"
-                style={{ position: 'absolute', bottom: 2, right: 60, zIndex: 1, backgroundColor: '#7eb9f7', borderRadius: '50%', width: '35px', height: '35px', paddingLeft: 9, color: 'white' }}
+                style={{ position: 'absolute', bottom: 2, right: 10, zIndex: 1, backgroundColor: '#7eb9f7', borderRadius: '50%', width: '35px', height: '35px', paddingLeft: 9, color: 'white' }}
                 onClick={() => descargarArchivo(archivo.url, archivo.nombrefoto)}
               >
                 <i className="pi pi-download" />
@@ -412,15 +420,19 @@ const TableRegistros = ({data, headers, onDelete, onEdit, selectedRows, isSelect
       ))}
 
 {evidencesUrl?.evidencia && evidencesUrl.evidencia.map((archivo, index) => (
-  <div key={index} style={{ position: 'relative', width: 'calc(33.33% - 10px)', margin: '5px', boxSizing: 'border-box' }}>
+  <div key={index} 
+  className="relative w-full sm:w-1/3 p-2 relative box-border mb-4"
+  /* style={{ position: 'relative', width: 'calc(33.33% - 10px)', margin: '5px', boxSizing: 'border-box' }} */>
     {archivo.url && (
       <>
-        <small style={{ position: 'absolute', bottom: 0, left: 0, zIndex: 1, backgroundColor: '#010a1c', width: '100%', height: '55px', paddingRight: 12, color: 'white' }}>{archivo.nombrefoto}</small>
+        <small 
+        className="absolute -bottom-5 left-0 z-0 bg-[#010a1c] text-white  ml-2 p-2 rounded"
+        /* style={{ position: 'absolute', bottom: 0, left: 0, zIndex: 1, backgroundColor: '#010a1c', width: '100%', height: '55px', paddingRight: 12, color: 'white' }} */>{archivo.nombrefoto}</small>
 
         <button
           type="button"
           className="p-button p-button-info p-button-text"
-          style={{ position: 'absolute', bottom: 2, right: 60, zIndex: 1, backgroundColor: '#7eb9f7', borderRadius: '50%', width: '35px', height: '35px', paddingLeft: 9, color: 'white' }}
+          style={{ position: 'absolute', bottom: 2, right: 10, bottom: 15, zIndex: 1, backgroundColor: '#7eb9f7', borderRadius: '50%', width: '35px', height: '35px', paddingLeft: 9, color: 'white' }}
           onClick={() => descargarArchivo(archivo.url, archivo.nombrefoto)}
         >
           <i className="pi pi-download" />
@@ -441,10 +453,14 @@ const TableRegistros = ({data, headers, onDelete, onEdit, selectedRows, isSelect
   ))}
 
 {evidencesUrl?.pdf &&  (
-        <div style={{ position: 'relative', width: 'calc(33.33% - 10px)', margin: '5px', boxSizing: 'border-box' }}>
+        <div 
+        className="relative w-full sm:w-1/3 p-2 relative box-border mb-4"
+        /* style={{ position: 'relative', width: 'calc(33.33% - 10px)', margin: '5px', boxSizing: 'border-box' }} */>
          
             <>
-              <small style={{ position: 'absolute', bottom: 0, left: 0, zIndex: 1, backgroundColor: '#010a1c', width: '100%', height: '55px', paddingRight: 12, color: 'white' }}>PDF DEL INVENTARIO</small>
+              <small 
+              className="absolute -bottom-5 left-0 z-0 bg-[#010a1c] text-white  ml-2 p-2 rounded"
+              >PDF DEL INVENTARIO</small>
 
               <button
                 type="button"

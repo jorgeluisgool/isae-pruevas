@@ -53,7 +53,7 @@ export const HomeScreem = ({titulo}) => {
         </div>
       </div>
       <div className="place-self-center ...">
-        <Link to='/'>
+        <Link to='/asistencia'>
           <BotonMenu titulo='ASISTENCIA' icono='id-card-outline'/>
         </Link>
         <div className='pt-5'>

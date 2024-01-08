@@ -13,11 +13,8 @@ import { EjemploMultiFile } from '../components/ejemploMultiFile'
 import { MultiFile } from '../components/MultiFile'
 import { UsuariosPage } from '../pages/UsuariosPage'
 import { CatalogoPage } from '../pages/Catalogopage'
-<<<<<<< HEAD
 import { CatalogosPage } from '../pages/CatalogosPage'
-=======
 import { AsistenciaPage } from '../pages/AsistenciaPage'
->>>>>>> 3dd75b529a52c32c2cbd9c69d28ab8bc713d175c
 
 export const DanaRoutes = () => {
 
@@ -25,7 +22,6 @@ export const DanaRoutes = () => {
     <>
     <Navbar/>
       <div className='min-h-screen bg-[#E2E2E2] pt-20'>
-        
           <Routes>
             <Route element={<ProtectedRoutes />}>
               <Route path='menu' element={ <HomeScreem/>}/>
@@ -40,8 +36,7 @@ export const DanaRoutes = () => {
               <Route path='asistencia' element={<AsistenciaPage/>}/>
               <Route path='/' element={<Navigate to='menu'/>}/>
             </Route>
-          </Routes>
-        
+          </Routes> 
       </div>
     </>
   )

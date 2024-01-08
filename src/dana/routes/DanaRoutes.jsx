@@ -22,7 +22,6 @@ export const DanaRoutes = () => {
     <>
     <Navbar/>
       <div className='min-h-screen bg-[#E2E2E2] pt-20'>
-        
           <Routes>
             <Route element={<ProtectedRoutes />}>
               <Route path='menu' element={ <HomeScreem/>}/>
@@ -37,8 +36,7 @@ export const DanaRoutes = () => {
               <Route path='asistencia' element={<AsistenciaPage/>}/>
               <Route path='/' element={<Navigate to='menu'/>}/>
             </Route>
-          </Routes>
-        
+          </Routes> 
       </div>
     </>
   )

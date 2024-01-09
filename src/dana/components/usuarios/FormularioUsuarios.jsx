@@ -152,22 +152,22 @@ export const FormularioUsuarios = ({formularioState, setFormularioState}) => {
                         </div>
                     </div>
                     <div className="cursor-pointer absolute inset-x-0 bottom-4 right-6 flex gap-3 justify-end">
-        <button
-          type="submit"  // Asegúrate de que el tipo sea 'submit'
-          className="hover:shadow-slate-600 border h-8 px-3 bg-[#245A95] text-white text-sm lg:text-lg font-bold rounded-full shadow-md duration-150 ease-in-out focus:outline-none active:scale-[1.20] transition-all hover:bg-sky-600"
-        >
-          <ion-icon name="save"></ion-icon> Guardar
-        </button>    
-        <button
-          className="hover:shadow-slate-600 border h-8 px-3 bg-[#245A95] text-white text-sm lg:text-lg font-bold rounded-full shadow-md duration-150 ease-in-out focus:outline-none active:scale-[1.20] transition-all hover:bg-sky-600"
-          onClick={() => {
-            setFormularioState(false);
-          }}
-          type='button'
-        >
-          <ion-icon name="close-circle"></ion-icon> Cancelar
-        </button>
-      </div> 
+                      <button
+                        type="submit"  // Asegúrate de que el tipo sea 'submit'
+                        className="hover:shadow-slate-600 border h-8 px-3 bg-[#245A95] text-white text-sm lg:text-lg font-bold rounded-full shadow-md duration-150 ease-in-out focus:outline-none active:scale-[1.20] transition-all hover:bg-sky-600"
+                      >
+                        <ion-icon name="save"></ion-icon> Guardar
+                      </button>    
+                      <button
+                        className="hover:shadow-slate-600 border h-8 px-3 bg-[#245A95] text-white text-sm lg:text-lg font-bold rounded-full shadow-md duration-150 ease-in-out focus:outline-none active:scale-[1.20] transition-all hover:bg-sky-600"
+                        onClick={() => {
+                          setFormularioState(false);
+                        }}
+                        type='button'
+                      >
+                        <ion-icon name="close-circle"></ion-icon> Cancelar
+                      </button>
+                    </div> 
                 </Form>
             )}
             </Formik>

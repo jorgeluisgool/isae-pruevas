@@ -14,8 +14,6 @@ export const AsistenciaPage = () => {
 
   const { setUserAuth } = useAuth();
 
-  const [fechaInicio, setFechaInicio] = useState(null);
-  const [fechaFinal, setFechaFinal] = useState(null);
   const [listaUsuarios, setListaUsuarios] = useState([]);
   const [listaAsistencia, setListaAsistencia] = useState([]);
   const toast = useRef(null);
@@ -78,7 +76,7 @@ export const AsistenciaPage = () => {
     return formattedDate;
   };
 
-  useEffect(() => {}, []);
+  
 
   const getUserAssistance = () => {
     fetch(
@@ -104,107 +102,92 @@ export const AsistenciaPage = () => {
 
   return (
     <>
-      <div>
+      <div className="pb-6">
+      <h1 className="pt-2 xl:pt-6 pl-3 xl:pl-20 text-4xl font-black text-[#245A95]">Asistencia</h1>
+      <div className='mx-4 xl:mx-20 my-4 px-4 py-2 shadow-md bg-white rounded-lg overflow-hidden'>
         <section>
-          <Formik
-            initialValues={{
-              startDate: selectedDateStart,
-              endDate: selectedDateEnd,
-            }}
-            onSubmit={(values) => {
-              console.log(values);
-              getUserAssistance();
-            }}
-          >
-            {() => (
-              <Form>
-                <div className="xl:flex flex-row  gap-4 p-4 justify-center items-center">
-                  <div className="flex-1 flex justify-center mb-5 xl:mb-0">
-                    <div className=" bg-[#245A95]	rounded-l-lg w-40 justify-center items-center">
-                      <label className="text-sm font-semibold text-white mb-1 mr-3 ml-3 mt-3 block flex justify-center ">
-                        Fecha de inicio
-                      </label>
-                    </div>
-                    <Field name="startDate">
-                      {({ field, form }) => (
-                        <Calendar
-                          className="w-1/2 appearance-none focus:outline-none bg-transparent placeholder-gray-900"
-                          value={
-                            selectedDateStart
-                              ? parseDate(selectedDateStart)
-                              : null
-                          }
-                          placeholder="Fecha de inicio"
-                          dateFormat="dd/MM/yy"
-                          onChange={(e) => {
-                            const formattedDate = formatDateToString(e.value);
-                            setSelectedDateStart(formattedDate); // Actualiza la variable de estado con la fecha seleccionada
-                            form.setFieldValue(field.name, formattedDate); // Aquí asumo que tienes la variable 'form' disponible en el scope de tu componente
-                          }}
-                        />
-                      )}
-                    </Field>
-                  </div>
 
-                  <div className="flex-1 flex justify-center mb-5 md:mb-0">
-                    <div className=" bg-[#245A95]	rounded-l-lg w-40 justify-center items-center">
-                      <label className="text-sm font-semibold text-white mb-1 mr-3 ml-3 mt-3 block flex justify-center ">
-                        Fecha final
-                      </label>
-                    </div>
-                    <Field name="endDate">
-                      {({ field, form }) => (
-                        <Calendar
-                          className="w-1/2 appearance-none focus:outline-none bg-transparent placeholder-gray-900"
-                          value={
-                            selectedDateEnd ? parseDate(selectedDateEnd) : null
-                          }
-                          placeholder="Fecha final"
-                          dateFormat="dd/MM/yy"
-                          onChange={(e) => {
-                            const formattedDate = formatDateToString(e.value);
-                            setSelectedDateEnd(formattedDate); // Actualiza la variable de estado con la fecha seleccionada
-                            form.setFieldValue(field.name, formattedDate); // Aquí asumo que tienes la variable 'form' disponible en el scope de tu componente
-                          }}
-                        />
-                      )}
-                    </Field>
-                  </div>
-                  {listaUsuarios.length > 0 ? (
-                    <div className="flex-1 flex justify-center mb-5 md:mb-0">
-                      <div className=" bg-[#245A95]	rounded-l-lg w-40 justify-center items-center">
-                        <label className="text-sm font-semibold text-white mb-1 mr-3 ml-3 mt-3 block flex justify-center ">
-                          Buscar usuario
-                        </label>
-                      </div>
-                      <Field
-                        as={InputText}
-                        className="w-1/2 appearance-none focus:outline-none bg-transparent"
-                        name="searchTerm"
-                        placeholder="Buscar usuario..."
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        value={searchTerm}
-                      />
-                    </div>
-                  ) : (
-                    <></>
-                  )}
-                </div>
-                <div className="flex justify-center items-center">
-                  <button
-                    type="submit"
-                    className="hover:shadow-slate-600 border h-10 px-4 bg-[#245A95] text-white text-lg font-bold rounded-full shadow-md duration-150 ease-in-out focus:outline-none active:scale-[1.20] transition-all hover:bg-sky-600"
-                  >
-                    Buscar
-                  </button>
-                </div>
-              </Form>
-            )}
-          </Formik>
+          <div className="p-inputgroup mt-6 grid md:grid-cols-3">
+            <span className="p-float-label  w-full xl:pr-10 mb-10">
+              <Calendar
+                className="w-1/2 appearance-none focus:outline-none bg-transparent placeholder-gray-900 "
+                value={selectedDateStart ? parseDate(selectedDateStart) : null}
+                placeholder="Fecha de inicio"
+                dateFormat="dd/MM/yy"
+                onChange={(e) => {
+                  const formattedDate = formatDateToString(e.value);
+                  setSelectedDateStart(formattedDate); // Actualiza la variable de estado con la fecha seleccionada
+                }}
+              />
+              <span className=" bg-[#245A95] p-2 px-3 rounded-r-lg shadow-md">
+                <i className="pi pi-file-edit text-white font-light text-xl"></i>
+              </span>
+              <label
+                htmlFor="nombrealberca"
+                className="lg:text-sm text-xs text-[#245A95] font-extrabold absolute top-2 left-3 transition-all duration-300"
+              >
+                Fecha inical
+              </label>
+            </span>
+
+            <span className="p-float-label  w-full xl:pr-10 mb-10">
+              <Calendar
+                className="w-1/2 appearance-none focus:outline-none bg-transparent placeholder-gray-900"
+                value={selectedDateEnd ? parseDate(selectedDateEnd) : null}
+                placeholder="Fecha final"
+                dateFormat="dd/MM/yy"
+                onChange={(e) => {
+                  const formattedDate = formatDateToString(e.value);
+                  setSelectedDateEnd(formattedDate); // Actualiza la variable de estado con la fecha seleccionada
+                }}
+              />
+              <span className=" bg-[#245A95] p-2 px-3 rounded-r-lg shadow-md">
+                <i className="pi pi-file-edit text-white font-light text-xl"></i>
+              </span>
+              <label
+                htmlFor="nombrealberca"
+                className="lg:text-sm text-xs text-[#245A95] font-extrabold absolute top-2 left-3 transition-all duration-300"
+              >
+                Fecha final
+              </label>
+            </span>
+
+            {listaUsuarios.length > 0 ? (
+          <div className="">
+            <span className="p-float-label  w-full xl:pr-10 mb-10">
+              <InputText
+                className="w-1/2 appearance-none focus:outline-none bg-transparent border-b-2 border-[#245A95] text-gray-700 transition-all duration-300 focus:border-[#245A95]"
+                name="perfil"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+
+              />
+              <span className=" bg-[#245A95] p-2 px-3 rounded-r-lg shadow-md">
+                <i className="pi pi-file-edit text-white font-light text-xl"></i>
+              </span>
+              <label
+                htmlFor="nombrealberca"
+                className="lg:text-sm text-xs text-[#245A95] font-extrabold absolute top-2 left-3 transition-all duration-300"
+              >
+                Buscar usuario
+              </label>
+            </span>
+          </div>): <></>}
+          </div>
+
+          <div className="flex justify-center items-center">
+            <button
+              type="button"
+              className="hover:shadow-slate-600 border h-10 px-4 bg-[#245A95] text-white text-lg font-bold rounded-full shadow-md duration-150 ease-in-out focus:outline-none active:scale-[1.20] transition-all hover:bg-sky-600"
+              onClick={getUserAssistance}
+            >
+              Buscar
+            </button>
+          </div>
         </section>
         <section>
           {listaUsuarios.length == 0 ? (
-            <h1 className="text-2xl font-bold text-[#245A95] pb-4 mt-6">
+            <h1 className="text-2xl font-bold text-[#245A95] pb-4 mt-6 text-center">
               Sin registros para este intervalo de fechas
             </h1>
           ) : (
@@ -281,30 +264,30 @@ export const AsistenciaPage = () => {
                         <td className="px-6 py-2">
                           <div className="flex items-center">
                             <div className="ml-8">
-                              <div className="text-sm font-medium text-gray-900 cursor-pointer">
+                              <div className="lg:text-sm text-xs text-xs font-medium text-gray-900 cursor-pointer">
                                 {usuario.nombre}
                               </div>
-                              {/* <div className="text-sm text-gray-500">{registro.email}</div> */}
+                              {/* <div className="lg:text-sm text-xs text-gray-500">{registro.email}</div> */}
                             </div>
                           </div>
                         </td>
                         <td className="px-6 py-2">
                           <div className="flex space-x-4">
-                            <div className="text-sm font-medium text-gray-900">
+                            <div className="lg:text-sm text-xs font-medium text-gray-900">
                               {usuario.usuario}
                             </div>
                           </div>
                         </td>
                         <td className="px-6 py-2">
                           <div className="flex space-x-4">
-                            <div className="text-sm font-medium text-gray-900">
+                            <div className="lg:text-sm text-xs font-medium text-gray-900">
                               {usuario.correo}
                             </div>
                           </div>
                         </td>
                         <td className="px-6 py-2">
                           <div className="flex space-x-4">
-                            <div className="text-sm font-medium text-gray-900">
+                            <div className="lg:text-sm text-xs font-medium text-gray-900">
                               {usuario.perfile.perfil}
                             </div>
                           </div>
@@ -312,12 +295,12 @@ export const AsistenciaPage = () => {
                         <td className="px-6 py-2">
                           <div className="flex space-x-4">
                             {usuario.status === "ACTIVO" ? (
-                              <div className="text-sm font-medium text-green-600">
+                              <div className="lg:text-sm text-xs font-medium text-green-600">
                                 <ion-icon name="radio-button-on-outline"></ion-icon>{" "}
                                 {usuario.status}
                               </div>
                             ) : (
-                              <div className="text-sm font-medium text-red-600">
+                              <div className="lg:text-sm text-xs font-medium text-red-600">
                                 <ion-icon name="radio-button-off-outline"></ion-icon>{" "}
                                 {usuario.status}
                               </div>
@@ -331,7 +314,7 @@ export const AsistenciaPage = () => {
 
               <div className="flex items-center justify-between mt-4">
                 <div className="flex items-center">
-                  <span className="mr-2 text-[#245A95] font-bold text-lg">
+                  <span className="mr-2 text-[#245A95] font-bold text-xs lg:text-lg">
                     Filas por página:
                   </span>
                   <select
@@ -345,12 +328,12 @@ export const AsistenciaPage = () => {
                     <option value={20}>20</option>
                   </select>
                 </div>
-                <h1 className="text-[#245A95] font-bold text-lg">
+                <h1 className="text-[#245A95] font-bold text-xs lg:text-lg ml-24">
                   Total de asistencias:
                   <span className="text-gray-700"> {totalRows}</span>
                 </h1>
                 <div className="flex items-center pl-4">
-                  <span className="mr-2 text-[#245A95] font-bold text-lg">
+                  <span className="mr-2 text-[#245A95] font-bold text-xs lg:text-lg ml-24">
                     Página <span className="text-gray-700">{currentPage}</span>{" "}
                     de <span className="text-gray-700">{totalPages}</span>
                   </span>
@@ -391,7 +374,7 @@ export const AsistenciaPage = () => {
           )}
         </section>
       </div>
-
+      </div>
       <Dialog
         header={`Asistencias`}
         visible={modalAsistencia}
@@ -401,7 +384,7 @@ export const AsistenciaPage = () => {
         className="pt-16"
       >
         {
-          <div>
+          <div className="shadow-md bg-white rounded-lg">
             <table className="min-w-full bg-white rounded-lg overflow-hidden shadow-md">
               <thead className="bg-[#245A95] text-white uppercase">
                 <tr className="text-left">
@@ -448,37 +431,37 @@ export const AsistenciaPage = () => {
                     <td className="px-6 py-2">
                       <div className="flex items-center">
                         <div className="ml-8">
-                          <div className="text-sm font-medium text-gray-900 cursor-pointer">
+                          <div className="lg:text-sm text-xs font-medium text-gray-900 cursor-pointer">
                             {asistencia.usuario.nombre}
                           </div>
-                          {/* <div className="text-sm text-gray-500">{registro.email}</div> */}
+                          {/* <div className="lg:text-sm text-xs text-gray-500">{registro.email}</div> */}
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-2">
                       <div className="flex space-x-4">
-                        <div className="text-sm font-medium text-gray-900">
+                        <div className="lg:text-sm text-xs font-medium text-gray-900">
                           {asistencia.usuario.usuario}
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-2">
                       <div className="flex space-x-4">
-                        <div className="text-sm font-medium text-gray-900">
+                        <div className="lg:text-sm text-xs font-medium text-gray-900">
                           {asistencia.dia}
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-2">
                       <div className="flex space-x-4">
-                        <div className="text-sm font-medium text-gray-900">
+                        <div className="lg:text-sm text-xs font-medium text-gray-900">
                           {asistencia.horaDeEntrada}
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-2">
                       <div className="flex space-x-4">
-                        <div className="text-sm font-medium text-gray-900">
+                        <div className="lg:text-sm text-xs font-medium text-gray-900">
                           {asistencia.horaDeSalida}
                         </div>
                       </div>
@@ -555,7 +538,7 @@ export const AsistenciaPage = () => {
                   <option value={20}>20</option>
                 </select>
               </div>
-              <h1 className="text-[#245A95] font-bold text-lg">
+              <h1 className="text-[#245A95] font-bold xl:text-lg text-base">
                 Total de asistencias:
                 <span className="text-gray-700"> {totalRowsA}</span>
               </h1>

@@ -13,10 +13,10 @@ import { EjemploMultiFile } from '../components/ejemploMultiFile'
 import { MultiFile } from '../components/MultiFile'
 import { UsuariosPage } from '../pages/UsuariosPage'
 import { CatalogoPage } from '../pages/Catalogopage'
-<<<<<<< HEAD
 import { CatalogosPage } from '../pages/CatalogosPage'
 import { AsistenciaPage } from '../pages/AsistenciaPage'
-import {AsistenciaPage} from '../pages/AsistenciaPage'
+import { AsignacionesPage } from '../pages/AsignacionesPage'
+
 
 export const DanaRoutes = () => {
   return (
@@ -35,6 +35,7 @@ export const DanaRoutes = () => {
             <Route path="catalogos" element={<CatalogosPage />} />
             <Route path="catalogo" element={<CatalogoPage />} />
             <Route path="asistencia" element={<AsistenciaPage />} />
+            <Route path='asignaciones' element={<AsignacionesPage/>} />
             <Route path="/" element={<Navigate to="menu" />} />
           </Route>
         </Routes>

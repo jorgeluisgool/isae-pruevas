@@ -53,9 +53,8 @@ export const TablaUsuarios = ({searchTerm}) => {
           <tbody className="divide-y divide-gray-200" >
             {currentRows.map((registro, index) => (
               <tr 
-                // key={index} 
+                key={index} 
                 // onClick={(event) => handleTableRowClick(event, registro)}
-                
                 className='cursor-pointer hover:bg-[#E2E2E2]'
               >
                 <td className="px-6">

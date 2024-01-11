@@ -15,10 +15,11 @@ import { UsuariosPage } from '../pages/UsuariosPage'
 import { CatalogoPage } from '../pages/Catalogopage'
 import { CatalogosPage } from '../pages/CatalogosPage'
 import { AsistenciaPage } from '../pages/AsistenciaPage'
-import { AsignacionesPage } from '../pages/AsignacionesPage'
+
 
 
 export const DanaRoutes = () => {
+
   return (
     <>
       <Navbar />
@@ -39,7 +40,25 @@ export const DanaRoutes = () => {
             <Route path="/" element={<Navigate to="menu" />} />
           </Route>
         </Routes>
+    <Navbar/>
+      <div className='min-h-screen bg-[#E2E2E2] pt-20'>
+          <Routes>
+            <Route element={<ProtectedRoutes />}>
+              <Route path='menu' element={ <HomeScreem/>}/>
+              <Route path='proyectos' element={ <ProyectosPage/>}/>
+              <Route path='ejemplo' element={ <MultiFile/>}/>
+              <Route path='camposproyecto' element={ <CamposProyectoPage/>}/>
+              <Route path='registros' element={ <RegistrosPage/>}/>
+              <Route path='clientes' element={ <ClientesRegistrosPage/>}/>
+              <Route path='usuarios' element={ <UsuariosPage />}/>
+              <Route path='catalogos' element={ <CatalogosPage />}/>
+              <Route path='catalogo' element={ <CatalogoPage />}/>
+              <Route path='asistencia' element={<AsistenciaPage/>}/>
+              <Route path='/' element={<Navigate to='menu'/>}/>
+            </Route>
+          </Routes>
+        
       </div>
     </>
-  );
-};
+  )
+}

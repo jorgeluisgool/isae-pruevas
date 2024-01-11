@@ -1,25 +1,23 @@
-import React from 'react'
-import { Navigate, Route, Routes } from 'react-router-dom'
-import { Navbar } from '../../ui/components/Navbar'
-import CamposProyectoPage from '../pages/CamposProyectoPage'
-import { HomeScreem } from '../pages/HomeScreem'
-import ProyectosPage from '../pages/ProyectosPage'
-import { RegistrosPage } from '../pages/RegistrosPage'
-import ExampleContexProvider from '../context/ExampleContext'
-import { ProtectedRoutes } from '../../router/ProtectedRoutes'
-import EjemploFormularioRegistros from '../components/EjemploFormularioRegistros'
-import { ClientesRegistrosPage } from '../pages/ClientesRegistrosPage'
-import { EjemploMultiFile } from '../components/ejemploMultiFile'
-import { MultiFile } from '../components/MultiFile'
-import { UsuariosPage } from '../pages/UsuariosPage'
-import { CatalogoPage } from '../pages/Catalogopage'
-import { CatalogosPage } from '../pages/CatalogosPage'
-import { AsistenciaPage } from '../pages/AsistenciaPage'
-
-
+import React from "react";
+import { Navigate, Route, Routes } from "react-router-dom";
+import { Navbar } from "../../ui/components/Navbar";
+import CamposProyectoPage from "../pages/CamposProyectoPage";
+import { HomeScreem } from "../pages/HomeScreem";
+import ProyectosPage from "../pages/ProyectosPage";
+import { RegistrosPage } from "../pages/RegistrosPage";
+import ExampleContexProvider from "../context/ExampleContext";
+import { ProtectedRoutes } from "../../router/ProtectedRoutes";
+import EjemploFormularioRegistros from "../components/EjemploFormularioRegistros";
+import { ClientesRegistrosPage } from "../pages/ClientesRegistrosPage";
+import { EjemploMultiFile } from "../components/ejemploMultiFile";
+import { MultiFile } from "../components/MultiFile";
+import { UsuariosPage } from "../pages/UsuariosPage";
+import { CatalogoPage } from "../pages/Catalogopage";
+import { CatalogosPage } from "../pages/CatalogosPage";
+import { AsistenciaPage } from "../pages/AsistenciaPage";
+import { AsignacionesPage } from "../pages/AsignacionesPage";
 
 export const DanaRoutes = () => {
-
   return (
     <>
       <Navbar />
@@ -36,12 +34,11 @@ export const DanaRoutes = () => {
             <Route path="catalogos" element={<CatalogosPage />} />
             <Route path="catalogo" element={<CatalogoPage />} />
             <Route path="asistencia" element={<AsistenciaPage />} />
-            <Route path='asignaciones' element={<AsignacionesPage/>} />
+            <Route path="asignaciones" element={<AsignacionesPage />} />
             <Route path="/" element={<Navigate to="menu" />} />
           </Route>
         </Routes>
-        </div>
-      
+      </div>
     </>
-  )
-}
+  );
+};

@@ -14,7 +14,7 @@ export const CatalogosPage = () => {
     const [listaCatalogoProyecto, setListaCatalogoProyecto] = useState([]);
     const [nuevoArregloOpcionesCatalogo, setNuevoArregloOpcionesCatalogo] = useState([]);
   
-    console.log(listaCatalogoProyecto);
+    // console.log(listaCatalogoProyecto);
     console.log(nuevoArregloOpcionesCatalogo);
 
     // OBTENER TODOS LOS PROYECTOS
@@ -70,10 +70,10 @@ export const CatalogosPage = () => {
           });
     
           const jsonData = await response.json();
-          // console.log(jsonData);
+          console.log(jsonData);
           setListaCatalogoProyecto(jsonData);
 
-          setNuevoArregloOpcionesCatalogo(jsonData.catalogo)
+          setNuevoArregloOpcionesCatalogo(jsonData.catalogo ?? [])
         } catch (error) {
           console.log('Error:', error);
         }
@@ -81,6 +81,31 @@ export const CatalogosPage = () => {
     
       fetchData();
     }, [catalogoProyectoSeleccionado]);
+
+    // useEffect(() => {
+    //     const fetchData = async () => {
+    //       try {
+    //         const response = await fetch(`${api}/crear/catalogo/datos/proyecto`, {
+    //           method: 'POST', // o 'PUT', 'DELETE', etc., según el método que debas usar
+    //           headers: {
+    //             'Content-Type': 'application/json', // o el tipo de contenido adecuado
+    //             // otras cabeceras según sea necesario
+    //           },
+    //           body: JSON.stringify(proyectoSeleccionado),
+    //         });
+      
+    //         const jsonData = await response.json();
+    //         // console.log(jsonData);
+    //         setListaCatalogoProyecto(jsonData);
+  
+    //         setNuevoArregloOpcionesCatalogo(jsonData.catalogo ?? [])
+    //       } catch (error) {
+    //         console.log('Error:', error);
+    //       }
+    //     };
+      
+    //     fetchData();
+    //   }, [catalogoProyectoSeleccionado]);
 
     // FUNCION QUE VA AGREGANDO LOS VALORES NUEVOS AL NUEVO ARREGLO
     const handleAgregar = () => {
@@ -93,6 +118,11 @@ export const CatalogosPage = () => {
         setNuevoValorCatalo('');
       }
     };
+
+    const handleGuardar = () => {
+
+    }
+
       
   return (
     <>
@@ -120,63 +150,79 @@ export const CatalogosPage = () => {
                     </span>      
                 </div> 
                 <h1 className="mt-4 xl:pt-6 pl-3 text-lg lg:text-2xl font-black text-[#245A95]">
-                  Asigna una opción al catalogo del proyecto: {Object.keys(proyectoSeleccionado).length === 0 ? <span></span> : proyectoSeleccionado.proyecto}
+                  Asigna una opción al catálogo del proyecto: {Object.keys(proyectoSeleccionado).length === 0 ? <span></span> : proyectoSeleccionado.proyecto}
                 </h1>
-                <div className="p-inputgroup mt-4 grid sm:grid-cols-3 gap-8">
-                    <div className=''>
-                    <h1 className="pt-2 pl-3 text-base font-black text-[#245A95]">2. Selecciona el catálogo al que deseas asignar una opción</h1>
-                        <span className='p-float-label w-full mt-6'>
-                          <Dropdown
-                              className="w-full appearance-none focus:outline-none bg-transparent border-b-2 border-[#245A95] text-gray-700 transition-all duration-300 focus:border-[#245A95]"
-                              name="catalogos"
-                              options={catalogoProyecto}
-                              filter
-                              value={catalogoProyectoSeleccionado}
-                              onChange={(e) => {setCatalogoProyectoSeleccionado(e.target.value)}}
-                              disabled={Object.keys(proyectoSeleccionado).length === 0}
-                          />
-                          <span className=" bg-[#245A95] p-2 px-3 rounded-r-lg shadow-md">
-                            <i className="pi pi-file-edit text-white font-light text-xl"></i>
-                          </span>
-                          <label htmlFor="nombrealberca" className='text-sm text-[#245A95] font-extrabold absolute top-2 left-3 transition-all duration-300'>
-                            Catálogos
-                          </label>
-                        </span>
-                        <h1 className="pt-2 pl-3 text-base font-black text-[#245A95]">3. Agregar el valor a el catálogo seleccionado</h1>
+                <div>
+                    <div className="mt-4 grid sm:grid-cols-3 gap-8">
                         <div className=''>
-                          <span className='p-float-label w-full mt-6'>
-                            <InputText
-                                className="w-full appearance-none focus:outline-none bg-transparent border-b-2 border-[#245A95] text-gray-700 transition-all duration-300 focus:border-[#245A95]"
-                                name="perfil"
-                                value={nuevoValorCatalo}
-                                onChange={(e) => {setNuevoValorCatalo(e.target.value)}}
-                                disabled={Object.keys(proyectoSeleccionado).length === 0}
-                            />
-                            <span className=" bg-[#245A95] p-2 px-3 rounded-r-lg shadow-md">
-                              <i className="pi pi-file-edit text-white font-light text-xl"></i>
-                            </span>
-                            <label htmlFor="nombrealberca" className='text-sm text-[#245A95] font-extrabold absolute top-2 left-3 transition-all duration-300'>
-                              Contenido
-                            </label>
-                          </span>
-                           
-                        </div>
+                        <h1 className="pt-2 pl-3 text-base font-black text-[#245A95]">2. Selecciona el catálogo al que deseas asignar una opción</h1>
+                            <div className='p-inputgroup'>
+                                <span className='p-float-label w-full mt-6'>
+                                  <Dropdown
+                                      className="w-full appearance-none focus:outline-none bg-transparent border-b-2 border-[#245A95] text-gray-700 transition-all duration-300 focus:border-[#245A95]"
+                                      name="catalogos"
+                                      options={catalogoProyecto}
+                                      filter
+                                      value={catalogoProyectoSeleccionado}
+                                      onChange={(e) => {setCatalogoProyectoSeleccionado(e.target.value)}}
+                                      disabled={Object.keys(proyectoSeleccionado).length === 0}
+                                  />
+                                  <span className=" bg-[#245A95] p-2 px-3 rounded-r-lg shadow-md">
+                                    <i className="pi pi-file-edit text-white font-light text-xl"></i>
+                                  </span>
+                                  <label htmlFor="nombrealberca" className='text-sm text-[#245A95] font-extrabold absolute top-2 left-3 transition-all duration-300'>
+                                    Catálogos
+                                  </label>
+                                </span>
+                            </div>
+                            
+                            <h1 className="pt-2 pl-3 text-base font-black text-[#245A95]">3. Agregar el valor a el catálogo seleccionado</h1>
+                            <div className='p-inputgroup'>
+                                
+                              <span className='p-float-label w-full mt-6'>
+                                <InputText
+                                    className="w-full appearance-none focus:outline-none bg-transparent border-b-2 border-[#245A95] text-gray-700 transition-all duration-300 focus:border-[#245A95]"
+                                    name="perfil"
+                                    value={nuevoValorCatalo.toUpperCase()}
+                                    onChange={(e) => {setNuevoValorCatalo(e.target.value)}}
+                                    disabled={Object.keys(proyectoSeleccionado).length === 0}
+                                />
+                                <span className=" bg-[#245A95] p-2 px-3 rounded-r-lg shadow-md">
+                                  <i className="pi pi-file-edit text-white font-light text-xl"></i>
+                                </span>
+                                <label htmlFor="nombrealberca" className='text-sm text-[#245A95] font-extrabold absolute top-2 left-3 transition-all duration-300'>
+                                  Contenido
+                                </label>
+                              </span>
+                               
+                            </div>
+                            <div className="pt-6 cursor-pointer inset-x-0 bottom-4 right-6 flex gap-3 justify-center xl:justify-end">
+                                <button
+                                  type="button"  // Asegúrate de que el tipo sea 'submit'
+                                  className="hover:shadow-slate-600 border h-10 px-4 bg-[#245A95] text-white text-sm xl:text-lg font-bold rounded-full shadow-md duration-150 ease-in-out focus:outline-none active:scale-[1.20] transition-all hover:bg-sky-600"
+                                  onClick={handleAgregar}
+                                >
+                                  <ion-icon name="add-circle"></ion-icon> Agregar
+                                </button>    
+                            </div>
+                        </div> 
+                        <div className='lg:col-span-2 lg:mt-8 flex flex-col items-center'>
+                          <TablaCatalogos
+                            listaCatalogoProyecto = {listaCatalogoProyecto}
+                            nuevoArregloOpcionesCatalogo = {nuevoArregloOpcionesCatalogo}
+                            setNuevoArregloOpcionesCatalogo = {setNuevoArregloOpcionesCatalogo}
+                          />
+                            <div className="mt-8 cursor-pointer inset-x-0 bottom-4 right-6 flex gap-3 justify-center xl:justify-end">
+                                <button
+                                  type="button"  // Asegúrate de que el tipo sea 'submit'
+                                  className="hover:shadow-slate-600 border h-10 px-4 bg-[#245A95] text-white text-sm xl:text-lg font-bold rounded-full shadow-md duration-150 ease-in-out focus:outline-none active:scale-[1.20] transition-all hover:bg-sky-600"
+                                  onClick={handleAgregar}
+                                >
+                                  <ion-icon name="save"></ion-icon> Guardar
+                                </button>    
+                            </div>
+                        </div>    
                     </div> 
-                    <div className='col-span-1 lg:mt-16'>
-                      <TablaCatalogos
-                        listaCatalogoProyecto = {listaCatalogoProyecto}
-                        nuevoArregloOpcionesCatalogo = {nuevoArregloOpcionesCatalogo}
-                      />
-                    </div> 
-                </div> 
-                <div className="pt-6 cursor-pointer inset-x-0 bottom-4 right-6 flex gap-3 justify-start">
-                    <button
-                      type="button"  // Asegúrate de que el tipo sea 'submit'
-                      className="hover:shadow-slate-600 border h-10 px-4 bg-[#245A95] text-white text-xs xl:text-lg font-bold rounded-full shadow-md duration-150 ease-in-out focus:outline-none active:scale-[1.20] transition-all hover:bg-sky-600"
-                      onClick={handleAgregar}
-                    >
-                      <ion-icon name="save"></ion-icon> Agregar
-                    </button>    
                 </div>
                 <h1 className="mt-8 xl:pt-6 pl-3 text-2xl font-black text-[#245A95]">Catalogo individual del proyecto</h1> 
                 <div className="p-inputgroup mt-3 lg:mt-6 grid grid-cols-3 gap-8">

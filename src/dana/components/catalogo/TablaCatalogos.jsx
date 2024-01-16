@@ -1,13 +1,16 @@
 import React from 'react'
 
-export const TablaCatalogos = ({listaCatalogoProyecto, nuevoArregloOpcionesCatalogo}) => {
-
-    // const unionArregloCatalogos = [...nuevoArregloOpcionesCatalogo, ...listaCatalogoProyecto?.catalogo]
+export const TablaCatalogos = ({listaCatalogoProyecto, nuevoArregloOpcionesCatalogo, setNuevoArregloOpcionesCatalogo}) => {
     
-    // console.log(unionArregloCatalogos)
+  const handleEliminarOpcion = (index) => {
+    const nuevoArreglo = [...nuevoArregloOpcionesCatalogo];
+    nuevoArreglo.splice(index, 1); // Elimina el elemento en el índice proporcionado
+    setNuevoArregloOpcionesCatalogo(nuevoArreglo);
+  };
+
   return (
     <>
-      <table className="min-w-full bg-white rounded-lg overflow-hidden shadow-md">
+      <table className="bg-white rounded-lg overflow-hidden shadow-md">
         <thead className="bg-[#245A95] text-white uppercase">
           <tr className='text-left'>
             <th scope="col" className="relative px-3 py-2">
@@ -18,9 +21,10 @@ export const TablaCatalogos = ({listaCatalogoProyecto, nuevoArregloOpcionesCatal
           </tr>
         </thead>
         <div className="max-h-[10rem] overflow-y-auto">
-            <tbody className="divide-y divide-gray-200">
-              {listaCatalogoProyecto.catalogo?.map((catalogoOpcion, index) => (
+            <tbody className="w-full block divide-y divide-gray-200">
+              {nuevoArregloOpcionesCatalogo?.map((catalogoOpcion, index) => (
                 <tr 
+
                   key={index} 
                   // onClick={(event) => handleTableRowClick(event, registro)}
                   className='cursor-pointer hover:bg-[#E2E2E2]'
@@ -33,7 +37,8 @@ export const TablaCatalogos = ({listaCatalogoProyecto, nuevoArregloOpcionesCatal
                     <td className="px-6">
                       <div className="flex space-x-4 justify-end">
                         <button
-                          type="submit"
+                          type="button"
+                          onClick={() => handleEliminarOpcion(index)}
                           className="hover:shadow-slate-600 border h-6 w-6 bg-red-700 text-white text-xs xl:text-base font-bold rounded-full shadow-md duration-150 ease-in-out focus:outline-none active:scale-[1.20] transition-all hover:bg-red-500 ml-auto"
                           style={{ borderRadius: '50%' }}
                         >
@@ -41,8 +46,6 @@ export const TablaCatalogos = ({listaCatalogoProyecto, nuevoArregloOpcionesCatal
                         </button>
                       </div>
                     </td>
-
-
                 </tr>
               ))}
             </tbody>

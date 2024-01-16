@@ -15,6 +15,7 @@ import { UsuariosPage } from '../pages/UsuariosPage'
 import { CatalogoPage } from '../pages/Catalogopage'
 import { CatalogosPage } from '../pages/CatalogosPage'
 import { AsistenciaPage } from '../pages/AsistenciaPage'
+import { AsignacionesPage } from '../pages/AsignacionesPage'
 
 
 

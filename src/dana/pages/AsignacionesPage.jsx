@@ -9,6 +9,7 @@ export const AsignacionesPage = () => {
   const [users, setUsers] = useState([]);
   const [projects, setProjects] = useState([]);
   const [registers, setRegisters] = useState([]);
+  const [userRegisters, setUserRegisters] = useState([]);
   const [projectfields, setProjectFields] = useState([]);
   const [valuesField, setValuesField] = useState([]);
   const [selectedValueField, setSelectedValueField] = useState("");
@@ -22,6 +23,62 @@ export const AsignacionesPage = () => {
   const [deleteProject, setDeleteProject] = useState("");
   const [modalAssignment, setModalAssignment] = useState(false);
   const [showTable, setShowTable] = useState(false);
+
+  //Pagination Table
+  const [currentPage, setCurrentPage] = useState(1);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [currentPageA, setCurrentPageA] = useState(1);
+  const [rowsPerPageA, setRowsPerPageA] = useState(10);
+  const [currentPageB, setCurrentPageB] = useState(1);
+  const [rowsPerPageB, setRowsPerPageB] = useState(5);
+  const [selectedRows, setSelectedRows] = useState([]);
+
+  const totalRows = usersProjects.length;
+  const totalPages = Math.ceil(totalRows / rowsPerPage);
+
+  // Obtener índice del último registro en la página actual
+  const indexOfLastRow = currentPage * rowsPerPage;
+  // Obtener índice del primer registro en la página actual
+  const indexOfFirstRow = indexOfLastRow - rowsPerPage;
+  // Obtener los registros para la página actual
+  const currentRows = usersProjects.slice(indexOfFirstRow, indexOfLastRow);
+
+  const totalRowsA = registers.length;
+  const totalPagesA = Math.ceil(totalRowsA / rowsPerPageA);
+
+  // Obtener índice del último registro en la página actual
+  const indexOfLastRowA = currentPageA * rowsPerPageA;
+  // Obtener índice del primer registro en la página actual
+  const indexOfFirstRowA = indexOfLastRowA - rowsPerPageA;
+  // Obtener los registros para la página actual
+  const currentRowsA = registers.slice(indexOfFirstRowA, indexOfLastRowA);
+
+  const totalRowsB = userRegisters.length;
+  const totalPagesB = Math.ceil(totalRows / rowsPerPage);
+
+  // Obtener índice del último registro en la página actual
+  const indexOfLastRowB = currentPage * rowsPerPage;
+  // Obtener índice del primer registro en la página actual
+  const indexOfFirstRowB = indexOfLastRow - rowsPerPage;
+  // Obtener los registros para la página actual
+  const currentRowsB = userRegisters.slice(indexOfFirstRowB, indexOfLastRowB);
+
+  //Filtro de usuarios
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  const paginateA = (pageNumber) => setCurrentPageA(pageNumber);
+  const paginateB = (pageNumber) => setCurrentPageB(pageNumber);
+
+  const [selectedItems, setSelectedItems] = useState([]);
+
+  const handleCheckboxChange = (item) => {
+    if (selectedItems.includes(item)) {
+      setSelectedItems(selectedItems.filter((i) => i !== item));
+    } else {
+      setSelectedItems([...selectedItems, item]);
+    }
+    console.log(selectedItems);
+  };
 
   useEffect(() => {
     fetch(`${api}/obtener/usuarios`, {
@@ -149,6 +206,38 @@ export const AsignacionesPage = () => {
         console.log(responseData);
         setRegisters(responseData);
       })
+      .catch((error) => console.log(error));
+  };
+
+  const getRegisters = (idproject) => {
+    fetch(`${api}/obtener/registros/${idproject}`, {
+      method: "GET",
+      headers: {
+        "Content-type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((responseData) => {
+        console.log(responseData);
+        setRegisters(responseData);
+      });
+  };
+
+  const getUserRegisters = () => {
+    fetch(`${api}/`);
+  };
+
+  const assignRegisters = (iduser) => {
+    console.log(selectedItems);
+    fetch(`${api}/asignar/registro/${iduser}`, {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify(selectedItems),
+    })
+      .then((response) => response.json)
+      .then((responseData) => console.log(responseData))
       .catch((error) => console.log(error));
   };
 
@@ -304,8 +393,8 @@ export const AsignacionesPage = () => {
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-gray-200">
-                        {Array.isArray(usersProjects) &&
-                          usersProjects.map((project, index) => (
+                        {Array.isArray(currentRows) &&
+                          currentRows.map((project, index) => (
                             <tr key={index}>
                               <td className="px-6 py-2">
                                 <div className="flex items-center">
@@ -364,6 +453,65 @@ export const AsignacionesPage = () => {
                       </tbody>
                     </table>
                   </div>
+                  <div className="flex items-center justify-between mt-4">
+                    <div className="flex items-center">
+                      <span className="mr-2 text-[#245A95] font-bold text-xs lg:text-lg">
+                        Filas por página:
+                      </span>
+                      <select
+                        className="border border-gray-300 rounded px-3 py-1"
+                        value={rowsPerPage}
+                        onChange={(e) => setRowsPerPage(Number(e.target.value))}
+                      >
+                        <option value={5}>5</option>
+                        <option value={10}>10</option>
+                        <option value={15}>15</option>
+                        <option value={20}>20</option>
+                      </select>
+                    </div>
+                    <h1 className="text-[#245A95] font-bold text-xs lg:text-lg ml-24">
+                      Total de asistencias:
+                      <span className="text-gray-700"> {totalRows}</span>
+                    </h1>
+                    <div className="flex items-center pl-4">
+                      <span className="mr-2 text-[#245A95] font-bold text-xs lg:text-lg ml-24">
+                        Página{" "}
+                        <span className="text-gray-700">{currentPage}</span> de{" "}
+                        <span className="text-gray-700">{totalPages}</span>
+                      </span>
+                      <nav className="relative z-0 inline-flex shadow-sm rounded-md">
+                        <button
+                          onClick={() => paginate(currentPage - 1)}
+                          disabled={currentPage === 1}
+                          className={`px-3 py-1 rounded-l-md focus:outline-none ${
+                            currentPage === 1
+                              ? "bg-gray-300 cursor-not-allowed"
+                              : "bg-white hover:bg-[#245A95]"
+                          }`}
+                        >
+                          <div className="text-[#245A95] hover:text-white">
+                            <ion-icon name="caret-back-circle"></ion-icon>
+                          </div>
+                        </button>
+                        <span className="px-3 py-1 bg-gray-300 text-gray-700">
+                          {currentPage}
+                        </span>
+                        <button
+                          onClick={() => paginate(currentPage + 1)}
+                          disabled={indexOfLastRow >= totalRows}
+                          className={`px-3 py-1 rounded-r-md focus:outline-none ${
+                            indexOfLastRow >= totalRows
+                              ? "bg-gray-300 cursor-not-allowed"
+                              : "bg-white hover:bg-[#245A95]"
+                          }`}
+                        >
+                          <div className="text-[#245A95] hover:text-white">
+                            <ion-icon name="caret-forward-circle"></ion-icon>
+                          </div>
+                        </button>
+                      </nav>
+                    </div>
+                  </div>
                 </div>
               ) : (
                 <></>
@@ -379,7 +527,7 @@ export const AsignacionesPage = () => {
             Asignación de registros
           </h1>
           <section>
-            <div className="p-inputgroup mt-3 lg:mt-6 grid sm:grid-cols-3 gap-8">
+            <div className="p-inputgroup mt-3 lg:mt-6 grid sm:grid-cols-4 gap-8">
               <div className="">
                 <span className="p-float-label w-full mt-2">
                   <Dropdown
@@ -421,6 +569,7 @@ export const AsignacionesPage = () => {
                       console.log(eve.target.value);
                       setSelectedUsersProjects(eve.target.value);
                       getProjectFields(eve.target.value.idproyecto);
+                      getRegisters(eve.target.value.idproyecto);
                     }}
                   />
                   <span className=" bg-[#245A95] p-2 px-3 rounded-r-lg shadow-md">
@@ -493,6 +642,16 @@ export const AsignacionesPage = () => {
                 <button
                   type="button"
                   className="hover:shadow-slate-600 border h-10 px-4 bg-[#245A95] text-white text-lg font-bold shadow-md duration-150 ease-in-out focus:outline-none active:scale-[1.20] transition-all hover:bg-sky-600 rounded-full"
+                  onClick={() => assignRegisters(selectedUser.idusuario)}
+                >
+                  Asignar
+                </button>
+              </div>
+
+              <div className="flex justify-center items-center">
+                <button
+                  type="button"
+                  className="hover:shadow-slate-600 border h-10 px-4 bg-[#245A95] text-white text-lg font-bold shadow-md duration-150 ease-in-out focus:outline-none active:scale-[1.20] transition-all hover:bg-sky-600 rounded-full"
                   onClick={() =>
                     getRegistersField(
                       selectedUsersProjects.idproyecto,
@@ -501,6 +660,21 @@ export const AsignacionesPage = () => {
                   }
                 >
                   Buscar
+                </button>
+              </div>
+
+              <div className="flex justify-center items-center">
+                <button
+                  type="button"
+                  className="hover:shadow-slate-600 border h-10 px-4 bg-[#245A95] text-white text-lg font-bold shadow-md duration-150 ease-in-out focus:outline-none active:scale-[1.20] transition-all hover:bg-sky-600 rounded-full"
+                  onClick={() =>
+                    getRegistersField(
+                      selectedUsersProjects.idproyecto,
+                      selectedValueField
+                    )
+                  }
+                >
+                  Mostrar todos
                 </button>
               </div>
             </div>
@@ -516,6 +690,11 @@ export const AsignacionesPage = () => {
                     <table class="w-full bg-white shadow-md">
                       <thead className="bg-[#245A95] text-white uppercase">
                         <tr className="text-left">
+                          <th scope="col" className="relative px-6 py-3">
+                            <div className="items-center">
+                              <span>seleccionar</span>
+                            </div>
+                          </th>
                           <th scope="col" className="relative px-6 py-3">
                             <div className="items-center">
                               <span>FOLIO</span>
@@ -534,9 +713,20 @@ export const AsignacionesPage = () => {
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-gray-200">
-                        {Array.isArray(registers) &&
-                          registers.map((registers, index) => (
+                        {Array.isArray(currentRowsA) &&
+                          currentRowsA.map((registers, index) => (
                             <tr key={index}>
+                              <td className="px-6 py-2">
+                                <input
+                                  type="checkbox"
+                                  checked={selectedItems.includes(
+                                    registers.idinventario
+                                  )}
+                                  onChange={() =>
+                                    handleCheckboxChange(registers.idinventario)
+                                  }
+                                />
+                              </td>
                               <td className="px-6 py-2">
                                 <div className="flex items-center">
                                   <div className="ml-8">
@@ -568,6 +758,215 @@ export const AsignacionesPage = () => {
                           ))}
                       </tbody>
                     </table>
+                  </div>
+                  <div className="flex items-center justify-between mt-4">
+                    <div className="flex items-center">
+                      <span className="mr-2 text-[#245A95] font-bold text-xs lg:text-lg">
+                        Filas por página:
+                      </span>
+                      <select
+                        className="border border-gray-300 rounded px-3 py-1"
+                        value={rowsPerPageA}
+                        onChange={(e) =>
+                          setRowsPerPageA(Number(e.target.value))
+                        }
+                      >
+                        <option value={5}>5</option>
+                        <option value={10}>10</option>
+                        <option value={15}>15</option>
+                        <option value={20}>20</option>
+                      </select>
+                    </div>
+                    <h1 className="text-[#245A95] font-bold text-xs lg:text-lg ml-24">
+                      Total de asistencias:
+                      <span className="text-gray-700"> {totalRowsA}</span>
+                    </h1>
+                    <div className="flex items-center pl-4">
+                      <span className="mr-2 text-[#245A95] font-bold text-xs lg:text-lg ml-24">
+                        Página{" "}
+                        <span className="text-gray-700">{currentPageA}</span> de{" "}
+                        <span className="text-gray-700">{totalPagesA}</span>
+                      </span>
+                      <nav className="relative z-0 inline-flex shadow-sm rounded-md">
+                        <button
+                          onClick={() => paginateA(currentPageA - 1)}
+                          disabled={currentPageA === 1}
+                          className={`px-3 py-1 rounded-l-md focus:outline-none ${
+                            currentPageA === 1
+                              ? "bg-gray-300 cursor-not-allowed"
+                              : "bg-white hover:bg-[#245A95]"
+                          }`}
+                        >
+                          <div className="text-[#245A95] hover:text-white">
+                            <ion-icon name="caret-back-circle"></ion-icon>
+                          </div>
+                        </button>
+                        <span className="px-3 py-1 bg-gray-300 text-gray-700">
+                          {currentPage}
+                        </span>
+                        <button
+                          onClick={() => paginateA(currentPageA + 1)}
+                          disabled={indexOfLastRowA >= totalRowsA}
+                          className={`px-3 py-1 rounded-r-md focus:outline-none ${
+                            indexOfLastRowA >= totalRowsA
+                              ? "bg-gray-300 cursor-not-allowed"
+                              : "bg-white hover:bg-[#245A95]"
+                          }`}
+                        >
+                          <div className="text-[#245A95] hover:text-white">
+                            <ion-icon name="caret-forward-circle"></ion-icon>
+                          </div>
+                        </button>
+                      </nav>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <></>
+              )}
+            </div>
+
+            <div
+              className={`transition-opacity duration-500 ${
+                !showTable ? "opacity-100" : "opacity-0"
+              }`}
+            >
+              {!showTable ? (
+                <div>
+                  <h1>Registros</h1>
+                  <div class="flex justify-center">
+                    <table class="w-full bg-white shadow-md">
+                      <thead className="bg-[#245A95] text-white uppercase">
+                        <tr className="text-left">
+                          <th scope="col" className="relative px-6 py-3">
+                            <div className="items-center">
+                              <span>seleccionar</span>
+                            </div>
+                          </th>
+                          <th scope="col" className="relative px-6 py-3">
+                            <div className="items-center">
+                              <span>FOLIO</span>
+                            </div>
+                          </th>
+                          <th scope="col" className="relative px-6 py-3">
+                            <div className="items-center">
+                              <span>FECHA CREACION</span>
+                            </div>
+                          </th>
+                          <th scope="col" className="relative px-6 py-3">
+                            <div className="items-center">
+                              <span>ESTATUS</span>
+                            </div>
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-gray-200">
+                        {Array.isArray(currentRowsA) &&
+                          currentRowsA.map((registers, index) => (
+                            <tr key={index}>
+                              <td className="px-6 py-2">
+                                <input
+                                  type="checkbox"
+                                  checked={selectedItems.includes(
+                                    registers.idinventario
+                                  )}
+                                  onChange={() =>
+                                    handleCheckboxChange(registers.idinventario)
+                                  }
+                                />
+                              </td>
+                              <td className="px-6 py-2">
+                                <div className="flex items-center">
+                                  <div className="ml-8">
+                                    <div className="lg:text-sm text-xs text-xs font-medium text-gray-900 cursor-pointer">
+                                      {registers.folio}
+                                    </div>
+                                  </div>
+                                </div>
+                              </td>
+                              <td className="px-6 py-2">
+                                <div className="flex items-center">
+                                  <div className="ml-8">
+                                    <div className="lg:text-sm text-xs text-xs font-medium text-gray-900 cursor-pointer">
+                                      {registers.fechacreacion}
+                                    </div>
+                                  </div>
+                                </div>
+                              </td>
+                              <td className="px-6 py-2">
+                                <div className="flex items-center">
+                                  <div className="ml-8">
+                                    <div className="lg:text-sm text-xs text-xs font-medium text-gray-900 cursor-pointer">
+                                      {registers.estatus}
+                                    </div>
+                                  </div>
+                                </div>
+                              </td>
+                            </tr>
+                          ))}
+                      </tbody>
+                    </table>
+                  </div>
+                  <div className="flex items-center justify-between mt-4">
+                    <div className="flex items-center">
+                      <span className="mr-2 text-[#245A95] font-bold text-xs lg:text-lg">
+                        Filas por página:
+                      </span>
+                      <select
+                        className="border border-gray-300 rounded px-3 py-1"
+                        value={rowsPerPageB}
+                        onChange={(e) =>
+                          setRowsPerPageA(Number(e.target.value))
+                        }
+                      >
+                        <option value={5}>5</option>
+                        <option value={10}>10</option>
+                        <option value={15}>15</option>
+                        <option value={20}>20</option>
+                      </select>
+                    </div>
+                    <h1 className="text-[#245A95] font-bold text-xs lg:text-lg ml-24">
+                      Total de asistencias:
+                      <span className="text-gray-700"> {totalRowsB}</span>
+                    </h1>
+                    <div className="flex items-center pl-4">
+                      <span className="mr-2 text-[#245A95] font-bold text-xs lg:text-lg ml-24">
+                        Página{" "}
+                        <span className="text-gray-700">{currentPageB}</span> de{" "}
+                        <span className="text-gray-700">{totalPagesB}</span>
+                      </span>
+                      <nav className="relative z-0 inline-flex shadow-sm rounded-md">
+                        <button
+                          onClick={() => paginateA(currentPageB - 1)}
+                          disabled={currentPageB === 1}
+                          className={`px-3 py-1 rounded-l-md focus:outline-none ${
+                            currentPageA === 1
+                              ? "bg-gray-300 cursor-not-allowed"
+                              : "bg-white hover:bg-[#245A95]"
+                          }`}
+                        >
+                          <div className="text-[#245A95] hover:text-white">
+                            <ion-icon name="caret-back-circle"></ion-icon>
+                          </div>
+                        </button>
+                        <span className="px-3 py-1 bg-gray-300 text-gray-700">
+                          {currentPage}
+                        </span>
+                        <button
+                          onClick={() => paginateA(currentPageB + 1)}
+                          disabled={indexOfLastRowB >= totalRowsB}
+                          className={`px-3 py-1 rounded-r-md focus:outline-none ${
+                            indexOfLastRowB >= totalRowsB
+                              ? "bg-gray-300 cursor-not-allowed"
+                              : "bg-white hover:bg-[#245A95]"
+                          }`}
+                        >
+                          <div className="text-[#245A95] hover:text-white">
+                            <ion-icon name="caret-forward-circle"></ion-icon>
+                          </div>
+                        </button>
+                      </nav>
+                    </div>
                   </div>
                 </div>
               ) : (

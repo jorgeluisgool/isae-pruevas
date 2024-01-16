@@ -7,6 +7,7 @@ export const UsuariosPage = () => {
 
     const [searchTerm, setSearchTerm] = useState('');
     const [formularioState, setFormularioState] = useState(false);
+    const [usuarioSeleccionado, setUsuarioSeleccionado] = useState();
 
     const handleSearch = (event) => {
         setSearchTerm(event.target.value);
@@ -67,7 +68,11 @@ export const UsuariosPage = () => {
                           <ion-icon name="person-add"></ion-icon> Nuevo usuario
                         </button>
                     </div>
-                    <TablaUsuarios searchTerm = {searchTerm}/>  
+                    <TablaUsuarios 
+                      searchTerm = {searchTerm}
+                      setUsuarioSeleccionado = {setUsuarioSeleccionado}
+                      setFormularioState = {setFormularioState}
+                    />  
                 </div>
             </div>
         </div>
@@ -76,6 +81,7 @@ export const UsuariosPage = () => {
       <FormularioUsuarios 
         setFormularioState = {setFormularioState}
         formularioState = {formularioState}
+        usuarioSeleccionado = {usuarioSeleccionado}
       />
     </div>
     </>

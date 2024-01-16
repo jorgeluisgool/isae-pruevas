@@ -1,32 +1,116 @@
 import { Formik, Field, Form} from 'formik';
 import { Dialog } from 'primereact/dialog';
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import useAuth from '../../hooks/useAuth';
 import { InputText } from 'primereact/inputtext';
 import { Dropdown } from 'primereact/dropdown';
+import { api } from '../../helpers/variablesGlobales';
         
 
-export const FormularioUsuarios = ({formularioState, setFormularioState}) => {
+export const FormularioUsuarios = ({formularioState, setFormularioState, usuarioSeleccionado}) => {
 
     const { userAuth: usuarioLogiado} = useAuth();
+    const [perfiles, setPerfiles] = useState([]);
+    const [usuarios, setUsuarios] = useState([]);
+    const [estados, setEstados] = useState([]);
 
     const initialValues = {
         nombre: "",
-        perfil: "",
+        perfile: {},
         correo: "",
         ubicacion: "",
         telefono: "", 
         jefeinmediato: ""
     };
 
-    const onSubmit = (values) => {
-        console.log(values)
-    }
+    console.log(usuarios);
+
+    console.log(usuarioSeleccionado);
+
+    // Obtener los perfiles
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const response = await fetch(`${api}/obtener/perfiles`);
+          const jsonData = await response.json();
+          setPerfiles(jsonData);
+        } catch (error) {
+          console.log('Error:', error);
+        }
+      };
+ 
+      fetchData();
+    }, []);
+
+    // OBTENER USUARIOS
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const response = await fetch(`${api}/obtener/usuarios`);
+          const jsonData = await response.json();
+          setUsuarios(jsonData);
+        } catch (error) {
+          console.log('Error:', error);
+        }
+      };
+ 
+      fetchData();
+    }, []);
+
+    // OBTENER ESTADOS 
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const response = await fetch(`${api}/obtener/estados`);
+          const jsonData = await response.json();
+          setEstados(jsonData);
+        } catch (error) {
+          console.log('Error:', error);
+        }
+      };
+ 
+      fetchData();
+    }, []);
+
+    const handleSubmit = (values) => {
+      // values.nombre = values.nombre.toUpperCase();
+      // values.usuario = values.usuario.toUpperCase();
+      // values.ubicacion = values.ubicacion.toUpperCase();
+      
+      console.log(values);
+
+      // setVentanaCarga(true);
+
+      fetch(`${api}/crear/usuario`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json' 
+          },
+          body: JSON.stringify(values) 
+        })
+          .then(response => response.json())
+          .then(responseData => {
+            //  setModalCrearEditarUsuario(false);
+            //  setVentanaCarga(false);
+            //  setModalRegistroGuardado(true);
+  
+          console.log('Respuesta de la API:', responseData);
+            return 'Correcto';
+        })
+        .catch(error =>{ 
+            console.log(error);
+            return 'Error';
+        }
+        );
+    };
 
   return (
     <>
         <Dialog header='DAR DE ALTA NUEVO USUARIO' visible={formularioState} baseZIndex={-1} onHide={() => setFormularioState(false)} className='mt-20 xl:mt-0 mx-3 b-6 sm:w-3/4 md:w-3/4 lg:w-3/4'>
-            <Formik initialValues={initialValues} onSubmit={onSubmit}>
+            <Formik
+              initialValues={ usuarioSeleccionado === undefined ? initialValues : usuarioSeleccionado}  
+              onSubmit={handleSubmit}
+            >
             {({ values, handleChange }) => (
                 <Form>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4 mb-10">   
@@ -55,7 +139,9 @@ export const FormularioUsuarios = ({formularioState, setFormularioState}) => {
                             <Field
                                 className="w-full appearance-none focus:outline-none bg-transparent border-b-2 border-[#245A95] text-gray-700 transition-all duration-300 focus:border-[#245A95]"
                                 as={Dropdown}
-                                name="perfil"
+                                name="perfile"
+                                options={perfiles}
+                                optionLabel="perfil"
                                 // value={values.nombrealberca.toUpperCase()}
                                 // disabled={
                                 //   albercaSeleccionada != undefined &&
@@ -94,8 +180,10 @@ export const FormularioUsuarios = ({formularioState, setFormularioState}) => {
                           <span className='p-float-label  w-full'>
                             <Field
                                 className="w-full appearance-none focus:outline-none bg-transparent border-b-2 border-[#245A95] text-gray-700 transition-all duration-300 focus:border-[#245A95]"
-                                as={InputText}
+                                as={Dropdown}
                                 name="ubicacion"
+                                options={estados}
+                                filter
                                 // value={values.nombrealberca.toUpperCase()}
                                 // disabled={
                                 //   albercaSeleccionada != undefined &&
@@ -136,11 +224,9 @@ export const FormularioUsuarios = ({formularioState, setFormularioState}) => {
                                 className="w-full appearance-none focus:outline-none bg-transparent border-b-2 border-[#245A95] text-gray-700 transition-all duration-300 focus:border-[#245A95]"
                                 as={Dropdown}
                                 name="jefeinmediato"
-                                // value={values.nombrealberca.toUpperCase()}
-                                // disabled={
-                                //   albercaSeleccionada != undefined &&
-                                //   editFields
-                                // }
+                                options={usuarios.map(usuario => usuario.usuario)}
+                                // optionLabel="usuario"
+                                filter
                             />
                             <span className=" bg-[#245A95] p-2 px-3 rounded-r-lg shadow-md">
                               <i className="pi pi-file-edit text-white font-light text-xl"></i>

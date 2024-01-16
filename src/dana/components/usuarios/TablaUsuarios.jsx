@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useFetchUsers } from '../../hooks/useFetchUsers';
 
-export const TablaUsuarios = ({searchTerm}) => {
+export const TablaUsuarios = ({searchTerm, setUsuarioSeleccionado, setFormularioState}) => {
 
     const { data: listaUsuarios, loading: loadingUsuarios } = useFetchUsers();
 
@@ -54,7 +54,11 @@ export const TablaUsuarios = ({searchTerm}) => {
             {currentRows.map((registro, index) => (
               <tr 
                 key={index} 
-                // onClick={(event) => handleTableRowClick(event, registro)}
+                onClick={() => {
+                  //Click para mostrar informacion del usuario
+                  setUsuarioSeleccionado(registro);
+                  setFormularioState(true);
+                }}
                 className='cursor-pointer hover:bg-[#E2E2E2]'
               >
                 <td className="px-6">

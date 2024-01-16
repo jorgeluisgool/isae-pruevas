@@ -8,13 +8,20 @@ import { Player } from "@lottiefiles/react-lottie-player";
 export const AsignacionesPage = () => {
   const [users, setUsers] = useState([]);
   const [projects, setProjects] = useState([]);
+  const [registers, setRegisters] = useState([]);
+  const [projectfields, setProjectFields] = useState([]);
+  const [valuesField, setValuesField] = useState([]);
+  const [selectedValueField, setSelectedValueField] = useState("");
+  const [selectedField, setSelectedField] = useState("");
   const [selectedUser, setSelectedUser] = useState(null);
   const [selectedProject, setSelectedProject] = useState(null);
   const [usersProjects, setUsersProjects] = useState([]);
+  const [selectedUsersProjects, setSelectedUsersProjects] = useState([]);
   const [modalConfirmar, setModalConfirmar] = useState(false);
   const [cargando, setCargando] = useState(false);
   const [deleteProject, setDeleteProject] = useState("");
-  const [modalAssignment, setModalAssignment] = useState([]);
+  const [modalAssignment, setModalAssignment] = useState(false);
+  const [showTable, setShowTable] = useState(false);
 
   useEffect(() => {
     fetch(`${api}/obtener/usuarios`, {
@@ -49,7 +56,7 @@ export const AsignacionesPage = () => {
   },[selectedUser]) */
 
   const getUsersProjects = (id) => {
-    if (selectedUser != null) {
+    if (id != null) {
       fetch(`${api}/obtener/proyectos/asignados/${id}`, {
         method: "GET",
         headers: {
@@ -100,6 +107,51 @@ export const AsignacionesPage = () => {
     }
   };
 
+  const getProjectFields = (idproject) => {
+    fetch(`${api}/obtener/campos/busqueda/proyecto/${idproject}`, {
+      method: "GET",
+      headers: {
+        "Content-type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((responseData) => {
+        console.log(responseData);
+        setProjectFields(responseData);
+      })
+      .catch((error) => console.log(error));
+  };
+
+  const getFieldValues = (idproject, field) => {
+    fetch(`${api}/obtener/datos/busqueda/proyecto/${idproject}/${field}`, {
+      method: "GET",
+      headers: {
+        "Content-type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((responseData) => {
+        console.log(responseData);
+        setValuesField(responseData);
+      })
+      .catch((error) => console.log(error));
+  };
+
+  const getRegistersField = (idproject, value) => {
+    fetch(`${api}/obtener/registros/busqueda/${idproject}/${value}`, {
+      method: "GET",
+      headers: {
+        "Content-type": "applicattion/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((responseData) => {
+        console.log(responseData);
+        setRegisters(responseData);
+      })
+      .catch((error) => console.log(error));
+  };
+
   return (
     <>
       {cargando && (
@@ -129,7 +181,13 @@ export const AsignacionesPage = () => {
         <h1 className="pt-2 xl:pt-6 pl-3 xl:pl-20 text-4xl font-black text-[#245A95]">
           Asignaciones
         </h1>
-        <div className="mx-4 xl:mx-20 my-4 px-4 py-2 shadow-md bg-white rounded-lg overflow-hidden">
+        <div
+          className="mx-4 xl:mx-20 my-4 px-4 py-2 shadow-md bg-white rounded-lg overflow-hidden"
+          onClick={() => setShowTable(true)}
+        >
+          <h1 className="pt-2 xl:pt-6 pl-3 xl:pl-0 text-2xl font-black text-[#245A95]">
+            Asignación de proyectos
+          </h1>
           <section>
             <div className="p-inputgroup mt-3 lg:mt-6 grid sm:grid-cols-3 gap-8">
               <div className="">
@@ -195,107 +253,326 @@ export const AsignacionesPage = () => {
                 <button
                   type="button"
                   className="hover:shadow-slate-600 border h-10 px-4 bg-[#245A95] text-white text-lg font-bold shadow-md duration-150 ease-in-out focus:outline-none active:scale-[1.20] transition-all hover:bg-sky-600 rounded-full"
-                  onClick={() => assignmentProject(selectedUser.idusuario, selectedProject.idproyecto)}
+                  onClick={() =>
+                    assignmentProject(
+                      selectedUser.idusuario,
+                      selectedProject.idproyecto
+                    )
+                  }
                 >
                   Asignar
                 </button>
               </div>
             </div>
-
-            <div>
-              <h1>Proyectos asignados</h1>
-              <div class="flex justify-center">
-                <table class="w-full bg-white shadow-md">
-                  <thead className="bg-[#245A95] text-white uppercase">
-                    <tr className="text-left">
-                      <th scope="col" className="relative px-6 py-3">
-                        <div className="items-center">
-                          <span>USUARIO</span>
-                        </div>
-                      </th>
-                      <th scope="col" className="relative px-6 py-3">
-                        <div className="items-center">
-                          <span>PROYECTO</span>
-                        </div>
-                      </th>
-                      <th scope="col" className="relative px-6 py-3">
-                        <div className="items-center">
-                          <span>TIPO DE PROYECTO</span>
-                        </div>
-                      </th>
-                      <th scope="col" className="relative px-6 py-3">
-                        <div className="items-center">
-                          <span>FECHA CREACION</span>
-                        </div>
-                      </th>
-                      <th scope="col" className="relative px-6 py-3">
-                        <div className="items-center">
-                          <span>ELIMINAR</span>
-                        </div>
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-200">
-                    {Array.isArray(usersProjects) &&
-                      usersProjects.map((project, index) => (
-                        <tr key={index}>
-                          <td className="px-6 py-2">
-                            <div className="flex items-center">
-                              <div className="ml-8">
-                                <div className="lg:text-sm text-xs text-xs font-medium text-gray-900 cursor-pointer">
-                                  {selectedUser.usuario}
-                                </div>
-                              </div>
+            <div
+              className={`transition-opacity duration-500 ${
+                showTable ? "opacity-100" : "opacity-0"
+              }`}
+            >
+              {showTable ? (
+                <div>
+                  <h1>Proyectos asignados</h1>
+                  <div class="flex justify-center">
+                    <table class="w-full bg-white shadow-md">
+                      <thead className="bg-[#245A95] text-white uppercase">
+                        <tr className="text-left">
+                          <th scope="col" className="relative px-6 py-3">
+                            <div className="items-center">
+                              <span>USUARIO</span>
                             </div>
-                          </td>
-                          <td className="px-6 py-2">
-                            <div className="flex items-center">
-                              <div className="ml-8">
-                                <div className="lg:text-sm text-xs text-xs font-medium text-gray-900 cursor-pointer">
-                                  {project.proyecto}
-                                </div>
-                              </div>
+                          </th>
+                          <th scope="col" className="relative px-6 py-3">
+                            <div className="items-center">
+                              <span>PROYECTO</span>
                             </div>
-                          </td>
-                          <td className="px-6 py-2">
-                            <div className="flex items-center">
-                              <div className="ml-8">
-                                <div className="lg:text-sm text-xs text-xs font-medium text-gray-900 cursor-pointer">
-                                  {project.tipoproyecto.descripcion}
-                                </div>
-                              </div>
+                          </th>
+                          <th scope="col" className="relative px-6 py-3">
+                            <div className="items-center">
+                              <span>TIPO DE PROYECTO</span>
                             </div>
-                          </td>
-                          <td className="px-6 py-2">
-                            <div className="flex items-center">
-                              <div className="ml-8">
-                                <div className="lg:text-sm text-xs text-xs font-medium text-gray-900 cursor-pointer">
-                                  {project.fechacreacion}
-                                </div>
-                              </div>
+                          </th>
+                          <th scope="col" className="relative px-6 py-3">
+                            <div className="items-center">
+                              <span>FECHA CREACION</span>
                             </div>
-                          </td>
-                          <td className="px-6 py-2">
-                            <div className="flex items-center">
-                              <div className="ml-8">
-                                <div className="lg:text-sm text-xs text-xs font-medium text-gray-900 cursor-pointer">
-                                  <Button
-                                    icon="pi pi-trash"
-                                    className="p-button-rounded p-button-danger"
-                                    onClick={() => {
-                                      setDeleteProject(project);
-                                      setModalConfirmar(true);
-                                    }}
-                                  />
-                                </div>
-                              </div>
+                          </th>
+                          <th scope="col" className="relative px-6 py-3">
+                            <div className="items-center">
+                              <span>ELIMINAR</span>
                             </div>
-                          </td>
+                          </th>
                         </tr>
-                      ))}
-                  </tbody>
-                </table>
+                      </thead>
+                      <tbody className="divide-y divide-gray-200">
+                        {Array.isArray(usersProjects) &&
+                          usersProjects.map((project, index) => (
+                            <tr key={index}>
+                              <td className="px-6 py-2">
+                                <div className="flex items-center">
+                                  <div className="ml-8">
+                                    <div className="lg:text-sm text-xs text-xs font-medium text-gray-900 cursor-pointer">
+                                      {selectedUser.usuario}
+                                    </div>
+                                  </div>
+                                </div>
+                              </td>
+                              <td className="px-6 py-2">
+                                <div className="flex items-center">
+                                  <div className="ml-8">
+                                    <div className="lg:text-sm text-xs text-xs font-medium text-gray-900 cursor-pointer">
+                                      {project.proyecto}
+                                    </div>
+                                  </div>
+                                </div>
+                              </td>
+                              <td className="px-6 py-2">
+                                <div className="flex items-center">
+                                  <div className="ml-8">
+                                    <div className="lg:text-sm text-xs text-xs font-medium text-gray-900 cursor-pointer">
+                                      {project.tipoproyecto.descripcion}
+                                    </div>
+                                  </div>
+                                </div>
+                              </td>
+                              <td className="px-6 py-2">
+                                <div className="flex items-center">
+                                  <div className="ml-8">
+                                    <div className="lg:text-sm text-xs text-xs font-medium text-gray-900 cursor-pointer">
+                                      {project.fechacreacion}
+                                    </div>
+                                  </div>
+                                </div>
+                              </td>
+                              <td className="px-6 py-2">
+                                <div className="flex items-center">
+                                  <div className="ml-8">
+                                    <div className="lg:text-sm text-xs text-xs font-medium text-gray-900 cursor-pointer">
+                                      <Button
+                                        icon="pi pi-trash"
+                                        className="p-button-rounded p-button-danger"
+                                        onClick={() => {
+                                          setDeleteProject(project);
+                                          setModalConfirmar(true);
+                                        }}
+                                      />
+                                    </div>
+                                  </div>
+                                </div>
+                              </td>
+                            </tr>
+                          ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              ) : (
+                <></>
+              )}
+            </div>
+          </section>
+        </div>
+        <div
+          className="mx-4 xl:mx-20 my-4 px-4 py-2 shadow-md bg-white rounded-lg overflow-hidden"
+          onClick={() => setShowTable(false)}
+        >
+          <h1 className="pt-2 xl:pt-6 pl-3 xl:pl-0 text-2xl font-black text-[#245A95]">
+            Asignación de registros
+          </h1>
+          <section>
+            <div className="p-inputgroup mt-3 lg:mt-6 grid sm:grid-cols-3 gap-8">
+              <div className="">
+                <span className="p-float-label w-full mt-2">
+                  <Dropdown
+                    className="w-full appearance-none focus:outline-none bg-transparent border-b-2 border-[#245A95] text-gray-700 transition-all duration-300 focus:border-[#245A95]"
+                    name="usuario"
+                    options={users}
+                    optionLabel="usuario"
+                    value={selectedUser}
+                    filter
+                    onChange={(eve) => {
+                      console.log(eve.target.value);
+
+                      setSelectedUser(eve.target.value);
+                      getUsersProjects(eve.target.value.idusuario);
+                    }}
+                  />
+                  <span className=" bg-[#245A95] p-2 px-3 rounded-r-lg shadow-md">
+                    <i className="pi pi-file-edit text-white font-light text-xl"></i>
+                  </span>
+                  <label
+                    htmlFor="nombrealberca"
+                    className="text-sm text-[#245A95] font-extrabold absolute top-2 left-3 transition-all duration-300"
+                  >
+                    Usuarios
+                  </label>
+                </span>
               </div>
+
+              <div className="">
+                <span className="p-float-label w-full mt-2">
+                  <Dropdown
+                    className="w-full appearance-none focus:outline-none bg-transparent border-b-2 border-[#245A95] text-gray-700 transition-all duration-300 focus:border-[#245A95]"
+                    name="proyecto"
+                    options={usersProjects}
+                    optionLabel="proyecto"
+                    value={selectedUsersProjects}
+                    filter
+                    onChange={(eve) => {
+                      console.log(eve.target.value);
+                      setSelectedUsersProjects(eve.target.value);
+                      getProjectFields(eve.target.value.idproyecto);
+                    }}
+                  />
+                  <span className=" bg-[#245A95] p-2 px-3 rounded-r-lg shadow-md">
+                    <i className="pi pi-file-edit text-white font-light text-xl"></i>
+                  </span>
+                  <label
+                    htmlFor="nombrealberca"
+                    className="text-sm text-[#245A95] font-extrabold absolute top-2 left-3 transition-all duration-300"
+                  >
+                    Proyectos
+                  </label>
+                </span>
+              </div>
+
+              <div className="">
+                <span className="p-float-label w-full mt-2">
+                  <Dropdown
+                    className="w-full appearance-none focus:outline-none bg-transparent border-b-2 border-[#245A95] text-gray-700 transition-all duration-300 focus:border-[#245A95]"
+                    name="proyecto"
+                    options={projectfields}
+                    value={selectedField}
+                    filter
+                    onChange={(eve) => {
+                      console.log(eve.target.value);
+                      setSelectedField(eve.target.value);
+                      getFieldValues(
+                        selectedUsersProjects.idproyecto,
+                        eve.target.value
+                      );
+                    }}
+                  />
+                  <span className=" bg-[#245A95] p-2 px-3 rounded-r-lg shadow-md">
+                    <i className="pi pi-file-edit text-white font-light text-xl"></i>
+                  </span>
+                  <label
+                    htmlFor="nombrealberca"
+                    className="text-sm text-[#245A95] font-extrabold absolute top-2 left-3 transition-all duration-300"
+                  >
+                    Buscar en el campo:
+                  </label>
+                </span>
+              </div>
+
+              <div className="">
+                <span className="p-float-label w-full mt-2">
+                  <Dropdown
+                    className="w-full appearance-none focus:outline-none bg-transparent border-b-2 border-[#245A95] text-gray-700 transition-all duration-300 focus:border-[#245A95]"
+                    name="proyecto"
+                    options={valuesField}
+                    value={selectedValueField}
+                    filter
+                    onChange={(eve) => {
+                      console.log(eve.target.value);
+                      setSelectedValueField(eve.target.value);
+                    }}
+                  />
+                  <span className=" bg-[#245A95] p-2 px-3 rounded-r-lg shadow-md">
+                    <i className="pi pi-file-edit text-white font-light text-xl"></i>
+                  </span>
+                  <label
+                    htmlFor="nombrealberca"
+                    className="text-sm text-[#245A95] font-extrabold absolute top-2 left-3 transition-all duration-300"
+                  >
+                    Buscar:
+                  </label>
+                </span>
+              </div>
+
+              <div className="flex justify-center items-center">
+                <button
+                  type="button"
+                  className="hover:shadow-slate-600 border h-10 px-4 bg-[#245A95] text-white text-lg font-bold shadow-md duration-150 ease-in-out focus:outline-none active:scale-[1.20] transition-all hover:bg-sky-600 rounded-full"
+                  onClick={() =>
+                    getRegistersField(
+                      selectedUsersProjects.idproyecto,
+                      selectedValueField
+                    )
+                  }
+                >
+                  Buscar
+                </button>
+              </div>
+            </div>
+            <div
+              className={`transition-opacity duration-500 ${
+                !showTable ? "opacity-100" : "opacity-0"
+              }`}
+            >
+              {!showTable ? (
+                <div>
+                  <h1>Registros</h1>
+                  <div class="flex justify-center">
+                    <table class="w-full bg-white shadow-md">
+                      <thead className="bg-[#245A95] text-white uppercase">
+                        <tr className="text-left">
+                          <th scope="col" className="relative px-6 py-3">
+                            <div className="items-center">
+                              <span>FOLIO</span>
+                            </div>
+                          </th>
+                          <th scope="col" className="relative px-6 py-3">
+                            <div className="items-center">
+                              <span>FECHA CREACION</span>
+                            </div>
+                          </th>
+                          <th scope="col" className="relative px-6 py-3">
+                            <div className="items-center">
+                              <span>ESTATUS</span>
+                            </div>
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-gray-200">
+                        {Array.isArray(registers) &&
+                          registers.map((registers, index) => (
+                            <tr key={index}>
+                              <td className="px-6 py-2">
+                                <div className="flex items-center">
+                                  <div className="ml-8">
+                                    <div className="lg:text-sm text-xs text-xs font-medium text-gray-900 cursor-pointer">
+                                      {registers.folio}
+                                    </div>
+                                  </div>
+                                </div>
+                              </td>
+                              <td className="px-6 py-2">
+                                <div className="flex items-center">
+                                  <div className="ml-8">
+                                    <div className="lg:text-sm text-xs text-xs font-medium text-gray-900 cursor-pointer">
+                                      {registers.fechacreacion}
+                                    </div>
+                                  </div>
+                                </div>
+                              </td>
+                              <td className="px-6 py-2">
+                                <div className="flex items-center">
+                                  <div className="ml-8">
+                                    <div className="lg:text-sm text-xs text-xs font-medium text-gray-900 cursor-pointer">
+                                      {registers.estatus}
+                                    </div>
+                                  </div>
+                                </div>
+                              </td>
+                            </tr>
+                          ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              ) : (
+                <></>
+              )}
             </div>
           </section>
         </div>

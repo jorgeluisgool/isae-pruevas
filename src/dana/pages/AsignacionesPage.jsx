@@ -4,11 +4,15 @@ import { api } from "../helpers/variablesGlobales";
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
 import { Player } from "@lottiefiles/react-lottie-player";
+import { TableProjects } from "../components/asignaciones/TableProjects";
+import { TableRegisters } from "../components/asignaciones/TableRegisters";
+import { TableUserRegisters } from "../components/asignaciones/TableUserRegisters";
 
 export const AsignacionesPage = () => {
   const [users, setUsers] = useState([]);
   const [projects, setProjects] = useState([]);
   const [registers, setRegisters] = useState([]);
+  const [deleteRegister, setDeteleteRegister] = useState([]);
   const [userRegisters, setUserRegisters] = useState([]);
   const [projectfields, setProjectFields] = useState([]);
   const [valuesField, setValuesField] = useState([]);
@@ -19,9 +23,11 @@ export const AsignacionesPage = () => {
   const [usersProjects, setUsersProjects] = useState([]);
   const [selectedUsersProjects, setSelectedUsersProjects] = useState([]);
   const [modalConfirmar, setModalConfirmar] = useState(false);
+  const [modalDeleteRegister, setModalDeleteRegister] = useState(false);
   const [cargando, setCargando] = useState(false);
   const [deleteProject, setDeleteProject] = useState("");
   const [modalAssignment, setModalAssignment] = useState(false);
+  const [modalAssignmentRegister, setModalAssignmentRegister] = useState(false);
   const [showTable, setShowTable] = useState(false);
 
   //Pagination Table
@@ -41,9 +47,15 @@ export const AsignacionesPage = () => {
   // Obtener índice del primer registro en la página actual
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
   // Obtener los registros para la página actual
+
   const currentRows = usersProjects.slice(indexOfFirstRow, indexOfLastRow);
 
-  const totalRowsA = registers.length;
+  const registersnotassign = registers.filter(
+    (reg) => !userRegisters.includes(reg.folio)
+  );
+
+  //const totalRowsA = registers.length;
+  const totalRowsA = registersnotassign.length;
   const totalPagesA = Math.ceil(totalRowsA / rowsPerPageA);
 
   // Obtener índice del último registro en la página actual
@@ -51,9 +63,19 @@ export const AsignacionesPage = () => {
   // Obtener índice del primer registro en la página actual
   const indexOfFirstRowA = indexOfLastRowA - rowsPerPageA;
   // Obtener los registros para la página actual
-  const currentRowsA = registers.slice(indexOfFirstRowA, indexOfLastRowA);
+  //const currentRowsA = registers.slice(indexOfFirstRowA, indexOfLastRowA);
+  const currentRowsA = registersnotassign.slice(
+    indexOfFirstRowA,
+    indexOfLastRowA
+  );
 
-  const totalRowsB = userRegisters.length;
+  //User Registers
+
+  const arrayFilter = registers.filter((reg) =>
+    userRegisters.includes(reg.folio)
+  );
+
+  const totalRowsB = arrayFilter.length;
   const totalPagesB = Math.ceil(totalRows / rowsPerPage);
 
   // Obtener índice del último registro en la página actual
@@ -61,7 +83,7 @@ export const AsignacionesPage = () => {
   // Obtener índice del primer registro en la página actual
   const indexOfFirstRowB = indexOfLastRow - rowsPerPage;
   // Obtener los registros para la página actual
-  const currentRowsB = userRegisters.slice(indexOfFirstRowB, indexOfLastRowB);
+  const currentRowsB = arrayFilter.slice(indexOfFirstRowB, indexOfLastRowB);
 
   //Filtro de usuarios
 
@@ -104,13 +126,6 @@ export const AsignacionesPage = () => {
         setProjects(responseData);
       });
   }, []);
-
-  /* useEffect(() =>{
-
-    const filteredProjects = projects.filter(project => !usersProjects.some(userProject => userProject.idproyecto === project.idproyecto));
-    setProjects(filteredProjects);
-
-  },[selectedUser]) */
 
   const getUsersProjects = (id) => {
     if (id != null) {
@@ -232,11 +247,12 @@ export const AsignacionesPage = () => {
     })
       .then((response) => response.json())
       .then((responseData) => {
-        const arrayFilter = registers.filter((reg) =>
+        /* const arrayFilter = registers.filter((reg) =>
           responseData.includes(reg.folio)
         );
-        console.log(arrayFilter);
-        setUserRegisters(arrayFilter);
+        console.log(arrayFilter); */
+        console.log(responseData);
+        setUserRegisters(responseData);
       })
       .catch((error) => console.log(error));
   };
@@ -253,6 +269,25 @@ export const AsignacionesPage = () => {
       .then((response) => response.json)
       .then((responseData) => {
         console.log(responseData);
+        setSelectedItems([]);
+        getUserRegisters(iduser);
+        setModalAssignmentRegister(true);
+      })
+      .catch((error) => console.log(error));
+  };
+
+  const deleteAssigmentRegister = (iduser, idproject) => {
+    fetch(`${api}/eliminar/asignacion/registro/${iduser}/${idproject}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((responseData) => {
+        console.log(idproject);
+        getUserRegisters(iduser);
+        setModalDeleteRegister(false);
       })
       .catch((error) => console.log(error));
   };
@@ -369,170 +404,20 @@ export const AsignacionesPage = () => {
                 </button>
               </div>
             </div>
-            <div
-              className={`transition-opacity duration-500 ${
-                showTable ? "opacity-100" : "opacity-0"
-              }`}
-            >
-              {showTable ? (
-                <div>
-                  <h1>Proyectos asignados</h1>
-                  <div class="flex justify-center">
-                    <table class="w-full bg-white shadow-md">
-                      <thead className="bg-[#245A95] text-white uppercase">
-                        <tr className="text-left">
-                          <th scope="col" className="relative px-6 py-3">
-                            <div className="items-center">
-                              <span>USUARIO</span>
-                            </div>
-                          </th>
-                          <th scope="col" className="relative px-6 py-3">
-                            <div className="items-center">
-                              <span>PROYECTO</span>
-                            </div>
-                          </th>
-                          <th scope="col" className="relative px-6 py-3">
-                            <div className="items-center">
-                              <span>TIPO DE PROYECTO</span>
-                            </div>
-                          </th>
-                          <th scope="col" className="relative px-6 py-3">
-                            <div className="items-center">
-                              <span>FECHA CREACION</span>
-                            </div>
-                          </th>
-                          <th scope="col" className="relative px-6 py-3">
-                            <div className="items-center">
-                              <span>ELIMINAR</span>
-                            </div>
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-gray-200">
-                        {Array.isArray(currentRows) &&
-                          currentRows.map((project, index) => (
-                            <tr key={index}>
-                              <td className="px-6 py-2">
-                                <div className="flex items-center">
-                                  <div className="ml-8">
-                                    <div className="lg:text-sm text-xs text-xs font-medium text-gray-900 cursor-pointer">
-                                      {selectedUser.usuario}
-                                    </div>
-                                  </div>
-                                </div>
-                              </td>
-                              <td className="px-6 py-2">
-                                <div className="flex items-center">
-                                  <div className="ml-8">
-                                    <div className="lg:text-sm text-xs text-xs font-medium text-gray-900 cursor-pointer">
-                                      {project.proyecto}
-                                    </div>
-                                  </div>
-                                </div>
-                              </td>
-                              <td className="px-6 py-2">
-                                <div className="flex items-center">
-                                  <div className="ml-8">
-                                    <div className="lg:text-sm text-xs text-xs font-medium text-gray-900 cursor-pointer">
-                                      {project.tipoproyecto.descripcion}
-                                    </div>
-                                  </div>
-                                </div>
-                              </td>
-                              <td className="px-6 py-2">
-                                <div className="flex items-center">
-                                  <div className="ml-8">
-                                    <div className="lg:text-sm text-xs text-xs font-medium text-gray-900 cursor-pointer">
-                                      {project.fechacreacion}
-                                    </div>
-                                  </div>
-                                </div>
-                              </td>
-                              <td className="px-6 py-2">
-                                <div className="flex items-center">
-                                  <div className="ml-8">
-                                    <div className="lg:text-sm text-xs text-xs font-medium text-gray-900 cursor-pointer">
-                                      <Button
-                                        icon="pi pi-trash"
-                                        className="p-button-rounded p-button-danger"
-                                        onClick={() => {
-                                          setDeleteProject(project);
-                                          setModalConfirmar(true);
-                                        }}
-                                      />
-                                    </div>
-                                  </div>
-                                </div>
-                              </td>
-                            </tr>
-                          ))}
-                      </tbody>
-                    </table>
-                  </div>
-                  <div className="flex items-center justify-between mt-4">
-                    <div className="flex items-center">
-                      <span className="mr-2 text-[#245A95] font-bold text-xs lg:text-lg">
-                        Filas por página:
-                      </span>
-                      <select
-                        className="border border-gray-300 rounded px-3 py-1"
-                        value={rowsPerPage}
-                        onChange={(e) => setRowsPerPage(Number(e.target.value))}
-                      >
-                        <option value={5}>5</option>
-                        <option value={10}>10</option>
-                        <option value={15}>15</option>
-                        <option value={20}>20</option>
-                      </select>
-                    </div>
-                    <h1 className="text-[#245A95] font-bold text-xs lg:text-lg ml-24">
-                      Total de asistencias:
-                      <span className="text-gray-700"> {totalRows}</span>
-                    </h1>
-                    <div className="flex items-center pl-4">
-                      <span className="mr-2 text-[#245A95] font-bold text-xs lg:text-lg ml-24">
-                        Página{" "}
-                        <span className="text-gray-700">{currentPage}</span> de{" "}
-                        <span className="text-gray-700">{totalPages}</span>
-                      </span>
-                      <nav className="relative z-0 inline-flex shadow-sm rounded-md">
-                        <button
-                          onClick={() => paginate(currentPage - 1)}
-                          disabled={currentPage === 1}
-                          className={`px-3 py-1 rounded-l-md focus:outline-none ${
-                            currentPage === 1
-                              ? "bg-gray-300 cursor-not-allowed"
-                              : "bg-white hover:bg-[#245A95]"
-                          }`}
-                        >
-                          <div className="text-[#245A95] hover:text-white">
-                            <ion-icon name="caret-back-circle"></ion-icon>
-                          </div>
-                        </button>
-                        <span className="px-3 py-1 bg-gray-300 text-gray-700">
-                          {currentPage}
-                        </span>
-                        <button
-                          onClick={() => paginate(currentPage + 1)}
-                          disabled={indexOfLastRow >= totalRows}
-                          className={`px-3 py-1 rounded-r-md focus:outline-none ${
-                            indexOfLastRow >= totalRows
-                              ? "bg-gray-300 cursor-not-allowed"
-                              : "bg-white hover:bg-[#245A95]"
-                          }`}
-                        >
-                          <div className="text-[#245A95] hover:text-white">
-                            <ion-icon name="caret-forward-circle"></ion-icon>
-                          </div>
-                        </button>
-                      </nav>
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <></>
-              )}
-            </div>
+            <TableProjects
+              showTable={showTable}
+              rowsPerPage={rowsPerPage}
+              totalRows={totalRows}
+              totalPages={totalPages}
+              indexOfLastRow={indexOfLastRow}
+              setModalConfirmar={setModalConfirmar}
+              setDeleteProject={setDeleteProject}
+              setRowsPerPage={setRowsPerPage}
+              selectedUser={selectedUser}
+              currentRows={currentRows}
+              currentPage={currentPage}
+              paginate={paginate}
+            />
           </section>
         </div>
         <div
@@ -685,9 +570,8 @@ export const AsignacionesPage = () => {
                   type="button"
                   className="hover:shadow-slate-600 border h-10 px-4 bg-[#245A95] text-white text-lg font-bold shadow-md duration-150 ease-in-out focus:outline-none active:scale-[1.20] transition-all hover:bg-sky-600 rounded-full"
                   onClick={() =>
-                    getRegistersField(
+                    getRegisters(
                       selectedUsersProjects.idproyecto,
-                      selectedValueField
                     )
                   }
                 >
@@ -695,289 +579,38 @@ export const AsignacionesPage = () => {
                 </button>
               </div>
             </div>
-            <div
-              className={`transition-opacity duration-500 ${
-                !showTable ? "opacity-100" : "opacity-0"
-              }`}
-            >
-              {!showTable ? (
-                <div>
-                  <h1>Registros</h1>
-                  <div class="flex justify-center">
-                    <table class="w-full bg-white shadow-md">
-                      <thead className="bg-[#245A95] text-white uppercase">
-                        <tr className="text-left">
-                          <th scope="col" className="relative px-6 py-3">
-                            <div className="items-center">
-                              <span>seleccionar</span>
-                            </div>
-                          </th>
-                          <th scope="col" className="relative px-6 py-3">
-                            <div className="items-center">
-                              <span>FOLIO</span>
-                            </div>
-                          </th>
-                          <th scope="col" className="relative px-6 py-3">
-                            <div className="items-center">
-                              <span>FECHA CREACION</span>
-                            </div>
-                          </th>
-                          <th scope="col" className="relative px-6 py-3">
-                            <div className="items-center">
-                              <span>ESTATUS</span>
-                            </div>
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-gray-200">
-                        {Array.isArray(currentRowsA) &&
-                          currentRowsA.map((registers, index) => (
-                            <tr key={index}>
-                              <td className="px-6 py-2">
-                                <input
-                                  type="checkbox"
-                                  checked={selectedItems.includes(
-                                    registers.idinventario
-                                  )}
-                                  onChange={() =>
-                                    handleCheckboxChange(registers.idinventario)
-                                  }
-                                />
-                              </td>
-                              <td className="px-6 py-2">
-                                <div className="flex items-center">
-                                  <div className="ml-8">
-                                    <div className="lg:text-sm text-xs text-xs font-medium text-gray-900 cursor-pointer">
-                                      {registers.folio}
-                                    </div>
-                                  </div>
-                                </div>
-                              </td>
-                              <td className="px-6 py-2">
-                                <div className="flex items-center">
-                                  <div className="ml-8">
-                                    <div className="lg:text-sm text-xs text-xs font-medium text-gray-900 cursor-pointer">
-                                      {registers.fechacreacion}
-                                    </div>
-                                  </div>
-                                </div>
-                              </td>
-                              <td className="px-6 py-2">
-                                <div className="flex items-center">
-                                  <div className="ml-8">
-                                    <div className="lg:text-sm text-xs text-xs font-medium text-gray-900 cursor-pointer">
-                                      {registers.estatus}
-                                    </div>
-                                  </div>
-                                </div>
-                              </td>
-                            </tr>
-                          ))}
-                      </tbody>
-                    </table>
-                  </div>
-                  <div className="flex items-center justify-between mt-4">
-                    <div className="flex items-center">
-                      <span className="mr-2 text-[#245A95] font-bold text-xs lg:text-lg">
-                        Filas por página:
-                      </span>
-                      <select
-                        className="border border-gray-300 rounded px-3 py-1"
-                        value={rowsPerPageA}
-                        onChange={(e) =>
-                          setRowsPerPageA(Number(e.target.value))
-                        }
-                      >
-                        <option value={5}>5</option>
-                        <option value={10}>10</option>
-                        <option value={15}>15</option>
-                        <option value={20}>20</option>
-                      </select>
-                    </div>
-                    <h1 className="text-[#245A95] font-bold text-xs lg:text-lg ml-24">
-                      Total de asistencias:
-                      <span className="text-gray-700"> {totalRowsA}</span>
-                    </h1>
-                    <div className="flex items-center pl-4">
-                      <span className="mr-2 text-[#245A95] font-bold text-xs lg:text-lg ml-24">
-                        Página{" "}
-                        <span className="text-gray-700">{currentPageA}</span> de{" "}
-                        <span className="text-gray-700">{totalPagesA}</span>
-                      </span>
-                      <nav className="relative z-0 inline-flex shadow-sm rounded-md">
-                        <button
-                          onClick={() => paginateA(currentPageA - 1)}
-                          disabled={currentPageA === 1}
-                          className={`px-3 py-1 rounded-l-md focus:outline-none ${
-                            currentPageA === 1
-                              ? "bg-gray-300 cursor-not-allowed"
-                              : "bg-white hover:bg-[#245A95]"
-                          }`}
-                        >
-                          <div className="text-[#245A95] hover:text-white">
-                            <ion-icon name="caret-back-circle"></ion-icon>
-                          </div>
-                        </button>
-                        <span className="px-3 py-1 bg-gray-300 text-gray-700">
-                          {currentPage}
-                        </span>
-                        <button
-                          onClick={() => paginateA(currentPageA + 1)}
-                          disabled={indexOfLastRowA >= totalRowsA}
-                          className={`px-3 py-1 rounded-r-md focus:outline-none ${
-                            indexOfLastRowA >= totalRowsA
-                              ? "bg-gray-300 cursor-not-allowed"
-                              : "bg-white hover:bg-[#245A95]"
-                          }`}
-                        >
-                          <div className="text-[#245A95] hover:text-white">
-                            <ion-icon name="caret-forward-circle"></ion-icon>
-                          </div>
-                        </button>
-                      </nav>
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <></>
-              )}
-            </div>
-
-            <div
-              className={`transition-opacity duration-500 ${
-                !showTable ? "opacity-100" : "opacity-0"
-              }`}
-            >
-              {!showTable ? (
-                <div>
-                  <h1>Registros asignados</h1>
-                  <div class="flex justify-center">
-                    <table class="w-full bg-white shadow-md">
-                      <thead className="bg-[#245A95] text-white uppercase">
-                        <tr className="text-left">
-                          <th scope="col" className="relative px-6 py-3">
-                            <div className="items-center">
-                              <span>seleccionar</span>
-                            </div>
-                          </th>
-                          <th scope="col" className="relative px-6 py-3">
-                            <div className="items-center">
-                              <span>FOLIO</span>
-                            </div>
-                          </th>
-                          <th scope="col" className="relative px-6 py-3">
-                            <div className="items-center">
-                              <span>FECHA CREACION</span>
-                            </div>
-                          </th>
-                          <th scope="col" className="relative px-6 py-3">
-                            <div className="items-center">
-                              <span>ESTATUS</span>
-                            </div>
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-gray-200">
-                        {Array.isArray(currentRowsB) &&
-                          currentRowsB.map((registers, index) => (
-                            <tr key={index}>
-                              <td className="px-6 py-2">
-                                <div className="flex items-center">
-                                  <div className="ml-8">
-                                    <div className="lg:text-sm text-xs text-xs font-medium text-gray-900 cursor-pointer">
-                                      {registers.folio}
-                                    </div>
-                                  </div>
-                                </div>
-                              </td>
-                              <td className="px-6 py-2">
-                                <div className="flex items-center">
-                                  <div className="ml-8">
-                                    <div className="lg:text-sm text-xs text-xs font-medium text-gray-900 cursor-pointer">
-                                      {registers.fechacreacion}
-                                    </div>
-                                  </div>
-                                </div>
-                              </td>
-                              <td className="px-6 py-2">
-                                <div className="flex items-center">
-                                  <div className="ml-8">
-                                    <div className="lg:text-sm text-xs text-xs font-medium text-gray-900 cursor-pointer">
-                                      {registers.estatus}
-                                    </div>
-                                  </div>
-                                </div>
-                              </td>
-                            </tr>
-                          ))}
-                      </tbody>
-                    </table>
-                  </div>
-                  <div className="flex items-center justify-between mt-4">
-                    <div className="flex items-center">
-                      <span className="mr-2 text-[#245A95] font-bold text-xs lg:text-lg">
-                        Filas por página:
-                      </span>
-                      <select
-                        className="border border-gray-300 rounded px-3 py-1"
-                        value={rowsPerPageB}
-                        onChange={(e) =>
-                          setRowsPerPageA(Number(e.target.value))
-                        }
-                      >
-                        <option value={5}>5</option>
-                        <option value={10}>10</option>
-                        <option value={15}>15</option>
-                        <option value={20}>20</option>
-                      </select>
-                    </div>
-                    <h1 className="text-[#245A95] font-bold text-xs lg:text-lg ml-24">
-                      Total de asistencias:
-                      <span className="text-gray-700"> {totalRowsB}</span>
-                    </h1>
-                    <div className="flex items-center pl-4">
-                      <span className="mr-2 text-[#245A95] font-bold text-xs lg:text-lg ml-24">
-                        Página{" "}
-                        <span className="text-gray-700">{currentPageB}</span> de{" "}
-                        <span className="text-gray-700">{totalPagesB}</span>
-                      </span>
-                      <nav className="relative z-0 inline-flex shadow-sm rounded-md">
-                        <button
-                          onClick={() => paginateA(currentPageB - 1)}
-                          disabled={currentPageB === 1}
-                          className={`px-3 py-1 rounded-l-md focus:outline-none ${
-                            currentPageA === 1
-                              ? "bg-gray-300 cursor-not-allowed"
-                              : "bg-white hover:bg-[#245A95]"
-                          }`}
-                        >
-                          <div className="text-[#245A95] hover:text-white">
-                            <ion-icon name="caret-back-circle"></ion-icon>
-                          </div>
-                        </button>
-                        <span className="px-3 py-1 bg-gray-300 text-gray-700">
-                          {currentPage}
-                        </span>
-                        <button
-                          onClick={() => paginateA(currentPageB + 1)}
-                          disabled={indexOfLastRowB >= totalRowsB}
-                          className={`px-3 py-1 rounded-r-md focus:outline-none ${
-                            indexOfLastRowB >= totalRowsB
-                              ? "bg-gray-300 cursor-not-allowed"
-                              : "bg-white hover:bg-[#245A95]"
-                          }`}
-                        >
-                          <div className="text-[#245A95] hover:text-white">
-                            <ion-icon name="caret-forward-circle"></ion-icon>
-                          </div>
-                        </button>
-                      </nav>
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <></>
-              )}
+            <div className="overflow-x-auto lg:flex ">
+              <div className="p-1 ">
+              <TableRegisters
+                showTable={showTable}
+                rowsPerPageA={rowsPerPageA}
+                totalRowsA={totalRowsA}
+                totalPagesA={totalPagesA}
+                indexOfLastRowA={indexOfLastRowA}
+                setRowsPerPageA={setRowsPerPageA}
+                selectedUser={selectedUser}
+                currentRowsA={currentRowsA}
+                currentPageA={currentPageA}
+                paginateA={paginateA}
+                handleCheckboxChange={handleCheckboxChange}
+                selectedItems={selectedItems}
+              />
+              </div>
+              <div className="p-1">
+              <TableUserRegisters
+                showTable={showTable}
+                rowsPerPageB={rowsPerPageB}
+                totalRowsB={totalRowsB}
+                totalPagesB={totalPagesB}
+                indexOfLastRowA={indexOfLastRowB}
+                setRowsPerPageB={setRowsPerPageB}
+                currentRowsB={currentRowsB}
+                currentPageB={currentPageB}
+                paginateB={paginateB}
+                setDeteleteRegister={setDeteleteRegister}
+                setModalDeleteRegister={setModalDeleteRegister}
+              />
+              </div>
             </div>
           </section>
         </div>
@@ -1035,6 +668,57 @@ export const AsignacionesPage = () => {
 
       <Dialog
         header="MENSAJE"
+        visible={modalDeleteRegister}
+        footer={
+          <div>
+            <Button
+              label="Sí"
+              icon="pi pi-check"
+              onClick={() =>
+                deleteAssigmentRegister(
+                  selectedUser.idusuario,
+                  deleteRegister.idinventario
+                  //deleteProject.idproyecto
+                )
+              }
+              className="p-button-danger"
+            />
+            <Button
+              label="No"
+              icon="pi pi-times"
+              onClick={() => setModalDeleteRegister(false)}
+              className="p-button-secondary"
+            />
+          </div>
+        }
+        style={{
+          width: "350px", // Ajusta el ancho del Dialog
+
+          zIndex: 9999, // Asegúrate de que el zIndex sea superior para que se muestre por encima de otros elementos
+          borderRadius: "20px", // Agrega bordes redondeados para un aspecto más agradable
+          boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)", // Agrega una sombra para el efecto de elevación
+          backgroundColor: "#ffffff", // Ajusta el color de fondo del Dialog
+        }}
+        onHide={() => setModalDeleteRegister(false)}
+      >
+        <div className="text-center">
+          <Player
+            src="https://lottie.host/70f5786c-4f21-4ac7-9cb1-9784660692bf/8fx4ftXnv8.json"
+            className="player"
+            loop
+            autoplay
+            style={{ height: "150px", width: "150px" }}
+          />
+          <h1 className="text-lg font-bold">
+            ¿Desea eliminar la asignacion del registro {deleteRegister.folio}?
+          </h1>
+        </div>
+
+        <div className="mt-8"></div>
+      </Dialog>
+
+      <Dialog
+        header="MENSAJE"
         visible={modalAssignment}
         style={{
           // position: 'fixed',
@@ -1064,6 +748,44 @@ export const AsignacionesPage = () => {
           <button
             type="button"
             onClick={() => setModalAssignment(false)}
+            className="hover:shadow-slate-600 border h-7 px-4 bg-[#245A95] text-white text-xs font-bold rounded-full shadow-md duration-150 ease-in-out focus:outline-none active:scale-[1.20] transition-all hover:bg-sky-600"
+          >
+            ACEPTAR
+          </button>
+        </div>
+      </Dialog>
+
+      <Dialog
+        header="MENSAJE"
+        visible={modalAssignmentRegister}
+        style={{
+          // position: 'fixed',
+          // top: '20px', // Ajusta la distancia desde la parte superior
+          // right: '20px', // Ajusta la distancia desde la parte derecha
+          width: "350px", // Ajusta el ancho del Dialog
+          // height: '300px',
+          zIndex: 9999, // Asegúrate de que el zIndex sea superior para que se muestre por encima de otros elementos
+          borderRadius: "20px", // Agrega bordes redondeados para un aspecto más agradable
+          boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)", // Agrega una sombra para el efecto de elevación
+          backgroundColor: "#ffffff", // Ajusta el color de fondo del Dialog
+        }}
+        onHide={() => setModalAssignmentRegister(false)}
+      >
+        <div className="text-center">
+          <Player
+            src="https://lottie.host/05e47727-2361-4ac4-883f-9fc1199e6b61/WAnbSOkbP0.json"
+            className="player"
+            loop
+            autoplay
+            style={{ height: "150px", width: "150px" }}
+          />
+          <h1 className="text-lg font-bold">Registros asignados...</h1>
+        </div>
+
+        <div className="mt-8">
+          <button
+            type="button"
+            onClick={() => setModalAssignmentRegister(false)}
             className="hover:shadow-slate-600 border h-7 px-4 bg-[#245A95] text-white text-xs font-bold rounded-full shadow-md duration-150 ease-in-out focus:outline-none active:scale-[1.20] transition-all hover:bg-sky-600"
           >
             ACEPTAR

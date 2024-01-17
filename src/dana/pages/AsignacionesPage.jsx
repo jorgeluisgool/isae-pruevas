@@ -223,8 +223,22 @@ export const AsignacionesPage = () => {
       });
   };
 
-  const getUserRegisters = () => {
-    fetch(`${api}/`);
+  const getUserRegisters = (iduser) => {
+    fetch(`${api}/obtener/registros/asignados/${iduser}`, {
+      method: "GET",
+      headers: {
+        "Content-type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((responseData) => {
+        const arrayFilter = registers.filter((reg) =>
+          responseData.includes(reg.folio)
+        );
+        console.log(arrayFilter);
+        setUserRegisters(arrayFilter);
+      })
+      .catch((error) => console.log(error));
   };
 
   const assignRegisters = (iduser) => {
@@ -237,7 +251,9 @@ export const AsignacionesPage = () => {
       body: JSON.stringify(selectedItems),
     })
       .then((response) => response.json)
-      .then((responseData) => console.log(responseData))
+      .then((responseData) => {
+        console.log(responseData);
+      })
       .catch((error) => console.log(error));
   };
 
@@ -570,6 +586,7 @@ export const AsignacionesPage = () => {
                       setSelectedUsersProjects(eve.target.value);
                       getProjectFields(eve.target.value.idproyecto);
                       getRegisters(eve.target.value.idproyecto);
+                      getUserRegisters(selectedUser.idusuario);
                     }}
                   />
                   <span className=" bg-[#245A95] p-2 px-3 rounded-r-lg shadow-md">
@@ -833,7 +850,7 @@ export const AsignacionesPage = () => {
             >
               {!showTable ? (
                 <div>
-                  <h1>Registros</h1>
+                  <h1>Registros asignados</h1>
                   <div class="flex justify-center">
                     <table class="w-full bg-white shadow-md">
                       <thead className="bg-[#245A95] text-white uppercase">
@@ -861,20 +878,9 @@ export const AsignacionesPage = () => {
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-gray-200">
-                        {Array.isArray(currentRowsA) &&
-                          currentRowsA.map((registers, index) => (
+                        {Array.isArray(currentRowsB) &&
+                          currentRowsB.map((registers, index) => (
                             <tr key={index}>
-                              <td className="px-6 py-2">
-                                <input
-                                  type="checkbox"
-                                  checked={selectedItems.includes(
-                                    registers.idinventario
-                                  )}
-                                  onChange={() =>
-                                    handleCheckboxChange(registers.idinventario)
-                                  }
-                                />
-                              </td>
                               <td className="px-6 py-2">
                                 <div className="flex items-center">
                                   <div className="ml-8">

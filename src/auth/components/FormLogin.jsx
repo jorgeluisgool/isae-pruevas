@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import useAuth from '../../dana/hooks/useAuth';
+import { Password } from 'primereact/password';
+import { InputText } from 'primereact/inputtext';
 
 
 export const FormLogin = () => {
@@ -96,37 +98,42 @@ export const FormLogin = () => {
             </div>
             <p className='font-medium text-lg text-gray-500'>Bienvenido de nuevo</p>
             <div className='mt-4'>
-                <label className='text-lg text-[#245A95] font-medium'>Usuario</label>
                 <form onSubmit={onLogin}>
-                    <label className="relative block">
-                        <span className="sr-only">Search</span>
-                        <span className="absolute inset-y-0 left-0 flex items-center pl-2">
-                            <i className="pi pi-user text-[#245A95]"></i>
-                        </span>
-                        <input 
-                            className='w-full border-2 border-gray-100 p-4 mt-1 bg-transparet rounded-md py-2 pl-9 pr-3 focus:outline-none focus:border-sky-500 focus:ring-sky-500 focus:ring-1'
-                            type='text'
-                            placeholder='Ingrese su Usuario'
-                            name='usuario'
-                            value={usuario}
-                            onChange={(e) => setUsuario(e.target.value)}   
-                        />
-                    </label>
-                    <label className='text-lg text-[#245A95] font-medium'>Contraseña</label>
-                        <label className="relative block">
-                            <span className="sr-only">Search</span>
-                            <span className="absolute inset-y-0 left-0 flex items-center pl-2">
-                                <i className="pi pi-lock text-[#245A95]"></i>
+                    <div className="p-inputgroup mt-3 lg:mt-6 shadow-xl">
+                          <span className='p-float-label  w-full'>
+                            <InputText 
+                                className="w-full appearance-none focus:outline-none bg-transparent border-b-2 border-[#245A95] text-gray-700 transition-all duration-300 focus:border-[#245A95]"
+                                name="usuario"
+                                value={usuario}
+                                onChange={(e) => setUsuario(e.target.value)} 
+                            />
+                            <span className=" bg-[#245A95] p-2 px-3 rounded-r-lg shadow-md">
+                              <i className="pi pi-user text-white font-light text-xl"></i>
                             </span>
-                            <input 
-                                className='w-full border-2 border-gray-100 p-4 mt-1 bg-transparet rounded-md py-2 pl-9 pr-3 focus:outline-none focus:border-sky-500 focus:ring-sky-500 focus:ring-1'
-                                placeholder='Ingrese su contraseña'
-                                type='password'
-                                name='contrasena'
+                            <label htmlFor="nombrealberca" className='text-sm text-[#245A95] font-extrabold absolute top-2 left-3 transition-all duration-300'>
+                              Usuario
+                            </label>
+                          </span>
+                        </div>
+                    
+                        <div className="p-inputgroup mt-3 lg:mt-6 shadow-xl">
+                          <span className='p-float-label  w-full'>
+                            <Password 
+                                className="w-full appearance-none focus:outline-none bg-transparent border-b-2 border-[#245A95] text-gray-700 transition-all duration-300 focus:border-[#245A95]"
+                                name="contrasena"
                                 value={contrasena}
                                 onChange={(e) => setContrasena(e.target.value)}
+                                feedback={false}
+                                toggleMask
                             />
-                        </label>
+                            <span className=" bg-[#245A95] p-2 px-3 rounded-r-lg shadow-md">
+                              <i className="pi pi-lock text-white font-light text-xl"></i>
+                            </span>
+                            <label htmlFor="nombrealberca" className='text-sm text-[#245A95] font-extrabold absolute top-2 left-3 transition-all duration-300'>
+                              Contraseña
+                            </label>
+                          </span>
+                        </div>
                         <div className='mt-8 flex flex-col gap-y-4'>
                         {
                             errorUsuario !== "" && 

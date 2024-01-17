@@ -1,9 +1,7 @@
 import React, { useState } from 'react'
 import { useFetchUsers } from '../../hooks/useFetchUsers';
 
-export const TablaUsuarios = ({searchTerm, setUsuarioSeleccionado, setFormularioState}) => {
-
-    const { data: listaUsuarios, loading: loadingUsuarios } = useFetchUsers();
+export const TablaUsuarios = ({searchTerm, setUsuarioSeleccionado, setFormularioState, formularioState, listaUsuarios}) => {
 
     const [currentPage, setCurrentPage] = useState(1);
     const [rowsPerPage, setRowsPerPage] = useState(10);

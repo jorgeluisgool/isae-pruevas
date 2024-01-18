@@ -15,7 +15,7 @@ export const TableUserRegisters = ({
 }) => {
   return (
     <div
-      className={`transition-opacity duration-500 lg:ml-20 ml-0 ${
+      className={`transition-opacity duration-500 lg:ml-3 ml-0 ${
         !showTable ? "opacity-100" : "opacity-0"
       }`}
     >
@@ -57,7 +57,7 @@ export const TableUserRegisters = ({
                       <td className="px-6 py-2">
                         <div className="flex items-center">
                           <div className="ml-2">
-                            <div className="lg:text-sm text-xs text-xs font-medium text-gray-900 cursor-pointer">
+                            <div className="lg:text-xs text-xs text-xs font-medium text-gray-900 cursor-pointer">
                               {registers.folio}
                             </div>
                           </div>
@@ -66,7 +66,7 @@ export const TableUserRegisters = ({
                       <td className="px-6 py-2">
                         <div className="flex items-center">
                           <div className="ml-2">
-                            <div className="lg:text-sm text-xs text-xs font-medium text-gray-900 cursor-pointer">
+                            <div className="lg:text-xs text-xs text-xs font-medium text-gray-900 cursor-pointer">
                               {registers.fechacreacion}
                             </div>
                           </div>
@@ -75,7 +75,7 @@ export const TableUserRegisters = ({
                       <td className="px-6 py-2">
                         <div className="flex items-center">
                           <div className="ml-2">
-                            <div className="lg:text-sm text-xs text-xs font-medium text-gray-900 cursor-pointer">
+                            <div className="lg:text-xs text-xs text-xs font-medium text-gray-900 cursor-pointer">
                               {registers.estatus}
                             </div>
                           </div>
@@ -103,8 +103,8 @@ export const TableUserRegisters = ({
                           <button
                             type="button"
                             onClick={() => {
-                                setDeteleteRegister(registers);
-                                setModalDeleteRegister(true);
+                              setDeteleteRegister(registers);
+                              setModalDeleteRegister(true);
                             }}
                             className="hover:shadow-slate-600 border h-6 w-6 bg-red-700 text-white text-xs xl:text-base font-bold rounded-full shadow-md duration-150 ease-in-out focus:outline-none active:scale-[1.20] transition-all hover:bg-red-500 ml-6"
                             style={{ borderRadius: "50%" }}

@@ -67,7 +67,7 @@ export const TableRegisters = ({
                       <td className="px-6 py-2">
                         <div className="flex items-center">
                           <div className="ml-2">
-                            <div className="lg:text-sm text-xs text-xs font-medium text-gray-900 cursor-pointer">
+                            <div className="lg:text-xs text-xs text-xs font-medium text-gray-900 cursor-pointer">
                               {registers.folio}
                             </div>
                           </div>
@@ -76,7 +76,7 @@ export const TableRegisters = ({
                       <td className="px-6 py-2">
                         <div className="flex items-center">
                           <div className="ml-2">
-                            <div className="lg:text-sm text-xs text-xs font-medium text-gray-900 cursor-pointer">
+                            <div className="lg:text-xs text-xs text-xs font-medium text-gray-900 cursor-pointer">
                               {registers.fechacreacion}
                             </div>
                           </div>
@@ -85,7 +85,7 @@ export const TableRegisters = ({
                       <td className="px-6 py-2">
                         <div className="flex items-center">
                           <div className="ml-2">
-                            <div className="lg:text-sm text-xs text-xs font-medium text-gray-900 cursor-pointer">
+                            <div className="lg:text-xs text-xs text-xs font-medium text-gray-900 cursor-pointer">
                               {registers.estatus}
                             </div>
                           </div>

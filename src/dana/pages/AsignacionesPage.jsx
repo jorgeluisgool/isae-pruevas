@@ -25,6 +25,7 @@ export const AsignacionesPage = () => {
   const [modalConfirmar, setModalConfirmar] = useState(false);
   const [modalDeleteRegister, setModalDeleteRegister] = useState(false);
   const [cargando, setCargando] = useState(false);
+  const [tables, setTables] = useState(false);
   const [deleteProject, setDeleteProject] = useState("");
   const [modalAssignment, setModalAssignment] = useState(false);
   const [modalAssignmentRegister, setModalAssignmentRegister] = useState(false);
@@ -128,6 +129,7 @@ export const AsignacionesPage = () => {
   }, []);
 
   const getUsersProjects = (id) => {
+    setTables(true);
     if (id != null) {
       fetch(`${api}/obtener/proyectos/asignados/${id}`, {
         method: "GET",
@@ -140,6 +142,7 @@ export const AsignacionesPage = () => {
           console.log(responseData);
 
           setUsersProjects(responseData);
+          setTables(false);
         })
         .catch((error) => console.log(error));
     }
@@ -225,6 +228,7 @@ export const AsignacionesPage = () => {
   };
 
   const getRegisters = (idproject) => {
+    setTables(true);
     fetch(`${api}/obtener/registros/${idproject}`, {
       method: "GET",
       headers: {
@@ -235,6 +239,7 @@ export const AsignacionesPage = () => {
       .then((responseData) => {
         console.log(responseData);
         setRegisters(responseData);
+        setTables(false);
       });
   };
 
@@ -329,8 +334,8 @@ export const AsignacionesPage = () => {
             Asignación de proyectos
           </h1>
           <section>
-            <div className="p-inputgroup mt-3 lg:mt-6 grid sm:grid-cols-3 gap-8">
-              <div className="">
+            <div className="grid sm:grid-cols-3 gap-8">
+              <div className="p-inputgroup mt-3 lg:mt-6 ">
                 <span className="p-float-label w-full mt-2">
                   <Dropdown
                     className="w-full appearance-none focus:outline-none bg-transparent border-b-2 border-[#245A95] text-gray-700 transition-all duration-300 focus:border-[#245A95]"
@@ -358,7 +363,7 @@ export const AsignacionesPage = () => {
                 </span>
               </div>
 
-              <div className="">
+              <div className="p-inputgroup mt-3 lg:mt-6 ">
                 <span className="p-float-label w-full mt-2">
                   <Dropdown
                     className="w-full appearance-none focus:outline-none bg-transparent border-b-2 border-[#245A95] text-gray-700 transition-all duration-300 focus:border-[#245A95]"
@@ -404,20 +409,34 @@ export const AsignacionesPage = () => {
                 </button>
               </div>
             </div>
-            <TableProjects
-              showTable={showTable}
-              rowsPerPage={rowsPerPage}
-              totalRows={totalRows}
-              totalPages={totalPages}
-              indexOfLastRow={indexOfLastRow}
-              setModalConfirmar={setModalConfirmar}
-              setDeleteProject={setDeleteProject}
-              setRowsPerPage={setRowsPerPage}
-              selectedUser={selectedUser}
-              currentRows={currentRows}
-              currentPage={currentPage}
-              paginate={paginate}
-            />
+
+            {tables && showTable ? (
+              <div className="flex items-center justify-center flex-col my-12">
+                <img
+                  src="/src/assets/isae.png"
+                  alt="Icono"
+                  className="h-40 animate-spin xl:my-0"
+                />
+                <h1 className="text-lg font-black text-[#245A95] animate-pulse">
+                  Cargando tabla
+                </h1>
+              </div>
+            ) : (
+              <TableProjects
+                showTable={showTable}
+                rowsPerPage={rowsPerPage}
+                totalRows={totalRows}
+                totalPages={totalPages}
+                indexOfLastRow={indexOfLastRow}
+                setModalConfirmar={setModalConfirmar}
+                setDeleteProject={setDeleteProject}
+                setRowsPerPage={setRowsPerPage}
+                selectedUser={selectedUser}
+                currentRows={currentRows}
+                currentPage={currentPage}
+                paginate={paginate}
+              />
+            )}
           </section>
         </div>
         <div
@@ -569,49 +588,58 @@ export const AsignacionesPage = () => {
                 <button
                   type="button"
                   className="hover:shadow-slate-600 border h-10 px-4 bg-[#245A95] text-white text-lg font-bold shadow-md duration-150 ease-in-out focus:outline-none active:scale-[1.20] transition-all hover:bg-sky-600 rounded-full"
-                  onClick={() =>
-                    getRegisters(
-                      selectedUsersProjects.idproyecto,
-                    )
-                  }
+                  onClick={() => getRegisters(selectedUsersProjects.idproyecto)}
                 >
                   Mostrar todos
                 </button>
               </div>
             </div>
-            <div className="overflow-x-auto lg:flex ">
-              <div className="p-1 ">
-              <TableRegisters
-                showTable={showTable}
-                rowsPerPageA={rowsPerPageA}
-                totalRowsA={totalRowsA}
-                totalPagesA={totalPagesA}
-                indexOfLastRowA={indexOfLastRowA}
-                setRowsPerPageA={setRowsPerPageA}
-                selectedUser={selectedUser}
-                currentRowsA={currentRowsA}
-                currentPageA={currentPageA}
-                paginateA={paginateA}
-                handleCheckboxChange={handleCheckboxChange}
-                selectedItems={selectedItems}
-              />
+            {tables && !showTable ? (
+              <div className="flex items-center justify-center flex-col my-12">
+                <img
+                  src="/src/assets/isae.png"
+                  alt="Icono"
+                  className="h-40 animate-spin xl:my-0"
+                />
+                <h1 className="text-lg font-black text-[#245A95] animate-pulse">
+                  Cargando tabla
+                </h1>
               </div>
-              <div className="p-1">
-              <TableUserRegisters
-                showTable={showTable}
-                rowsPerPageB={rowsPerPageB}
-                totalRowsB={totalRowsB}
-                totalPagesB={totalPagesB}
-                indexOfLastRowA={indexOfLastRowB}
-                setRowsPerPageB={setRowsPerPageB}
-                currentRowsB={currentRowsB}
-                currentPageB={currentPageB}
-                paginateB={paginateB}
-                setDeteleteRegister={setDeteleteRegister}
-                setModalDeleteRegister={setModalDeleteRegister}
-              />
+            ) : (
+              <div className="overflow-x-auto lg:flex ">
+                <div className="p-1 ">
+                  <TableRegisters
+                    showTable={showTable}
+                    rowsPerPageA={rowsPerPageA}
+                    totalRowsA={totalRowsA}
+                    totalPagesA={totalPagesA}
+                    indexOfLastRowA={indexOfLastRowA}
+                    setRowsPerPageA={setRowsPerPageA}
+                    selectedUser={selectedUser}
+                    currentRowsA={currentRowsA}
+                    currentPageA={currentPageA}
+                    paginateA={paginateA}
+                    handleCheckboxChange={handleCheckboxChange}
+                    selectedItems={selectedItems}
+                  />
+                </div>
+                <div className="p-1">
+                  <TableUserRegisters
+                    showTable={showTable}
+                    rowsPerPageB={rowsPerPageB}
+                    totalRowsB={totalRowsB}
+                    totalPagesB={totalPagesB}
+                    indexOfLastRowA={indexOfLastRowB}
+                    setRowsPerPageB={setRowsPerPageB}
+                    currentRowsB={currentRowsB}
+                    currentPageB={currentPageB}
+                    paginateB={paginateB}
+                    setDeteleteRegister={setDeteleteRegister}
+                    setModalDeleteRegister={setModalDeleteRegister}
+                  />
+                </div>
               </div>
-            </div>
+            )}
           </section>
         </div>
       </div>

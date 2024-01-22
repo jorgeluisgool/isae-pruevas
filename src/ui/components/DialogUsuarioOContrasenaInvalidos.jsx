@@ -11,10 +11,8 @@ const DialogUsuarioOContrasenaInvalidos = ({dialogUsuarioContraseña, setDialogU
               loop
               autoplay
               style={{ height: '300px', width: '300px' }}
-            />
-            
-        </div>
-        
+            />      
+        </div>    
         <div className=''>
             <button 
                 type='submit'

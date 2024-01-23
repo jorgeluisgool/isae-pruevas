@@ -137,7 +137,7 @@ export const TableUserRegisters = ({
                 <option value={20}>20</option>
               </select>
             </div>
-            <h1 className="text-[#245A95] font-bold text-xs lg:text-lg lg:ml-18 ml-10">
+            <h1 className="text-[#245A95] font-bold text-xs lg:text-sm lg:ml-18 ml-10">
               Total de registros asignados:
               <span className="text-gray-700"> {totalRowsB}</span>
             </h1>

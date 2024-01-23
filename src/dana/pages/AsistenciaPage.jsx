@@ -7,6 +7,7 @@ import { api } from "../helpers/variablesGlobales";
 import useAuth from "../hooks/useAuth";
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
+import { Player } from "@lottiefiles/react-lottie-player";
 
 export const AsistenciaPage = () => {
   const [selectedDateStart, setSelectedDateStart] = useState(null);
@@ -76,8 +77,6 @@ export const AsistenciaPage = () => {
     return formattedDate;
   };
 
-  
-
   const getUserAssistance = () => {
     fetch(
       `${api}/obtener/usuarios/asistencia/${selectedDateStart.replaceAll(
@@ -94,7 +93,7 @@ export const AsistenciaPage = () => {
     )
       .then((response) => response.json())
       .then((responseData) => {
-        console.log(responseData);
+        //console.log(responseData);
         setListaUsuarios(responseData);
       })
       .catch((error) => console.log(error));
@@ -103,277 +102,295 @@ export const AsistenciaPage = () => {
   return (
     <>
       <div className="pb-6">
-      <h1 className="pt-2 xl:pt-6 pl-3 xl:pl-20 text-4xl font-black text-[#245A95]">Asistencia</h1>
-      <div className='mx-4 xl:mx-20 my-4 px-4 py-2 shadow-md bg-white rounded-lg overflow-hidden'>
-        <section>
-
-          <div className="p-inputgroup mt-6 grid md:grid-cols-3">
-            <span className="p-float-label  w-full xl:pr-10 mb-10">
-              <Calendar
-                className="w-1/2 appearance-none focus:outline-none bg-transparent placeholder-gray-900 "
-                value={selectedDateStart ? parseDate(selectedDateStart) : null}
-                placeholder="Fecha de inicio"
-                dateFormat="dd/MM/yy"
-                onChange={(e) => {
-                  const formattedDate = formatDateToString(e.value);
-                  setSelectedDateStart(formattedDate); // Actualiza la variable de estado con la fecha seleccionada
-                }}
-              />
-              <span className=" bg-[#245A95] p-2 px-3 rounded-r-lg shadow-md">
-                <i className="pi pi-file-edit text-white font-light text-xl"></i>
+        <h1 className="pt-2 xl:pt-6 pl-3 xl:pl-20 text-4xl font-black text-[#245A95]">
+          Asistencia
+        </h1>
+        <div className="mx-4 xl:mx-20 my-4 px-4 py-2 shadow-md bg-white rounded-lg overflow-hidden">
+          <section>
+            <div className="p-inputgroup mt-6 grid md:grid-cols-3">
+              <span className="p-float-label  w-full xl:pr-10 mb-10">
+                <Calendar
+                  className="w-1/2 appearance-none focus:outline-none bg-transparent placeholder-gray-900 "
+                  value={
+                    selectedDateStart ? parseDate(selectedDateStart) : null
+                  }
+                  placeholder="Fecha de inicio"
+                  dateFormat="dd/MM/yy"
+                  onChange={(e) => {
+                    const formattedDate = formatDateToString(e.value);
+                    setSelectedDateStart(formattedDate); // Actualiza la variable de estado con la fecha seleccionada
+                  }}
+                />
+                <span className=" bg-[#245A95] p-2 px-3 rounded-r-lg shadow-md">
+                  <i className="pi pi-file-edit text-white font-light text-xl"></i>
+                </span>
+                <label
+                  htmlFor="nombrealberca"
+                  className="lg:text-sm text-xs text-[#245A95] font-extrabold absolute top-2 left-3 transition-all duration-300"
+                >
+                  Fecha inical
+                </label>
               </span>
-              <label
-                htmlFor="nombrealberca"
-                className="lg:text-sm text-xs text-[#245A95] font-extrabold absolute top-2 left-3 transition-all duration-300"
-              >
-                Fecha inical
-              </label>
-            </span>
 
-            <span className="p-float-label  w-full xl:pr-10 mb-10">
-              <Calendar
-                className="w-1/2 appearance-none focus:outline-none bg-transparent placeholder-gray-900"
-                value={selectedDateEnd ? parseDate(selectedDateEnd) : null}
-                placeholder="Fecha final"
-                dateFormat="dd/MM/yy"
-                onChange={(e) => {
-                  const formattedDate = formatDateToString(e.value);
-                  setSelectedDateEnd(formattedDate); // Actualiza la variable de estado con la fecha seleccionada
-                }}
-              />
-              <span className=" bg-[#245A95] p-2 px-3 rounded-r-lg shadow-md">
-                <i className="pi pi-file-edit text-white font-light text-xl"></i>
+              <span className="p-float-label  w-full xl:pr-10 mb-10">
+                <Calendar
+                  className="w-1/2 appearance-none focus:outline-none bg-transparent placeholder-gray-900"
+                  value={selectedDateEnd ? parseDate(selectedDateEnd) : null}
+                  placeholder="Fecha final"
+                  dateFormat="dd/MM/yy"
+                  onChange={(e) => {
+                    const formattedDate = formatDateToString(e.value);
+                    setSelectedDateEnd(formattedDate); // Actualiza la variable de estado con la fecha seleccionada
+                  }}
+                />
+                <span className=" bg-[#245A95] p-2 px-3 rounded-r-lg shadow-md">
+                  <i className="pi pi-file-edit text-white font-light text-xl"></i>
+                </span>
+                <label
+                  htmlFor="nombrealberca"
+                  className="lg:text-sm text-xs text-[#245A95] font-extrabold absolute top-2 left-3 transition-all duration-300"
+                >
+                  Fecha final
+                </label>
               </span>
-              <label
-                htmlFor="nombrealberca"
-                className="lg:text-sm text-xs text-[#245A95] font-extrabold absolute top-2 left-3 transition-all duration-300"
-              >
-                Fecha final
-              </label>
-            </span>
 
-            {listaUsuarios.length > 0 ? (
-          <div className="">
-            <span className="p-float-label  w-full xl:pr-10 mb-10">
-              <InputText
-                className="w-1/2 appearance-none focus:outline-none bg-transparent border-b-2 border-[#245A95] text-gray-700 transition-all duration-300 focus:border-[#245A95]"
-                name="perfil"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-
-              />
-              <span className=" bg-[#245A95] p-2 px-3 rounded-r-lg shadow-md">
-                <i className="pi pi-file-edit text-white font-light text-xl"></i>
-              </span>
-              <label
-                htmlFor="nombrealberca"
-                className="lg:text-sm text-xs text-[#245A95] font-extrabold absolute top-2 left-3 transition-all duration-300"
-              >
-                Buscar usuario
-              </label>
-            </span>
-          </div>): <></>}
-          </div>
-
-          <div className="flex justify-center items-center">
-            <button
-              type="button"
-              className="hover:shadow-slate-600 border h-10 px-4 bg-[#245A95] text-white text-lg font-bold rounded-full shadow-md duration-150 ease-in-out focus:outline-none active:scale-[1.20] transition-all hover:bg-sky-600"
-              onClick={getUserAssistance}
-            >
-              Buscar
-            </button>
-          </div>
-        </section>
-        <section>
-          {listaUsuarios.length == 0 ? (
-            <h1 className="text-2xl font-bold text-[#245A95] pb-4 mt-6 text-center">
-              Sin registros para este intervalo de fechas
-            </h1>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="min-w-full bg-white rounded-lg overflow-hidden shadow-md mt-6">
-                <thead className="bg-[#245A95] text-white uppercase">
-                  <tr className="text-left">
-                    <th scope="col" className="relative px-6 py-3">
-                      <div className="items-center pl-12">
-                        <span>Nombre</span>
-                      </div>
-                    </th>
-                    <th scope="col" className="relative px-6 py-3">
-                      <div className="items-center">
-                        <span>Usuario</span>
-                      </div>
-                    </th>
-                    <th scope="col" className="relative px-6 py-3">
-                      <div className="items-center">
-                        <span>Correo</span>
-                      </div>
-                    </th>
-                    <th scope="col" className="relative px-6 py-3">
-                      <div className="items-center">
-                        <span>Perfil</span>
-                      </div>
-                    </th>
-                    <th scope="col" className="relative px-6 py-3">
-                      <div className="items-center">
-                        <span>Estatus</span>
-                      </div>
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-200">
-                  {Array.isArray(currentRows) &&
-                    currentRows.map((usuario, index) => (
-                      <tr
-                        key={index}
-                        onClick={async () => {
-                          console.log(usuario);
-
-                          setVentanaCarga(true);
-                          const url = `${api}/obtener/asistencia/${
-                            usuario.idusuario
-                          }/${selectedDateStart.replaceAll(
-                            "/",
-                            "-"
-                          )}/${selectedDateEnd.replaceAll("/", "-")}`;
-                          console.log(url);
-                          const options = {
-                            method: "GET",
-                            cache: "no-cache",
-                            headers: {
-                              "content-type": "application/json; charset=UTF-8",
-                            },
-                          };
-                          const data = await fetch(url, options)
-                            .then((resp) => resp.json())
-                            .catch((resp) => {
-                              console.log(
-                                "Error al ejecutar la consulta: ",
-                                resp
-                              );
-                            });
-                          console.log(data);
-                          setListaAsistencia(data);
-                          setVentanaCarga(false);
-
-                          setModalAsistencia(true);
-                        }}
-                        className="cursor-pointer hover:bg-[#E2E2E2]"
-                      >
-                        <td className="px-6 py-2">
-                          <div className="flex items-center">
-                            <div className="ml-8">
-                              <div className="lg:text-sm text-xs text-xs font-medium text-gray-900 cursor-pointer">
-                                {usuario.nombre}
-                              </div>
-                              {/* <div className="lg:text-sm text-xs text-gray-500">{registro.email}</div> */}
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-6 py-2">
-                          <div className="flex space-x-4">
-                            <div className="lg:text-sm text-xs font-medium text-gray-900">
-                              {usuario.usuario}
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-6 py-2">
-                          <div className="flex space-x-4">
-                            <div className="lg:text-sm text-xs font-medium text-gray-900">
-                              {usuario.correo}
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-6 py-2">
-                          <div className="flex space-x-4">
-                            <div className="lg:text-sm text-xs font-medium text-gray-900">
-                              {usuario.perfile.perfil}
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-6 py-2">
-                          <div className="flex space-x-4">
-                            {usuario.status === "ACTIVO" ? (
-                              <div className="lg:text-sm text-xs font-medium text-green-600">
-                                <ion-icon name="radio-button-on-outline"></ion-icon>{" "}
-                                {usuario.status}
-                              </div>
-                            ) : (
-                              <div className="lg:text-sm text-xs font-medium text-red-600">
-                                <ion-icon name="radio-button-off-outline"></ion-icon>{" "}
-                                {usuario.status}
-                              </div>
-                            )}
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                </tbody>
-              </table>
-
-              <div className="flex items-center justify-between mt-4">
-                <div className="flex items-center">
-                  <span className="mr-2 text-[#245A95] font-bold text-xs lg:text-lg">
-                    Filas por página:
-                  </span>
-                  <select
-                    className="border border-gray-300 rounded px-3 py-1"
-                    value={rowsPerPage}
-                    onChange={(e) => setRowsPerPage(Number(e.target.value))}
-                  >
-                    <option value={5}>5</option>
-                    <option value={10}>10</option>
-                    <option value={15}>15</option>
-                    <option value={20}>20</option>
-                  </select>
-                </div>
-                <h1 className="text-[#245A95] font-bold text-xs lg:text-lg ml-24">
-                  Total de asistencias:
-                  <span className="text-gray-700"> {totalRows}</span>
-                </h1>
-                <div className="flex items-center pl-4">
-                  <span className="mr-2 text-[#245A95] font-bold text-xs lg:text-lg ml-24">
-                    Página <span className="text-gray-700">{currentPage}</span>{" "}
-                    de <span className="text-gray-700">{totalPages}</span>
-                  </span>
-                  <nav className="relative z-0 inline-flex shadow-sm rounded-md">
-                    <button
-                      onClick={() => paginate(currentPage - 1)}
-                      disabled={currentPage === 1}
-                      className={`px-3 py-1 rounded-l-md focus:outline-none ${
-                        currentPage === 1
-                          ? "bg-gray-300 cursor-not-allowed"
-                          : "bg-white hover:bg-[#245A95]"
-                      }`}
-                    >
-                      <div className="text-[#245A95] hover:text-white">
-                        <ion-icon name="caret-back-circle"></ion-icon>
-                      </div>
-                    </button>
-                    <span className="px-3 py-1 bg-gray-300 text-gray-700">
-                      {currentPage}
+              {listaUsuarios.length > 0 ? (
+                <div className="">
+                  <span className="p-float-label  w-full xl:pr-10 mb-10">
+                    <InputText
+                      className="w-1/2 appearance-none focus:outline-none bg-transparent border-b-2 border-[#245A95] text-gray-700 transition-all duration-300 focus:border-[#245A95]"
+                      name="perfil"
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                    <span className=" bg-[#245A95] p-2 px-3 rounded-r-lg shadow-md">
+                      <i className="pi pi-file-edit text-white font-light text-xl"></i>
                     </span>
-                    <button
-                      onClick={() => paginate(currentPage + 1)}
-                      disabled={indexOfLastRow >= totalRows}
-                      className={`px-3 py-1 rounded-r-md focus:outline-none ${
-                        indexOfLastRow >= totalRows
-                          ? "bg-gray-300 cursor-not-allowed"
-                          : "bg-white hover:bg-[#245A95]"
-                      }`}
+                    <label
+                      htmlFor="nombrealberca"
+                      className="lg:text-sm text-xs text-[#245A95] font-extrabold absolute top-2 left-3 transition-all duration-300"
                     >
-                      <div className="text-[#245A95] hover:text-white">
-                        <ion-icon name="caret-forward-circle"></ion-icon>
-                      </div>
-                    </button>
-                  </nav>
+                      Buscar usuario
+                    </label>
+                  </span>
+                </div>
+              ) : (
+                <></>
+              )}
+            </div>
+
+            <div className="flex justify-center items-center">
+              <button
+                type="button"
+                className="hover:shadow-slate-600 border h-10 px-4 bg-[#245A95] text-white text-lg font-bold rounded-full shadow-md duration-150 ease-in-out focus:outline-none active:scale-[1.20] transition-all hover:bg-sky-600"
+                onClick={getUserAssistance}
+              >
+                Buscar
+              </button>
+            </div>
+          </section>
+          <section>
+            {listaUsuarios.length == 0 ? (
+              <div>
+                <h1 className="text-2xl font-bold text-[#245A95] pb-4 mt-6 text-center">
+                  Sin registros para este intervalo de fechas
+                </h1>
+                <div className="text-center">
+                  <Player
+                    src="https://lottie.host/c1aad2d9-3bf6-4e0b-b6c4-98ded9d781ff/EvaN0zVB0C.json"
+                    className="player"
+                    loop
+                    autoplay
+                    style={{ height: "250px", width: "250px" }}
+                  />
                 </div>
               </div>
-            </div>
-          )}
-        </section>
-      </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="min-w-full bg-white rounded-lg overflow-hidden shadow-md mt-6">
+                  <thead className="bg-[#245A95] text-white uppercase">
+                    <tr className="text-left">
+                      <th scope="col" className="relative px-6 py-3">
+                        <div className="items-center pl-12">
+                          <span>Nombre</span>
+                        </div>
+                      </th>
+                      <th scope="col" className="relative px-6 py-3">
+                        <div className="items-center">
+                          <span>Usuario</span>
+                        </div>
+                      </th>
+                      <th scope="col" className="relative px-6 py-3">
+                        <div className="items-center">
+                          <span>Correo</span>
+                        </div>
+                      </th>
+                      <th scope="col" className="relative px-6 py-3">
+                        <div className="items-center">
+                          <span>Perfil</span>
+                        </div>
+                      </th>
+                      <th scope="col" className="relative px-6 py-3">
+                        <div className="items-center">
+                          <span>Estatus</span>
+                        </div>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200">
+                    {Array.isArray(currentRows) &&
+                      currentRows.map((usuario, index) => (
+                        <tr
+                          key={index}
+                          onClick={async () => {
+                            //console.log(usuario);
+
+                            setVentanaCarga(true);
+                            const url = `${api}/obtener/asistencia/${
+                              usuario.idusuario
+                            }/${selectedDateStart.replaceAll(
+                              "/",
+                              "-"
+                            )}/${selectedDateEnd.replaceAll("/", "-")}`;
+                            //console.log(url);
+                            const options = {
+                              method: "GET",
+                              cache: "no-cache",
+                              headers: {
+                                "content-type":
+                                  "application/json; charset=UTF-8",
+                              },
+                            };
+                            const data = await fetch(url, options)
+                              .then((resp) => resp.json())
+                              .catch((resp) => {
+                                console.log(
+                                  "Error al ejecutar la consulta: ",
+                                  resp
+                                );
+                              });
+                            //console.log(data);
+                            setListaAsistencia(data);
+                            setVentanaCarga(false);
+
+                            setModalAsistencia(true);
+                          }}
+                          className="cursor-pointer hover:bg-[#E2E2E2]"
+                        >
+                          <td className="px-6 py-2">
+                            <div className="flex items-center">
+                              <div className="ml-8">
+                                <div className="lg:text-sm text-xs text-xs font-medium text-gray-900 cursor-pointer">
+                                  {usuario.nombre}
+                                </div>
+                                {/* <div className="lg:text-sm text-xs text-gray-500">{registro.email}</div> */}
+                              </div>
+                            </div>
+                          </td>
+                          <td className="px-6 py-2">
+                            <div className="flex space-x-4">
+                              <div className="lg:text-sm text-xs font-medium text-gray-900">
+                                {usuario.usuario}
+                              </div>
+                            </div>
+                          </td>
+                          <td className="px-6 py-2">
+                            <div className="flex space-x-4">
+                              <div className="lg:text-sm text-xs font-medium text-gray-900">
+                                {usuario.correo}
+                              </div>
+                            </div>
+                          </td>
+                          <td className="px-6 py-2">
+                            <div className="flex space-x-4">
+                              <div className="lg:text-sm text-xs font-medium text-gray-900">
+                                {usuario.perfile.perfil}
+                              </div>
+                            </div>
+                          </td>
+                          <td className="px-6 py-2">
+                            <div className="flex space-x-4">
+                              {usuario.status === "ACTIVO" ? (
+                                <div className="lg:text-sm text-xs font-medium text-green-600">
+                                  <ion-icon name="radio-button-on-outline"></ion-icon>{" "}
+                                  {usuario.status}
+                                </div>
+                              ) : (
+                                <div className="lg:text-sm text-xs font-medium text-red-600">
+                                  <ion-icon name="radio-button-off-outline"></ion-icon>{" "}
+                                  {usuario.status}
+                                </div>
+                              )}
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                  </tbody>
+                </table>
+
+                <div className="flex items-center justify-between mt-4">
+                  <div className="flex items-center">
+                    <span className="mr-2 text-[#245A95] font-bold text-xs lg:text-lg">
+                      Filas por página:
+                    </span>
+                    <select
+                      className="border border-gray-300 rounded px-3 py-1"
+                      value={rowsPerPage}
+                      onChange={(e) => setRowsPerPage(Number(e.target.value))}
+                    >
+                      <option value={5}>5</option>
+                      <option value={10}>10</option>
+                      <option value={15}>15</option>
+                      <option value={20}>20</option>
+                    </select>
+                  </div>
+                  <h1 className="text-[#245A95] font-bold text-xs lg:text-lg ml-24">
+                    Total de asistencias:
+                    <span className="text-gray-700"> {totalRows}</span>
+                  </h1>
+                  <div className="flex items-center pl-4">
+                    <span className="mr-2 text-[#245A95] font-bold text-xs lg:text-lg ml-24">
+                      Página{" "}
+                      <span className="text-gray-700">{currentPage}</span> de{" "}
+                      <span className="text-gray-700">{totalPages}</span>
+                    </span>
+                    <nav className="relative z-0 inline-flex shadow-sm rounded-md">
+                      <button
+                        onClick={() => paginate(currentPage - 1)}
+                        disabled={currentPage === 1}
+                        className={`px-3 py-1 rounded-l-md focus:outline-none ${
+                          currentPage === 1
+                            ? "bg-gray-300 cursor-not-allowed"
+                            : "bg-white hover:bg-[#245A95]"
+                        }`}
+                      >
+                        <div className="text-[#245A95] hover:text-white">
+                          <ion-icon name="caret-back-circle"></ion-icon>
+                        </div>
+                      </button>
+                      <span className="px-3 py-1 bg-gray-300 text-gray-700">
+                        {currentPage}
+                      </span>
+                      <button
+                        onClick={() => paginate(currentPage + 1)}
+                        disabled={indexOfLastRow >= totalRows}
+                        className={`px-3 py-1 rounded-r-md focus:outline-none ${
+                          indexOfLastRow >= totalRows
+                            ? "bg-gray-300 cursor-not-allowed"
+                            : "bg-white hover:bg-[#245A95]"
+                        }`}
+                      >
+                        <div className="text-[#245A95] hover:text-white">
+                          <ion-icon name="caret-forward-circle"></ion-icon>
+                        </div>
+                      </button>
+                    </nav>
+                  </div>
+                </div>
+              </div>
+            )}
+          </section>
+        </div>
       </div>
       <Dialog
         header={`Asistencias`}

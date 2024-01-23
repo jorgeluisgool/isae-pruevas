@@ -558,7 +558,8 @@ export const AsignacionesPage = () => {
                   </label>
                 </span>
               </div>
-
+            </div>
+            <div className="mt-5 lg:mt-6 grid sm:grid-cols-3 gap-8">
               <div className="flex justify-center items-center">
                 <button
                   type="button"
@@ -566,6 +567,16 @@ export const AsignacionesPage = () => {
                   onClick={() => assignRegisters(selectedUser.idusuario)}
                 >
                   Asignar
+                </button>
+              </div>
+
+              <div className="flex justify-center items-center">
+                <button
+                  type="button"
+                  className="hover:shadow-slate-600 border h-10 px-4 bg-[#245A95] text-white text-lg font-bold shadow-md duration-150 ease-in-out focus:outline-none active:scale-[1.20] transition-all hover:bg-sky-600 rounded-full"
+                  onClick={() => getRegisters(selectedUsersProjects.idproyecto)}
+                >
+                  Mostrar todos
                 </button>
               </div>
 
@@ -581,16 +592,6 @@ export const AsignacionesPage = () => {
                   }
                 >
                   Buscar
-                </button>
-              </div>
-
-              <div className="flex justify-center items-center">
-                <button
-                  type="button"
-                  className="hover:shadow-slate-600 border h-10 px-4 bg-[#245A95] text-white text-lg font-bold shadow-md duration-150 ease-in-out focus:outline-none active:scale-[1.20] transition-all hover:bg-sky-600 rounded-full"
-                  onClick={() => getRegisters(selectedUsersProjects.idproyecto)}
-                >
-                  Mostrar todos
                 </button>
               </div>
             </div>

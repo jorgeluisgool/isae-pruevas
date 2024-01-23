@@ -38,7 +38,7 @@ export const ComponentTipoCampo = ({
   photos,
   setPhotos,
 }) => {
-  console.log(dataProyectoSeleccionado);
+  //console.log(dataProyectoSeleccionado);
 
   const { setFieldValue } = useFormikContext();
 

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import useAuth from '../../dana/hooks/useAuth';
 import { Password } from 'primereact/password';
 import { InputText } from 'primereact/inputtext';
+import DialogUsuarioOContrasenaInvalidos from '../../ui/components/DialogUsuarioOContrasenaInvalidos';
 
 
 export const FormLogin = () => {
@@ -16,6 +17,7 @@ export const FormLogin = () => {
     const [usuario, setUsuario] = useState('');
     const [contrasena, setContrasena] = useState('');
     const [errorUsuario, setErrorUsuario] = useState("");
+    const [dialogUsuarioContraseña, setDialogUsuarioContraseña] = useState(false);
 
     // const getUsers = async () => {
     //     try{
@@ -81,6 +83,7 @@ export const FormLogin = () => {
                 })
                                
             }else{
+                setDialogUsuarioContraseña(true);
                 console.log("usuario o contraseña incorrectos")
             }
             
@@ -92,11 +95,15 @@ export const FormLogin = () => {
 
   return (
         <>
-        <div className='drop-shadow-lg bg-slate-50 px-6 py-12 rounded-3xl border-2 border-[#245A95]'>
-            <div className='flex items-center justify-center pb-6'>
-                <img src="src/assets/logo_ISAe.png" alt="Your Company" className='h-32'/>
+        <DialogUsuarioOContrasenaInvalidos
+            dialogUsuarioContraseña={dialogUsuarioContraseña}
+            setDialogUsuarioContraseña={setDialogUsuarioContraseña}
+        />
+        <div className='drop-shadow-lg bg-slate-50 px-4 py-8 mx-4 rounded-3xl border-[#245A95]'>
+            <div className='flex items-center justify-center mb-6'>
+                <img src="src/assets/logo_ISAe.png" className='h-28'/>
             </div>
-            <p className='font-medium text-lg text-gray-500'>Bienvenido de nuevo</p>
+            <p className='font-medium text-lg text-gray-500 pb-4'>Bienvenido de nuevo</p>
             <div className='mt-4'>
                 <form onSubmit={onLogin}>
                     <div className="p-inputgroup mt-3 lg:mt-6 shadow-xl">

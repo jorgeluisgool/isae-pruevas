@@ -190,7 +190,10 @@ export function newRegister(dataColeccion, proyectoSeleccionado){
         body: JSON.stringify(responseData)
       })
       .then(response => response.text())
-      .then(responseData => console.log(responseData))
+      .then(responseData => {
+        console.log(responseData)
+        return false;
+      })
       .catch(error => console.log(error));
 
       console.log(dataColeccion);

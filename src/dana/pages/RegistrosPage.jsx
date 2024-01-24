@@ -92,7 +92,6 @@ export const RegistrosPage = () => {
   const handleMensajeAceptar = (values) => {
     setVentanaCarga(true);
     setModaAceptarlAbrirCerrar(false);
-
     const newData = { ...dataProyectoSeleccionado };
     newData.listaAgrupaciones.forEach((agrupacion) => {
       agrupacion.campos.forEach((campo) => {
@@ -312,6 +311,7 @@ export const RegistrosPage = () => {
         onHide={() => setModalAbrirCerrar(false)}
         className="mt-16"
       >
+        
         <h1 className="xl:text-lg font-bold xl:mx-36">
           Registro:{" "}
           {proyectoSeleccionado ? proyectoSeleccionado.folio : "Cargando..."}
@@ -323,10 +323,12 @@ export const RegistrosPage = () => {
                 dataProyectoSeleccionado.listaAgrupaciones.length > 0 &&
                 dataProyectoSeleccionado.listaAgrupaciones.map(
                   (itemagrupacion, indexAgrupacion) => (
+                    
                     <div
                       key={indexAgrupacion}
                       className="bg-[#e2e2e2] rounded-md hs-accordion mt-4 xl:mx-36"
                     >
+                      {console.log(dataProyectoSeleccionado)}
                       <div
                         className="bg-[#245A95] flex items-center justify-around rounded-md cursor-pointer shadow-slate-900 shadow-md"
                         onClick={() => toggleShow(indexAgrupacion)}
@@ -353,7 +355,6 @@ export const RegistrosPage = () => {
                         <div className="px-2 xl:px-10 py-3">
                           {itemagrupacion.campos.map((item, indexCampo) => (
                             <div key={item.idCampo} className="mt-3">
-                              {/*console.log(dataProyectoSeleccionado)*/}
                               <span className="p-float-label">
                                 <div className="grid xl:grid-cols-5 sm:grid-cols-1 ">
                                   <div className="col-span-2">

@@ -100,7 +100,6 @@ export const AsignacionesPage = () => {
     } else {
       setSelectedItems([...selectedItems, item]);
     }
-    console.log(selectedItems);
   };
 
   useEffect(() => {
@@ -139,8 +138,6 @@ export const AsignacionesPage = () => {
       })
         .then((response) => response.json())
         .then((responseData) => {
-          console.log(responseData);
-
           setUsersProjects(responseData);
           setTables(false);
         })
@@ -157,7 +154,6 @@ export const AsignacionesPage = () => {
     })
       .then((response) => response.json())
       .then((responseData) => {
-        console.log(responseData);
         getUsersProjects(iduser);
         setCargando(false);
       })
@@ -174,7 +170,6 @@ export const AsignacionesPage = () => {
       })
         .then((response) => response.json())
         .then((responseData) => {
-          console.log(responseData);
           getUsersProjects(iduser);
           setModalAssignment(true);
         })
@@ -191,7 +186,6 @@ export const AsignacionesPage = () => {
     })
       .then((response) => response.json())
       .then((responseData) => {
-        console.log(responseData);
         setProjectFields(responseData);
       })
       .catch((error) => console.log(error));
@@ -206,7 +200,6 @@ export const AsignacionesPage = () => {
     })
       .then((response) => response.json())
       .then((responseData) => {
-        console.log(responseData);
         setValuesField(responseData);
       })
       .catch((error) => console.log(error));
@@ -221,7 +214,6 @@ export const AsignacionesPage = () => {
     })
       .then((response) => response.json())
       .then((responseData) => {
-        console.log(responseData);
         setRegisters(responseData);
       })
       .catch((error) => console.log(error));
@@ -237,7 +229,6 @@ export const AsignacionesPage = () => {
     })
       .then((response) => response.json())
       .then((responseData) => {
-        console.log(responseData);
         setRegisters(responseData);
         setTables(false);
       });
@@ -252,18 +243,12 @@ export const AsignacionesPage = () => {
     })
       .then((response) => response.json())
       .then((responseData) => {
-        /* const arrayFilter = registers.filter((reg) =>
-          responseData.includes(reg.folio)
-        );
-        console.log(arrayFilter); */
-        console.log(responseData);
         setUserRegisters(responseData);
       })
       .catch((error) => console.log(error));
   };
 
   const assignRegisters = (iduser) => {
-    console.log(selectedItems);
     fetch(`${api}/asignar/registro/${iduser}`, {
       method: "POST",
       headers: {
@@ -273,7 +258,6 @@ export const AsignacionesPage = () => {
     })
       .then((response) => response.json)
       .then((responseData) => {
-        console.log(responseData);
         setSelectedItems([]);
         getUserRegisters(iduser);
         setModalAssignmentRegister(true);
@@ -290,7 +274,6 @@ export const AsignacionesPage = () => {
     })
       .then((response) => response.json())
       .then((responseData) => {
-        console.log(idproject);
         getUserRegisters(iduser);
         setModalDeleteRegister(false);
       })
@@ -345,8 +328,6 @@ export const AsignacionesPage = () => {
                     value={selectedUser}
                     filter
                     onChange={(eve) => {
-                      console.log(eve.target.value);
-
                       setSelectedUser(eve.target.value);
                       getUsersProjects(eve.target.value.idusuario);
                     }}
@@ -379,7 +360,6 @@ export const AsignacionesPage = () => {
                     value={selectedProject}
                     filter
                     onChange={(eve) => {
-                      console.log(eve.target.value);
                       setSelectedProject(eve.target.value);
                     }}
                   />
@@ -486,7 +466,6 @@ export const AsignacionesPage = () => {
                     value={selectedUsersProjects}
                     filter
                     onChange={(eve) => {
-                      console.log(eve.target.value);
                       setSelectedUsersProjects(eve.target.value);
                       getProjectFields(eve.target.value.idproyecto);
                       getRegisters(eve.target.value.idproyecto);
@@ -514,7 +493,6 @@ export const AsignacionesPage = () => {
                     value={selectedField}
                     filter
                     onChange={(eve) => {
-                      console.log(eve.target.value);
                       setSelectedField(eve.target.value);
                       getFieldValues(
                         selectedUsersProjects.idproyecto,
@@ -543,7 +521,6 @@ export const AsignacionesPage = () => {
                     value={selectedValueField}
                     filter
                     onChange={(eve) => {
-                      console.log(eve.target.value);
                       setSelectedValueField(eve.target.value);
                     }}
                   />

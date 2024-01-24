@@ -16,6 +16,7 @@ import { CatalogoPage } from "../pages/Catalogopage";
 import { CatalogosPage } from "../pages/CatalogosPage";
 import { AsistenciaPage } from "../pages/AsistenciaPage";
 import { AsignacionesPage } from "../pages/AsignacionesPage";
+import { DashboardPage } from "../pages/DashboardPage";
 
 export const DanaRoutes = () => {
   return (
@@ -35,6 +36,7 @@ export const DanaRoutes = () => {
             <Route path="catalogo" element={<CatalogoPage />} />
             <Route path="asistencia" element={<AsistenciaPage />} />
             <Route path="asignaciones" element={<AsignacionesPage />} />
+            <Route path="dashboard" element={<DashboardPage />} />
             <Route path="/" element={<Navigate to="menu" />} />
           </Route>
         </Routes>

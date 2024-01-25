@@ -7,12 +7,14 @@ import useAuth from '../hooks/useAuth';
 import { Player } from "@lottiefiles/react-lottie-player";
 import { TablaProyectos } from "../components/proyectos/TablaProyectos";
 import { InputText } from "primereact/inputtext";
+import { ModalSubirBaseProyecto } from "../components/proyectos/ModalSubirBaseProyecto";
 
 
 const ProyectosPage = () => {
 
   const { userAuth, setUserAuth } = useAuth();
   const [searchTerm, setSearchTerm] = useState('');
+  const [modalBase, setModalBase] = useState(false);
 
   useEffect(() => {
     const loggedInUser = localStorage.getItem("user");
@@ -39,7 +41,7 @@ const ProyectosPage = () => {
 
   return (
         <>
-        <h1 className="pt-6 pl-3 xl:pl-20 text-4xl font-black text-[#245A95]">Proyectos</h1>
+        <h1 className="pt-2 xl:pt-6 pl-3 xl:pl-20 text-4xl font-black text-[#245A95]">Proyectos</h1>
           <CrearProyectoForm/>
           <div className="container mx-auto pb-6">
             <div className='mx-4 xl:mx-20 my-4 px-4 py-2 shadow-md bg-white rounded-lg overflow-hidden'>
@@ -75,11 +77,16 @@ const ProyectosPage = () => {
                   <TablaProyectos 
                     proyectos = {proyectos}
                     searchTerm = {searchTerm}
+                    setModalBase = {setModalBase}
                   />
                 </div> 
               </div> 
               // <TablaCRUD tipoDatos={"PROYECTOS"} listaDatos = {proyectos} headers = {headers} editar = {false} eliminar = {true} seleccionMultiple = {false} />
               }
+              <ModalSubirBaseProyecto 
+                modalBase = {modalBase}
+                setModalBase = {setModalBase}
+              />
               </div> 
           </div> 
         </>

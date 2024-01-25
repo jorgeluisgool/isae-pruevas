@@ -188,12 +188,15 @@ export const CrearProyectoForm = () => {
                         CREAR PROYECTO
                     </label>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                        <div className="mt-8 flex flex-col gap-y-4">
+                        <div className="mt-2 flex items-center gap-x-4">
                             <button onClick={handleDownloadPlantilla} className="shadow-md bg-transparent hover:bg-[#245A95] hover:text-white text-[#245A95] scroll-ml-5 w-14 h-14 active:scale-[.98] transition-all py-3 rounded-xl bg-[#245A95] text-4xl font-bold">
-                                <ion-icon name="archive-sharp"></ion-icon>
+                                <ion-icon name="document-text"></ion-icon>
                             </button>
+                            <h1 className='text-xs text-[#245A95] font-semibold'>
+                                Plantilla de campos para generar proyecto 
+                            </h1>
                         </div>
-                        <div className='mt-8 flex flex-col gap-y-1 w-full'>
+                        <div className='mt-5 flex flex-col gap-y-1 w-full'>
                             <div className="p-inputgroup">
                                 <span className='p-float-label relative'>
                                     <Field
@@ -214,9 +217,8 @@ export const CrearProyectoForm = () => {
                             <ErrorMessage name="proyecto" component={() => (
                                 <span className="text-red-600"><ion-icon name="alert-circle-sharp"></ion-icon> {errors.proyecto}</span>
                             )}/>   
-                        </div>
-                        
-                        <div className="mt-8 flex flex-col gap-y-1 w-full">
+                        </div>  
+                        <div className="mt-5 flex flex-col gap-y-1 w-full">
                             <div className="p-inputgroup">
                                 <span className='p-float-label relative'>
                                     <Field
@@ -235,7 +237,7 @@ export const CrearProyectoForm = () => {
                                 </span>
                             </div>
                         </div>
-                        <div className="mt-8 flex flex-col gap-y-1">
+                        <div className="mt-5 flex flex-col gap-y-1">
                             <input 
                                 className="block w-full text-sm text-gray-500
                                 file:mr-4 file:py-2 file:px-4

@@ -47,7 +47,7 @@ export const Navbar = () => {
 
   return (
     <>
-      <div className="z-10 shadow-md w-full fixed top-0 left-0">
+      <div className="z-30 shadow-md w-full fixed top-0 left-0">
         <div className="md:flex items-center justify-between bg-[#245A95] py-2 md:px-6 px-5">
           <div className="font-bold text-2xl cursor-pointer flex items-center font-[Poppins] mt-2">
             <Link to="/menu">
@@ -225,7 +225,7 @@ export const Navbar = () => {
         </div>
       </div>
       {open && (
-        <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-30 z-auto" />
+        <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-30 z-20" />
       )}
 
       {/* <div className='z-10 shadow-md w-full fixed top-0 left-0'>

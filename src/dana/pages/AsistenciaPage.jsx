@@ -12,6 +12,7 @@ import { Player } from "@lottiefiles/react-lottie-player";
 export const AsistenciaPage = () => {
   const [selectedDateStart, setSelectedDateStart] = useState(null);
   const [selectedDateEnd, setSelectedDateEnd] = useState(null);
+  const [cargando, setCargando] = useState(false);
 
   const { setUserAuth } = useAuth();
 
@@ -20,7 +21,6 @@ export const AsistenciaPage = () => {
   const toast = useRef(null);
   const [ventanaCarga, setVentanaCarga] = useState(false);
   const [modalAsistencia, setModalAsistencia] = useState(false);
-  const [sedeSeleccionada, setSedeSeleccionada] = useState({});
 
   //Pagination Table
   const [currentPage, setCurrentPage] = useState(1);
@@ -77,7 +77,38 @@ export const AsistenciaPage = () => {
     return formattedDate;
   };
 
+  const getAssistent = async (usuario) => {
+    setVentanaCarga(true);
+    const url = `${api}/obtener/asistencia/${
+      usuario.idusuario
+    }/${selectedDateStart.replaceAll("/", "-")}/${selectedDateEnd.replaceAll(
+      "/",
+      "-"
+    )}`;
+    //console.log(url);
+    const options = {
+      method: "GET",
+      cache: "no-cache",
+      headers: {
+        "content-type": "application/json; charset=UTF-8",
+      },
+    };
+    const data = await fetch(url, options)
+      .then((resp) => {
+        resp.json();
+        setCargando(false);
+      })
+      .catch((resp) => {
+        console.log("Error al ejecutar la consulta: ", resp);
+      });
+    //console.log(data);
+    setListaAsistencia(data);
+    setVentanaCarga(false);
+    setModalAsistencia(true);
+  };
+
   const getUserAssistance = () => {
+    setCargando(true);
     fetch(
       `${api}/obtener/usuarios/asistencia/${selectedDateStart.replaceAll(
         "/",
@@ -95,12 +126,36 @@ export const AsistenciaPage = () => {
       .then((responseData) => {
         //console.log(responseData);
         setListaUsuarios(responseData);
+        setCargando(false);
       })
       .catch((error) => console.log(error));
   };
 
   return (
     <>
+      {cargando && (
+        <div className="fixed top-0 left-0 right-0 bottom-0 bg-slate-200 bg-opacity-50 flex items-center justify-center z-50">
+          <div className="flex items-center transition duration-500 ease-in-out">
+            <span className="hover:text-gray-400 duration-500 text-3xl text-slate-50">
+              <img
+                src="/src/assets/isae.png"
+                alt="Icono"
+                className="h-20 xl:h-40 mr-1 animate-spin"
+              />
+            </span>
+            <img
+              src="/src/assets/letras_isae.png"
+              alt="Icono"
+              className="h-20 xl:h-40 mr-2"
+            />
+          </div>
+          <div className="fixed pt-36 xl:pt-60">
+            <h1 className="text-[#C41420] text-4xl font-black animate-pulse">
+              Cargando asistencia...
+            </h1>
+          </div>
+        </div>
+      )}
       <div className="pb-6">
         <h1 className="pt-2 xl:pt-6 pl-3 xl:pl-20 text-4xl font-black text-[#245A95]">
           Asistencia
@@ -243,9 +298,7 @@ export const AsistenciaPage = () => {
                         <tr
                           key={index}
                           onClick={async () => {
-                            //console.log(usuario);
-
-                            setVentanaCarga(true);
+                            setCargando(true);
                             const url = `${api}/obtener/asistencia/${
                               usuario.idusuario
                             }/${selectedDateStart.replaceAll(
@@ -272,8 +325,8 @@ export const AsistenciaPage = () => {
                             //console.log(data);
                             setListaAsistencia(data);
                             setVentanaCarga(false);
-
                             setModalAsistencia(true);
+                            setCargando(false);
                           }}
                           className="cursor-pointer hover:bg-[#E2E2E2]"
                         >

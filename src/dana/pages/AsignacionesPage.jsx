@@ -585,7 +585,7 @@ export const AsignacionesPage = () => {
               </div>
             ) : (
               <div className="overflow-x-auto lg:flex ">
-                <div className="p-1 ">
+                <div className="p-1 mx-auto">
                   <TableRegisters
                     showTable={showTable}
                     rowsPerPageA={rowsPerPageA}
@@ -601,7 +601,7 @@ export const AsignacionesPage = () => {
                     selectedItems={selectedItems}
                   />
                 </div>
-                <div className="p-1">
+                <div className="p-1 mx-auto">
                   <TableUserRegisters
                     showTable={showTable}
                     rowsPerPageB={rowsPerPageB}

@@ -50,7 +50,7 @@ export const ClientesRegistrosPage = () => {
         Clientes
       </h1>
       <div className="mx-4 xl:mx-20 my-4 px-4 py-2 shadow-md bg-white rounded-lg overflow-hidden">
-        <div className="grid grid-cols-2 xl:grid-cols-3 gap-8 m-4 text-center">
+        <div className="grid grid-cols-2 xl:grid-cols-3 gap-8 m-4 text-center mx-auto lg:ml-20">
           {clientes.map((cliente, index) => (
             <Link
               key={index}

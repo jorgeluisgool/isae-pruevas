@@ -84,7 +84,7 @@ const RegistrosForm = ({
     })
       .then((response) => response.json())
       .then((responseData) => {
-        //console.log(responseData);
+        console.log(responseData);
         setDataProyectoSeleccionado(responseData);
         setProyectoSeleccionado(newProject);
         setModalAbrirCerrar(true);

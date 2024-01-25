@@ -28,6 +28,8 @@ const TableRegistros = ({
   const totalRows = listaRegistros.length;
   const totalPages = Math.ceil(totalRows / rowsPerPage);
 
+  console.log(listaRegistros)
+
   // Obtener índice del último registro en la página actual
   const indexOfLastRow = currentPage * rowsPerPage;
   // Obtener índice del primer registro en la página actual

@@ -1,11 +1,16 @@
 import React, { useState } from 'react'
+import { api } from '../../helpers/variablesGlobales';
+import * as XLSX from "xlsx"
 
-export const TablaProyectos = ({proyectos, searchTerm}) => {
+export const TablaProyectos = ({proyectos, searchTerm, setModalBase}) => {
 
     const [currentPage, setCurrentPage] = useState(1);
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [selectedRows, setSelectedRows] = useState([]);
+    const [proyectoSeleccionado, setProyectoSeleccionado] = useState([]);
+    const [ventanaCarga, setVentanaCarga] = useState(false);
 
+    console.log(proyectoSeleccionado);
     // Filtro para el search
     const filterUsuarios = proyectos.filter((proyecto) =>
         proyecto.proyecto.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -27,6 +32,19 @@ export const TablaProyectos = ({proyectos, searchTerm}) => {
 
   return (
     <>
+     {ventanaCarga && (
+      <div className="fixed top-0 left-0 right-0 bottom-0 bg-slate-200 bg-opacity-50 flex items-center justify-center z-50">
+        <div className="flex items-center transition duration-500 ease-in-out">
+          <span className="hover:text-gray-400 duration-500 text-3xl text-slate-50">
+            <img src="/src/assets/isae.png" alt="Icono" className="h-20 xl:h-40 mr-1 animate-spin"/>
+          </span>
+          <img src="/src/assets/letras_isae.png" alt="Icono" className="h-20 xl:h-40 mr-2" />
+        </div>
+        <div className='fixed pt-36 xl:pt-60'>
+        <h1 className='text-[#C41420] text-4xl font-black animate-pulse'>Descargando Plantilla...</h1>
+        </div>
+      </div>
+    )}
     <table className="min-w-full bg-white rounded-lg overflow-hidden shadow-md">
           <thead className="bg-[#245A95] text-white uppercase">
             <tr className='text-left'>
@@ -47,6 +65,16 @@ export const TablaProyectos = ({proyectos, searchTerm}) => {
               </th>
               <th scope="col" className="relative px-6 py-3">
                 <div className="items-center">
+                  <span> Plantilla</span>
+                </div>
+              </th>
+              <th scope="col" className="relative px-6 py-3">
+                <div className="items-center">
+                  <span>Subir base</span>
+                </div>
+              </th>
+              <th scope="col" className="relative px-6 py-3">
+                <div className="items-center">
                   <span>Eliminar</span>
                 </div>
               </th>
@@ -61,7 +89,7 @@ export const TablaProyectos = ({proyectos, searchTerm}) => {
                 //   setUsuarioSeleccionado(registro);
                 //   setFormularioState(true);
                 // }}
-                className='cursor-pointer hover:bg-[#E2E2E2]'
+                className='hover:bg-[#E2E2E2]'
               >
                 <td className="px-6">
                   <div className="flex items-center">
@@ -85,8 +113,97 @@ export const TablaProyectos = ({proyectos, searchTerm}) => {
                   <div className="flex space-x-4 justify-center">
                     <button
                       type="button"
+                      onClick={() => {
+                        setProyectoSeleccionado(proyecto);
+                        setVentanaCarga(true);
+                        fetch(
+                          `${api}/obtener/datos/nuevo/registro`,
+                          {
+                            method: "POST",
+                            headers: {
+                              "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify(proyecto),
+                          }
+                        )
+                          .then((response) => response.json())
+                          .then((responseData) => {
+                            console.log(responseData);
+                    
+                            const nombresCampos = responseData.listaAgrupaciones.flatMap((agrupacion) => {
+                              return agrupacion.campos.map((campo) => campo.nombreCampo);
+                            });
+                    
+                            console.log(nombresCampos);
+                    
+                            // Crear una matriz de datos en formato de hoja de cálculo
+                            const datosParaExcel = [nombresCampos];
+                    
+                            responseData.listaAgrupaciones.forEach((agrupacion) => {
+                              agrupacion.campos.forEach((campo) => {
+                                datosParaExcel.push([campo.valor || '']);
+                              });
+                            });
+                    
+                            // Crear el contenido de un archivo Excel en formato CSV
+                            const csvContent = datosParaExcel.map(row => row.join(',')).join('\n');
+                            
+                            // Crear un Blob a partir del contenido CSV
+                            const blob = new Blob([csvContent], { type: 'text/csv' });
+                    
+                            // Concatenar el nombre del archivo con el texto deseado y el nombre del proyecto
+                            const nombreArchivo = `PlantillaDatosProyecto-${proyecto.proyecto}.csv`;
+                    
+                            // Crear un objeto URL para el blob
+                            const url = URL.createObjectURL(blob);
+                    
+                            // Crear un enlace de descarga
+                            const link = document.createElement('a');
+                            link.href = url;
+                            link.download = nombreArchivo; // nombre del archivo CSV
+                    
+                            // Agregar el enlace al documento y hacer clic para iniciar la descarga
+                            document.body.appendChild(link);
+                            link.click();
+                    
+                            // Limpiar el objeto URL y el enlace después de la descarga
+                            URL.revokeObjectURL(url);
+                            document.body.removeChild(link);
+
+                            setVentanaCarga(false);
+                          })
+                          .catch((error) => {
+                            setVentanaCarga(false);
+                            console.log(error);
+                          });
+                      }}
+                      className="hover:shadow-slate-600 border h-6 w-6 bg-[#245A95] text-white text-xs xl:text-base font-bold rounded-full shadow-md duration-150 ease-in-out focus:outline-none active:scale-[1.20] transition-all hover:bg-sky-900"
+                      style={{ borderRadius: '50%' }}
+                    >
+                      <ion-icon name="document-text" className="rounded-full"></ion-icon>
+                    </button>
+                  </div>
+                </td>
+                <td className="px-6">
+                  <div className="flex space-x-4 justify-center">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setModalBase(true)
+                      }}
+                      className="hover:shadow-slate-600 border h-6 w-6 bg-[#245A95] text-white text-xs xl:text-base font-bold rounded-full shadow-md duration-150 ease-in-out focus:outline-none active:scale-[1.20] transition-all hover:bg-sky-900"
+                      style={{ borderRadius: '50%' }}
+                    >
+                      <ion-icon name="push" className="rounded-full"></ion-icon>
+                    </button>
+                  </div>
+                </td>
+                <td className="px-6">
+                  <div className="flex space-x-4 justify-center">
+                    <button
+                      type="button"
                     //   onClick={() => handleEliminarOpcion(index)}
-                      className="hover:shadow-slate-600 border h-6 w-6 bg-red-700 text-white text-xs xl:text-base font-bold rounded-full shadow-md duration-150 ease-in-out focus:outline-none active:scale-[1.20] transition-all hover:bg-red-500"
+                      className="hover:shadow-slate-600 border h-6 w-6 bg-red-700 text-white text-xs xl:text-base font-bold rounded-full shadow-md duration-150 ease-in-out focus:outline-none active:scale-[1.20] transition-all hover:bg-red-900"
                       style={{ borderRadius: '50%' }}
                     >
                       <ion-icon name="trash" className="rounded-full"></ion-icon>
@@ -148,3 +265,147 @@ export const TablaProyectos = ({proyectos, searchTerm}) => {
     </>
   )
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// {
+//   "respuestaCheckBoxEvidencia": [],
+//   "listaAgrupaciones": [
+//       {
+//           "idAgrupacion": 26,
+//           "agrupacion": "DATOS DEL REGISTRO",
+//           "idInventario": 0,
+//           "campos": [
+//               {
+//                   "idCampo": 3944,
+//                   "agrupacion": "DATOS DEL REGISTRO",
+//                   "nombreCampo": "FOLIO",
+//                   "validarduplicidad": "FALSE",
+//                   "tipoCampo": "ALFANUMERICO",
+//                   "restriccion": "[N/A]",
+//                   "editable": "TRUE",
+//                   "alerta": "INSERTA LOS DATOS SOLICITADOS EN EL CAMPO",
+//                   "longitud": 10,
+//                   "valor": null,
+//                   "pordefecto": ""
+//               }
+//           ]
+//       },
+//       {
+//           "idAgrupacion": 28,
+//           "agrupacion": "DATOS GENERALES",
+//           "idInventario": 0,
+//           "campos": [
+//               {
+//                   "idCampo": 3945,
+//                   "agrupacion": "DATOS GENERALES",
+//                   "nombreCampo": "ID",
+//                   "validarduplicidad": "FALSE",
+//                   "tipoCampo": "ALFANUMERICO",
+//                   "restriccion": "[N/A]",
+//                   "editable": "TRUE",
+//                   "alerta": "INSERTA LOS DATOS SOLICITADOS EN EL CAMPO",
+//                   "longitud": 100,
+//                   "valor": null,
+//                   "pordefecto": ""
+//               }
+//           ]
+//       },
+//       {
+//           "idAgrupacion": 112,
+//           "agrupacion": "DATOS CLIENTE",
+//           "idInventario": 0,
+//           "campos": [
+//               {
+//                   "idCampo": 3946,
+//                   "agrupacion": "DATOS CLIENTE",
+//                   "nombreCampo": "NOMBRE",
+//                   "validarduplicidad": "FALSE",
+//                   "tipoCampo": "ALFANUMERICO",
+//                   "restriccion": "[N/A]",
+//                   "editable": "TRUE",
+//                   "alerta": "INSERTA LOS DATOS SOLICITADOS EN EL CAMPO",
+//                   "longitud": 100,
+//                   "valor": null,
+//                   "pordefecto": ""
+//               },
+//               {
+//                   "idCampo": 3947,
+//                   "agrupacion": "DATOS CLIENTE",
+//                   "nombreCampo": "UNIDAD",
+//                   "validarduplicidad": "FALSE",
+//                   "tipoCampo": "CATALOGO",
+//                   "restriccion": "[N/A]",
+//                   "editable": "TRUE",
+//                   "alerta": "INSERTA LOS DATOS SOLICITADOS EN EL CAMPO",
+//                   "longitud": 100,
+//                   "valor": null,
+//                   "pordefecto": ""
+//               },
+//               {
+//                   "idCampo": 3948,
+//                   "agrupacion": "DATOS CLIENTE",
+//                   "nombreCampo": "TELEFONO",
+//                   "validarduplicidad": "FALSE",
+//                   "tipoCampo": "NUMERICO",
+//                   "restriccion": "[N/A]",
+//                   "editable": "TRUE",
+//                   "alerta": "INSERTA LOS DATOS SOLICITADOS EN EL CAMPO",
+//                   "longitud": 20,
+//                   "valor": null,
+//                   "pordefecto": ""
+//               },
+//               {
+//                   "idCampo": 3949,
+//                   "agrupacion": "DATOS CLIENTE",
+//                   "nombreCampo": "E-MAIL",
+//                   "validarduplicidad": "FALSE",
+//                   "tipoCampo": "ALFANUMERICO",
+//                   "restriccion": "[N/A]",
+//                   "editable": "TRUE",
+//                   "alerta": "INSERTA LOS DATOS SOLICITADOS EN EL CAMPO",
+//                   "longitud": 100,
+//                   "valor": null,
+//                   "pordefecto": ""
+//               },
+//               {
+//                   "idCampo": 3950,
+//                   "agrupacion": "DATOS CLIENTE",
+//                   "nombreCampo": "CONTACTO",
+//                   "validarduplicidad": "FALSE",
+//                   "tipoCampo": "ALFANUMERICO",
+//                   "restriccion": "[N/A]",
+//                   "editable": "TRUE",
+//                   "alerta": "INSERTA LOS DATOS SOLICITADOS EN EL CAMPO",
+//                   "longitud": 100,
+//                   "valor": null,
+//                   "pordefecto": ""
+//               },
+//               {
+//                   "idCampo": 3951,
+//                   "agrupacion": "DATOS CLIENTE",
+//                   "nombreCampo": "DIRECCION",
+//                   "validarduplicidad": "FALSE",
+//                   "tipoCampo": "ALFANUMERICO",
+//                   "restriccion": "[N/A]",
+//                   "editable": "TRUE",
+//                   "alerta": "INSERTA LOS DATOS SOLICITADOS EN EL CAMPO",
+//                   "longitud": 800,
+//                   "valor": null,
+//                   "pordefecto": ""
+//               }
+//           ]
+//       },
+//   ]
+// }

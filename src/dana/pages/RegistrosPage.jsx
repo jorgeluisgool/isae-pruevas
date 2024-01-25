@@ -311,7 +311,6 @@ export const RegistrosPage = () => {
         onHide={() => setModalAbrirCerrar(false)}
         className="mt-16"
       >
-        
         <h1 className="xl:text-lg font-bold xl:mx-36">
           Registro:{" "}
           {proyectoSeleccionado ? proyectoSeleccionado.folio : "Cargando..."}
@@ -323,7 +322,6 @@ export const RegistrosPage = () => {
                 dataProyectoSeleccionado.listaAgrupaciones.length > 0 &&
                 dataProyectoSeleccionado.listaAgrupaciones.map(
                   (itemagrupacion, indexAgrupacion) => (
-                    
                     <div
                       key={indexAgrupacion}
                       className="bg-[#e2e2e2] rounded-md hs-accordion mt-4 xl:mx-36"

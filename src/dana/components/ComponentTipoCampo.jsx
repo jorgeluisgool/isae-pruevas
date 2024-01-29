@@ -550,12 +550,12 @@ export const ComponentTipoCampo = ({
 
         {campo.tipoCampo === "CATALOGO" && (
           <span className="p-float-label relative">
-            {/* {console.log(dataProyectoSeleccionado)} */}
+            {console.log(campo.valor)}
             <Field
               className="w-full appearance-none focus:outline-none bg-transparent"
               as={Dropdown}
               name={campo.nombreCampo}
-              value={selectedValueCatalogo}
+              value={campo.valor}
               /*  options={dataProyectoSeleccionado?.catalogos[campo?.nombreCampo]?.catalogo.map(option => ({
                 label: option,
                 value: option
@@ -572,6 +572,7 @@ export const ComponentTipoCampo = ({
               placeholder="Seleccione una opción"
               onChange={(e) => {
                 setSelectedValueCatalogo(e.value);
+                campo.valor = e.value;
                 setFieldValue(campo.nombreCampo, e.value);
               }}
               maxLength={campo.longitud}

@@ -16,7 +16,7 @@ export const DashboardPage = () => {
   const [showAcordion, setShowAcordion] = useState(null);
   const [proyectoSeleccionado, setProyectoSeleccionado] = useState([]);
   const [dataProyectoSeleccionado, setDataProyectoSeleccionado] = useState([]);
-  const [modalAbrirCerrar, setModalAbrirCerrar] = useState([]);
+  const [modalAbrirCerrar, setModalAbrirCerrar] = useState(false);
   const [files, setFiles] = useState([]);
   const [signatures, setSignatures] = useState([]);
   const [photos, setPhotos] = useState([]);
@@ -83,7 +83,6 @@ export const DashboardPage = () => {
           };
 
           if (dataColeccion.inventario.idinventario === 0) {
-            
             setVentanaCarga(newRegister(dataColeccion, proyectoSeleccionado));
           } else {
             if (updateRegister(dataColeccion, proyectoSeleccionado)) {
@@ -101,11 +100,10 @@ export const DashboardPage = () => {
         }
       })
       .catch((error) => console.log(error));
-      
   };
 
   const handleDataProyecto = () => {
-    console.log(selectedProject)
+    console.log(selectedProject);
     const data = {
       idproyecto: selectedProject.idproyecto,
       proyecto: selectedProject.proyecto,
@@ -145,7 +143,6 @@ export const DashboardPage = () => {
         setModalAbrirCerrar(true);
       })
       .catch((error) => console.log(error));
-      
   };
 
   const getProjects = () => {
@@ -203,9 +200,7 @@ export const DashboardPage = () => {
               <button
                 type="button"
                 className="hover:shadow-slate-600 border h-10 px-4 bg-[#245A95] text-white text-lg font-bold shadow-md duration-150 ease-in-out focus:outline-none active:scale-[1.20] transition-all hover:bg-sky-600 rounded-full"
-                onClick={() =>
-                  handleDataProyecto()
-                }
+                onClick={() => handleDataProyecto()}
               >
                 Crear asignacion
               </button>
@@ -227,7 +222,6 @@ export const DashboardPage = () => {
         onHide={() => setModalAbrirCerrar(false)}
         className="mt-16"
       >
-        
         <h1 className="xl:text-lg font-bold xl:mx-36">
           Registro:{" "}
           {proyectoSeleccionado ? proyectoSeleccionado.folio : "Cargando..."}
@@ -239,12 +233,10 @@ export const DashboardPage = () => {
                 dataProyectoSeleccionado.listaAgrupaciones.length > 0 &&
                 dataProyectoSeleccionado.listaAgrupaciones.map(
                   (itemagrupacion, indexAgrupacion) => (
-                    
                     <div
                       key={indexAgrupacion}
                       className="bg-[#e2e2e2] rounded-md hs-accordion mt-4 xl:mx-36"
                     >
-                      
                       <div
                         className="bg-[#245A95] flex items-center justify-around rounded-md cursor-pointer shadow-slate-900 shadow-md"
                         onClick={() => toggleShow(indexAgrupacion)}
@@ -282,6 +274,9 @@ export const DashboardPage = () => {
                                     <ComponentTipoCampoDashboard
                                       dataProyectoSeleccionado={
                                         dataProyectoSeleccionado
+                                      }
+                                      setDataProyectoSeleccionado={
+                                        setDataProyectoSeleccionado
                                       }
                                       itemagrupacion={itemagrupacion}
                                       campo={item}
@@ -345,9 +340,6 @@ export const DashboardPage = () => {
           )}
         </Formik>
       </Dialog>
-
-
-                
     </>
   );
 };

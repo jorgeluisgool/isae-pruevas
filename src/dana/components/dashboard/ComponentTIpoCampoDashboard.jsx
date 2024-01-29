@@ -24,10 +24,10 @@ import {
 } from "../functions/Functions";
 import { api } from "../../helpers/variablesGlobales";
 
-
 export const ComponentTipoCampoDashboard = ({
   campo,
   dataProyectoSeleccionado,
+  setDataProyectoSeleccionado,
   values,
   indexAgrupacion,
   indexCampo,
@@ -197,30 +197,42 @@ export const ComponentTipoCampoDashboard = ({
     });
   };
 
-  const getClients = () =>{
-    fetch(`${api}/obtener/clientes`,{
-        method: 'GET',
-        headers:{
-            "Content-Type": "application/json"
-        }
-    })
-    .then((response) => response.json())
-    .then((responseData) => {
-        console.log(responseData);
-    })
-  }
+  const [clientesObtenidos, setClientesObtenidos] = useState([]);
 
-  const getProjectsClient = () =>{
-    fetch(`${api}`)
-  }
+  const getClients = () => {
+    fetch(`${api}/obtener/clientes`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((responseData) => {
+        const clientesNames = responseData.map((item) => {
+          return item.cliente ? item.cliente : "";
+        });
+        setClientesObtenidos(clientesNames);
+      })
+      .catch((error) => console.log(error));
+  };
+
+  const getProjectsClient = () => {
+    fetch(`${api}`);
+  };
+
+  const getDymanicOptions = (nameCampo, emptyCatalogo) => {
+    if (nameCampo === "CLIENTE") {
+      return clientesObtenidos;
+    }
+
+    return emptyCatalogo;
+  };
 
   useEffect(() => {
     getSiganture();
     getPhoto();
     getClients();
-  }, []);
-
-  
+  }, [dataProyectoSeleccionado]);
 
   // Función para convertir la fecha en formato válido
   const parseDate = (dateString) => {
@@ -558,24 +570,36 @@ export const ComponentTipoCampoDashboard = ({
 
         {campo.tipoCampo === "CATALOGO" && (
           <span className="p-float-label relative">
-            {/* {console.log(dataProyectoSeleccionado)} */}
             <Field
               className="w-full appearance-none focus:outline-none bg-transparent"
               as={Dropdown}
               name={campo.nombreCampo}
-              value={selectedValueCatalogo}
-              options={(
+              value={campo.valor}
+              options={
+                (
+                  getDymanicOptions(
+                    campo.nombreCampo,
+                    dataProyectoSeleccionado?.catalogos[campo?.nombreCampo]
+                      ?.catalogo
+                  ) ?? []
+                ).map((option) => ({
+                  label: option,
+                  value: option,
+                }))
+                /* (
                 dataProyectoSeleccionado?.catalogos[campo?.nombreCampo]
                   ?.catalogo ?? []
               ).map((option) => ({
                 label: option,
                 value: option,
-              }))}
+              })) */
+              }
               filter
               emptyFilterMessage="No se encontraron conincidencias"
               placeholder="Seleccione una opción"
               onChange={(e) => {
                 setSelectedValueCatalogo(e.value);
+                campo.valor = e.value;
                 setFieldValue(campo.nombreCampo, e.value);
               }}
               maxLength={campo.longitud}

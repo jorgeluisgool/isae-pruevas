@@ -15,6 +15,7 @@ const ProyectosPage = () => {
   const { userAuth, setUserAuth } = useAuth();
   const [searchTerm, setSearchTerm] = useState('');
   const [modalBase, setModalBase] = useState(false);
+  const [proyectoSeleccionado, setProyectoSeleccionado] = useState([]);
 
   useEffect(() => {
     const loggedInUser = localStorage.getItem("user");
@@ -41,7 +42,7 @@ const ProyectosPage = () => {
 
   return (
         <>
-        <h1 className="pt-2 xl:pt-6 pl-3 xl:pl-20 text-4xl font-black text-[#245A95]">Proyectos</h1>
+        <h1 className="pt-2 pl-3 xl:pl-20 text-4xl font-black text-[#245A95]">Proyectos</h1>
           <CrearProyectoForm/>
           <div className="container mx-auto pb-6">
             <div className='mx-4 xl:mx-20 my-4 px-4 py-2 shadow-md bg-white rounded-lg overflow-hidden'>
@@ -59,10 +60,10 @@ const ProyectosPage = () => {
                                 <i className="pi pi-search text-[#245A95] font-bold text-2xl"></i>
                               </span>
                               <label htmlFor="name" className='text-lg text-[#245A95] font-semibold absolute top-0 left-0 transform'>
-                                Busca el usuario
+                                Busca proyecto
                               </label>
                           </span>
-                          <p className="text-xs lg:text-base text-[#245A95] font-semibold">Puedes buscar el usuario por su nombre o nombre de usuario</p>
+                          <p className="text-xs lg:text-base text-[#245A95] font-semibold">Puedes buscar el proyecto por su nombre o fecha de creación</p>
                       </div>
                   </div>     
               </div>
@@ -78,6 +79,7 @@ const ProyectosPage = () => {
                     proyectos = {proyectos}
                     searchTerm = {searchTerm}
                     setModalBase = {setModalBase}
+                    setProyectoSeleccionado = {setProyectoSeleccionado}
                   />
                 </div> 
               </div> 
@@ -86,6 +88,7 @@ const ProyectosPage = () => {
               <ModalSubirBaseProyecto 
                 modalBase = {modalBase}
                 setModalBase = {setModalBase}
+                proyectoSeleccionado = {proyectoSeleccionado}
               />
               </div> 
           </div> 

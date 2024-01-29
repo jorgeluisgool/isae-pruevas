@@ -59,6 +59,7 @@ export const CrearProyectoForm = () => {
                 campos: [campo]
               });
             }
+            
             return grupos;
           }, []);
       
@@ -74,6 +75,7 @@ export const CrearProyectoForm = () => {
             }))
           }));
       
+          // console.log(arreglo2)
           const dataArchivoExcel = [
             {
               id: '0',

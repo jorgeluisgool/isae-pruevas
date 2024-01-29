@@ -2,15 +2,13 @@ import React, { useState } from 'react'
 import { api } from '../../helpers/variablesGlobales';
 import * as XLSX from "xlsx"
 
-export const TablaProyectos = ({proyectos, searchTerm, setModalBase}) => {
+export const TablaProyectos = ({proyectos, searchTerm, setModalBase, setProyectoSeleccionado}) => {
 
     const [currentPage, setCurrentPage] = useState(1);
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [selectedRows, setSelectedRows] = useState([]);
-    const [proyectoSeleccionado, setProyectoSeleccionado] = useState([]);
     const [ventanaCarga, setVentanaCarga] = useState(false);
 
-    console.log(proyectoSeleccionado);
     // Filtro para el search
     const filterUsuarios = proyectos.filter((proyecto) =>
         proyecto.proyecto.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -177,7 +175,9 @@ export const TablaProyectos = ({proyectos, searchTerm, setModalBase}) => {
                             console.log(error);
                           });
                       }}
-                      className="hover:shadow-slate-600 border h-6 w-6 bg-[#245A95] text-white text-xs xl:text-base font-bold rounded-full shadow-md duration-150 ease-in-out focus:outline-none active:scale-[1.20] transition-all hover:bg-sky-900"
+                      className="hover:shadow-slate-600 hover:border
+                      
+                       h-8 w-8 bg-[#245A95] text-white text-xl font-bold rounded-full shadow-md duration-150 ease-in-out focus:outline-none active:scale-[1.20] transition-all hover:bg-sky-900"
                       style={{ borderRadius: '50%' }}
                     >
                       <ion-icon name="document-text" className="rounded-full"></ion-icon>
@@ -189,9 +189,10 @@ export const TablaProyectos = ({proyectos, searchTerm, setModalBase}) => {
                     <button
                       type="button"
                       onClick={() => {
-                        setModalBase(true)
+                        setModalBase(true);
+                        setProyectoSeleccionado(proyecto);
                       }}
-                      className="hover:shadow-slate-600 border h-6 w-6 bg-[#245A95] text-white text-xs xl:text-base font-bold rounded-full shadow-md duration-150 ease-in-out focus:outline-none active:scale-[1.20] transition-all hover:bg-sky-900"
+                      className="hover:shadow-slate-600 hover:border h-8 w-8 sm:h-8 sm:w-8 bg-[#245A95] text-white text-xl font-bold rounded-full shadow-md duration-150 ease-in-out focus:outline-none active:scale-[1.20] transition-all hover:bg-sky-900"
                       style={{ borderRadius: '50%' }}
                     >
                       <ion-icon name="push" className="rounded-full"></ion-icon>
@@ -203,7 +204,7 @@ export const TablaProyectos = ({proyectos, searchTerm, setModalBase}) => {
                     <button
                       type="button"
                     //   onClick={() => handleEliminarOpcion(index)}
-                      className="hover:shadow-slate-600 border h-6 w-6 bg-red-700 text-white text-xs xl:text-base font-bold rounded-full shadow-md duration-150 ease-in-out focus:outline-none active:scale-[1.20] transition-all hover:bg-red-900"
+                      className="hover:shadow-slate-600 hover:border h-8 w-8 bg-red-700 text-white text-xl font-bold rounded-full shadow-md duration-150 ease-in-out focus:outline-none active:scale-[1.20] transition-all hover:bg-red-900"
                       style={{ borderRadius: '50%' }}
                     >
                       <ion-icon name="trash" className="rounded-full"></ion-icon>

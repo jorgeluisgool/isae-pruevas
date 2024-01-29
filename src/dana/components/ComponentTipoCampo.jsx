@@ -904,7 +904,7 @@ export const ComponentTipoCampo = ({
               {archivosSeleccionados.map((archivo, index) => (
                 <div
                   key={index}
-                  className="image-container relative w-full sm:w-1/3 p-2 relative box-border mb-4" /* style={{ position: 'relative', width: 'calc(33.33% - 10px)', margin: '5px', boxSizing: 'border-box' }} */
+                  className="image-container relative w-full sm:w-1/3 p-2 box-border mb-4" /* style={{ position: 'relative', width: 'calc(33.33% - 10px)', margin: '5px', boxSizing: 'border-box' }} */
                 >
                   <small className="absolute -bottom-5 left-0 z-0 bg-[#010a1c] text-white  ml-2 p-2 rounded">
                     {archivo.name}

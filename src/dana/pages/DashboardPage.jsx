@@ -16,7 +16,7 @@ export const DashboardPage = () => {
   const [showAcordion, setShowAcordion] = useState(null);
   const [proyectoSeleccionado, setProyectoSeleccionado] = useState([]);
   const [dataProyectoSeleccionado, setDataProyectoSeleccionado] = useState([]);
-  const [modalAbrirCerrar, setModalAbrirCerrar] = useState([]);
+  const [modalAbrirCerrar, setModalAbrirCerrar] = useState(false);
   const [files, setFiles] = useState([]);
   const [signatures, setSignatures] = useState([]);
   const [photos, setPhotos] = useState([]);

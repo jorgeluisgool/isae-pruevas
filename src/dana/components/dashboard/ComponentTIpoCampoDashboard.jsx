@@ -232,7 +232,7 @@ export const ComponentTipoCampoDashboard = ({
     getSiganture();
     getPhoto();
     getClients();
-  }, []);
+  }, [dataProyectoSeleccionado]);
 
   // Función para convertir la fecha en formato válido
   const parseDate = (dateString) => {

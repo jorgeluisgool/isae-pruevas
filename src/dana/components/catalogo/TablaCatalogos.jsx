@@ -24,7 +24,6 @@ export const TablaCatalogos = ({listaCatalogoProyecto, nuevoArregloOpcionesCatal
             <tbody className="w-full block divide-y divide-gray-200">
               {nuevoArregloOpcionesCatalogo?.map((catalogoOpcion, index) => (
                 <tr 
-
                   key={index} 
                   // onClick={(event) => handleTableRowClick(event, registro)}
                   className='cursor-pointer hover:bg-[#E2E2E2]'

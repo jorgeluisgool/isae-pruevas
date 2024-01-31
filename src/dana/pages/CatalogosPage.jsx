@@ -259,9 +259,11 @@ export const CatalogosPage = () => {
               </div>
             </div>
           </div>
-          <h1 className="mt-8 xl:pt-6 pl-3 text-2xl font-black text-[#245A95]">
-            Catalogo individual del proyecto
-          </h1>
+        </div>
+        <div className="mx-4 xl:mx-20 my-4 px-4 py-2 bg-white rounded-lg overflow-hidden">
+        <h1 className="mt-2 xl:pt-6 pl-3 text-2xl font-black text-[#245A95]">
+          Relación de catálogos
+        </h1>
           <div className="p-inputgroup mt-3 lg:mt-6 grid grid-cols-3 gap-8">
             <span className="p-float-label w-full">
               <Dropdown

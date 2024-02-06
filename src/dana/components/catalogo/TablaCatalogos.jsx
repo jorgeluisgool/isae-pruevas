@@ -24,14 +24,13 @@ export const TablaCatalogos = ({listaCatalogoProyecto, nuevoArregloOpcionesCatal
             <tbody className="w-full block divide-y divide-gray-200">
               {nuevoArregloOpcionesCatalogo?.map((catalogoOpcion, index) => (
                 <tr 
-
                   key={index} 
                   // onClick={(event) => handleTableRowClick(event, registro)}
                   className='cursor-pointer hover:bg-[#E2E2E2]'
                 >
                   <td className="px-6">
                     <div className="flex space-x-4">
-                      <div className="text-sm font-medium text-gray-900">{catalogoOpcion}</div>
+                      <div className="text-xs font-medium text-gray-900"><span className='text-[#245A95] font-bold '>{index + 1}-</span> {catalogoOpcion}</div>
                     </div>
                   </td>
                     <td className="px-6">

@@ -3,6 +3,7 @@ import { InputText } from "primereact/inputtext";
 import React, { useEffect, useState } from "react";
 import { api } from "../helpers/variablesGlobales";
 import { TablaCatalogos } from "../components/catalogo/TablaCatalogos";
+import { TablaRelacionCatalogos } from "../components/catalogo/TablaRelacionCatalogos";
 
 export const CatalogosPage = () => {
   const [proyectos, setProyectos] = useState([]);
@@ -135,9 +136,9 @@ export const CatalogosPage = () => {
     <>
       <div className="pb-6">
         <h1 className="pt-2 xl:pt-6 pl-3 xl:pl-20 text-4xl font-black text-[#245A95]">
-          Catálogo
+          Catálogos
         </h1>
-        <div className="mx-4 xl:mx-20 my-4 px-4 py-2 bg-white rounded-lg overflow-hidden">
+        <div className="mx-4 xl:mx-20 my-4 px-4 lg:pb-6 bg-white rounded-lg overflow-hidden">
           <h1 className="pt-2 xl:pt-6 pl-3 text-base font-black text-[#245A95]">
             1. Selecciona el proyecto
           </h1>
@@ -173,7 +174,7 @@ export const CatalogosPage = () => {
               proyectoSeleccionado.proyecto
             )}
           </h1>
-          <div>
+          
             <div className="mt-4 grid sm:grid-cols-3 gap-8">
               <div className="">
                 <h1 className="pt-2 pl-3 text-base font-black text-[#245A95]">
@@ -203,7 +204,6 @@ export const CatalogosPage = () => {
                     </label>
                   </span>
                 </div>
-
                 <h1 className="pt-2 pl-3 text-base font-black text-[#245A95]">
                   3. Agregar el valor a el catálogo seleccionado
                 </h1>
@@ -258,41 +258,67 @@ export const CatalogosPage = () => {
                 </div>
               </div>
             </div>
-          </div>
-          <h1 className="mt-8 xl:pt-6 pl-3 text-2xl font-black text-[#245A95]">
-            Catalogo individual del proyecto
-          </h1>
-          <div className="p-inputgroup mt-3 lg:mt-6 grid grid-cols-3 gap-8">
-            <span className="p-float-label w-full">
-              <Dropdown
-                className="w-full appearance-none focus:outline-none bg-transparent border-b-2 border-[#245A95] text-gray-700 transition-all duration-300 focus:border-[#245A95]"
-                name="perfil"
-              />
-              <span className=" bg-[#245A95] p-2 px-3 rounded-r-lg shadow-md">
-                <i className="pi pi-file-edit text-white font-light text-xl"></i>
-              </span>
-              <label
-                htmlFor="nombrealberca"
-                className="text-sm text-[#245A95] font-extrabold absolute top-2 left-3 transition-all duration-300"
-              >
-                Catalogos
-              </label>
-            </span>
-            <span className="p-float-label  w-full">
-              <InputText
-                className="w-full appearance-none focus:outline-none bg-transparent border-b-2 border-[#245A95] text-gray-700 transition-all duration-300 focus:border-[#245A95]"
-                name="perfil"
-              />
-              <span className=" bg-[#245A95] p-2 px-3 rounded-r-lg shadow-md">
-                <i className="pi pi-file-edit text-white font-light text-xl"></i>
-              </span>
-              <label
-                htmlFor="nombrealberca"
-                className="text-sm text-[#245A95] font-extrabold absolute top-2 left-3 transition-all duration-300"
-              >
-                Contenido
-              </label>
-            </span>
+          
+        </div>
+        {/* //////////////////////////////////////// */}
+        {/* SEGUNDA SECCIÓN DE RELACIÓN DE CATALOGOS */}
+        {/* //////////////////////////////////////// */}
+        <div className="mx-4 xl:mx-20 my-4 px-4 lg:pb-6 bg-white rounded-lg overflow-hidden">
+        <h1 className="mt-2 xl:pt-6 pl-3 text-2xl font-black text-[#245A95]">
+          Relación de catálogos
+        </h1>
+        
+          <div className="grid lg:grid-cols-2 gap-8">
+            <div className="">
+              <h1 className="pt-2 xl:pt-6 pl-3 mb-6 text-base font-black text-[#245A95]">
+                1. Catálogo 1: Opción a relacionar
+              </h1>
+              <div className="p-inputgroup lg:px-16">
+                <span className="p-float-label w-full">
+                  <Dropdown
+                    className="w-full appearance-none focus:outline-none bg-transparent border-b-2 border-[#245A95] text-gray-700 transition-all duration-300 focus:border-[#245A95]"
+                    name="catalogo1"
+                  />
+                  <span className=" bg-[#245A95] p-2 px-3 rounded-r-lg shadow-md">
+                    <i className="pi pi-file-edit text-white font-light text-xl"></i>
+                  </span>
+                  <label
+                    htmlFor="nombrealberca"
+                    className="text-sm text-[#245A95] font-extrabold absolute top-2 left-3 transition-all duration-300"
+                  >
+                    Catálogos
+                  </label>
+                </span>
+              </div>
+              <div className="mt-4 flex justify-center">
+                <TablaRelacionCatalogos
+                  nuevoArregloOpcionesCatalogo={nuevoArregloOpcionesCatalogo}
+                />
+              </div>
+            </div>
+            <div className="">
+              <h1 className="pt-2 xl:pt-6 pl-3 mb-6 text-base font-black text-[#245A95]">
+                2. Catálogo 2: Opcion o opciones relacionadas
+              </h1>
+              <div className="p-inputgroup lg:px-16">
+                <span className="p-float-label w-full">
+                  <Dropdown
+                    className="w-full appearance-none focus:outline-none bg-transparent border-b-2 border-[#245A95] text-gray-700 transition-all duration-300 focus:border-[#245A95]"
+                    name="catalogo1"
+                  />
+                  <span className=" bg-[#245A95] p-2 px-3 rounded-r-lg shadow-md">
+                    <i className="pi pi-file-edit text-white font-light text-xl"></i>
+                  </span>
+                  <label
+                    htmlFor="nombrealberca"
+                    className="text-sm text-[#245A95] font-extrabold absolute top-2 left-3 transition-all duration-300"
+                  >
+                    Catálogos
+                  </label>
+                </span>
+              </div>
+            </div>
+            
           </div>
         </div>
       </div>

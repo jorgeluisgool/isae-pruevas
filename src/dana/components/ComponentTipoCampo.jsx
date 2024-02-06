@@ -589,16 +589,18 @@ export const ComponentTipoCampo = ({
               className="w-full appearance-none focus:outline-none bg-transparent"
               as={Dropdown}
               name={campo.nombreCampo}
-              value={defaultOption}
+              value={campo.valor}
               options={currentCatalogo.map((option) => ({
                 label: option,
                 value: option,
               }))}
+              editable
               filter
               emptyFilterMessage="No se encontraron conincidencias"
               placeholder="Seleccione una opción"
               onChange={(e) => {
                 setSelectedValueCatalogoInput(e.value);
+                campo.valor = e.value;
                 setFieldValue(campo.nombreCampo, e.value);
               }}
               maxLength={campo.longitud}

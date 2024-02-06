@@ -576,7 +576,7 @@ export const ComponentTipoCampoDashboard = ({
               name={campo.nombreCampo}
               value={campo.valor}
               options={
-                (
+                /* (
                   getDymanicOptions(
                     campo.nombreCampo,
                     dataProyectoSeleccionado?.catalogos[campo?.nombreCampo]
@@ -585,20 +585,19 @@ export const ComponentTipoCampoDashboard = ({
                 ).map((option) => ({
                   label: option,
                   value: option,
+                })) */
+                (
+                  dataProyectoSeleccionado?.catalogos[campo?.nombreCampo]
+                    ?.catalogo ?? []
+                ).map((option) => ({
+                  label: option,
+                  value: option,
                 }))
-                /* (
-                dataProyectoSeleccionado?.catalogos[campo?.nombreCampo]
-                  ?.catalogo ?? []
-              ).map((option) => ({
-                label: option,
-                value: option,
-              })) */
               }
               filter
               emptyFilterMessage="No se encontraron conincidencias"
               placeholder="Seleccione una opción"
               onChange={(e) => {
-                setSelectedValueCatalogo(e.value);
                 campo.valor = e.value;
                 setFieldValue(campo.nombreCampo, e.value);
               }}
@@ -622,6 +621,7 @@ export const ComponentTipoCampoDashboard = ({
                 value: option,
               }))}
               filter
+              editable
               emptyFilterMessage="No se encontraron conincidencias"
               placeholder="Seleccione una opción"
               onChange={(e) => {

@@ -30,7 +30,7 @@ export const TablaCatalogos = ({listaCatalogoProyecto, nuevoArregloOpcionesCatal
                 >
                   <td className="px-6">
                     <div className="flex space-x-4">
-                      <div className="text-sm font-medium text-gray-900">{catalogoOpcion}</div>
+                      <div className="text-xs font-medium text-gray-900"><span className='text-[#245A95] font-bold '>{index + 1}-</span> {catalogoOpcion}</div>
                     </div>
                   </td>
                     <td className="px-6">

@@ -32,7 +32,7 @@ export const HomeScreem = ({ titulo }) => {
             <BotonMenu titulo="CATALOGO" icono="clipboard-outline" />
           </Link>
           <div className="pt-5">
-            <p className="text-center text-[#245A95] font-bold">CATALOGO</p>
+            <p className="text-center text-[#245A95] font-bold">CATÁLOGOS</p>
           </div>
         </div>
         <div className="place-self-center ...">

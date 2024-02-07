@@ -120,7 +120,7 @@ export const Navbar = () => {
                   </div>
                 </div>
                 <div className="xl:ml-1 ml-2">
-                  <p className="text-xl font-semibold">Catalogo</p>
+                  <p className="text-xl font-semibold">Catálogos</p>
                 </div>
               </Link>
             </li>

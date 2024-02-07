@@ -9,12 +9,12 @@ export const CatalogosPage = () => {
   const [proyectos, setProyectos] = useState([]);
   const [proyectoSeleccionado, setProyectoSeleccionado] = useState({});
   const [catalogoProyecto, setCatalogoProyecto] = useState([]);
-  const [catalogoProyectoSeleccionado, setCatalogoProyectoSeleccionado] =
-    useState({});
+  const [catalogoProyectoSeleccionado, setCatalogoProyectoSeleccionado] = useState([]);
+  const [catalogoRelacion1ProyectoSeleccionado, setCatalogoRelacion1ProyectoSeleccionado] = useState([]);
   const [nuevoValorCatalo, setNuevoValorCatalo] = useState("");
   const [listaCatalogoProyecto, setListaCatalogoProyecto] = useState([]);
-  const [nuevoArregloOpcionesCatalogo, setNuevoArregloOpcionesCatalogo] =
-    useState([]);
+  const [nuevoArregloOpcionesCatalogo, setNuevoArregloOpcionesCatalogo] = useState([]);
+  const [nuevoArregloOpcionesCatalogo2, setNuevoArregloOpcionesCatalogo2] = useState([]);
 
   // console.log(listaCatalogoProyecto);
   console.log(nuevoArregloOpcionesCatalogo);
@@ -54,6 +54,7 @@ export const CatalogosPage = () => {
         const jsonData = await response.json();
         // console.log(jsonData);
         setCatalogoProyecto(jsonData);
+        setCatalogoProyectoSeleccionado(jsonData);
       } catch (error) {
         console.log("Error:", error);
       }
@@ -62,6 +63,7 @@ export const CatalogosPage = () => {
     fetchData();
   }, [proyectoSeleccionado]);
 
+  // Obtener Opciones Catalogo del catalogo seleccionado tabla 1
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -82,6 +84,7 @@ export const CatalogosPage = () => {
         setListaCatalogoProyecto(jsonData);
 
         setNuevoArregloOpcionesCatalogo(jsonData.catalogo ?? []);
+        setCatalogoRelacion1ProyectoSeleccionado(jsonData.catalogo ?? []);
       } catch (error) {
         console.log("Error:", error);
       }
@@ -89,6 +92,35 @@ export const CatalogosPage = () => {
 
     fetchData();
   }, [catalogoProyectoSeleccionado]);
+
+  // Obtener Opciones Catálogo del catalogo seleccionado tabla 2
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          `${api}/obtener/catalogo/datos/proyecto/${catalogoRelacion1ProyectoSeleccionado}`,
+          {
+            method: "POST", // o 'PUT', 'DELETE', etc., según el método que debas usar
+            headers: {
+              "Content-Type": "application/json", // o el tipo de contenido adecuado
+              // otras cabeceras según sea necesario
+            },
+            body: JSON.stringify(proyectoSeleccionado),
+          }
+        );
+
+        const jsonData = await response.json();
+        console.log(jsonData);
+        setListaCatalogoProyecto(jsonData);
+
+        setNuevoArregloOpcionesCatalogo2(jsonData.catalogo ?? []);
+      } catch (error) {
+        console.log("Error:", error);
+      }
+    };
+
+    fetchData();
+  }, [catalogoRelacion1ProyectoSeleccionado]);
 
   // useEffect(() => {
   //     const fetchData = async () => {
@@ -138,7 +170,7 @@ export const CatalogosPage = () => {
         <h1 className="pt-2 xl:pt-6 pl-3 xl:pl-20 text-4xl font-black text-[#245A95]">
           Catálogos
         </h1>
-        <div className="mx-4 xl:mx-20 my-4 px-4 lg:pb-6 bg-white rounded-lg overflow-hidden">
+        <div className="mx-4 xl:mx-20 my-4 px-4 pb-6 bg-white rounded-lg overflow-hidden">
           <h1 className="pt-2 xl:pt-6 pl-3 text-base font-black text-[#245A95]">
             1. Selecciona el proyecto
           </h1>
@@ -166,7 +198,9 @@ export const CatalogosPage = () => {
               </label>
             </span>
           </div>
-          <h1 className="mt-4 xl:pt-6 pl-3 text-lg lg:text-2xl font-black text-[#245A95]">
+          </div>
+          <div className="mx-4 xl:mx-20 my-4 px-4 pb-6 bg-white rounded-lg overflow-hidden">
+          <h1 className="mt-4 pl-3 text-lg lg:text-2xl font-black text-[#245A95]">
             Asigna una opción al catálogo del proyecto:{" "}
             {Object.keys(proyectoSeleccionado).length === 0 ? (
               <span></span>
@@ -243,9 +277,7 @@ export const CatalogosPage = () => {
                 <TablaCatalogos
                   listaCatalogoProyecto={listaCatalogoProyecto}
                   nuevoArregloOpcionesCatalogo={nuevoArregloOpcionesCatalogo}
-                  setNuevoArregloOpcionesCatalogo={
-                    setNuevoArregloOpcionesCatalogo
-                  }
+                  setNuevoArregloOpcionesCatalogo={setNuevoArregloOpcionesCatalogo}
                 />
                 <div className="mt-8 cursor-pointer inset-x-0 bottom-4 right-6 flex gap-3 justify-center xl:justify-end">
                   <button
@@ -263,8 +295,8 @@ export const CatalogosPage = () => {
         {/* //////////////////////////////////////// */}
         {/* SEGUNDA SECCIÓN DE RELACIÓN DE CATALOGOS */}
         {/* //////////////////////////////////////// */}
-        <div className="mx-4 xl:mx-20 my-4 px-4 lg:pb-6 bg-white rounded-lg overflow-hidden">
-        <h1 className="mt-2 xl:pt-6 pl-3 text-2xl font-black text-[#245A95]">
+        <div className="mx-4 xl:mx-20 my-4 px-4 pb-6 bg-white rounded-lg overflow-hidden">
+        <h1 className="mt-2 pl-3 text-2xl font-black text-[#245A95]">
           Relación de catálogos
         </h1>
         
@@ -278,6 +310,12 @@ export const CatalogosPage = () => {
                   <Dropdown
                     className="w-full appearance-none focus:outline-none bg-transparent border-b-2 border-[#245A95] text-gray-700 transition-all duration-300 focus:border-[#245A95]"
                     name="catalogo1"
+                    options={catalogoProyecto}
+                    filter
+                    value={catalogoRelacion1ProyectoSeleccionado}
+                    onChange={(e) => {
+                      setCatalogoRelacion1ProyectoSeleccionado(e.target.value);
+                    }}
                   />
                   <span className=" bg-[#245A95] p-2 px-3 rounded-r-lg shadow-md">
                     <i className="pi pi-file-edit text-white font-light text-xl"></i>
@@ -290,9 +328,27 @@ export const CatalogosPage = () => {
                   </label>
                 </span>
               </div>
+              <div className="p-inputgroup lg:px-16 pt-8">
+                <span className='p-float-label w-full'>
+                    <InputText
+                        className="w-full appearance-none focus:outline-none bg-transparent border-b-2 border-[#245A95] text-gray-700 transition-all duration-300 focus:border-[#245A95]"
+                        name="searchCatalogo1"
+                        // value={searchTerm}
+                        // onChange={handleSearch}
+                    /> 
+                    <span className="bg-[#245A95] p-2 px-3 rounded-r-lg shadow-md">
+                      <i className="pi pi-search text-white font-light text-xl"></i>
+                    </span>
+                    <label htmlFor="name" className='text-sm text-[#245A95] font-extrabold absolute top-2 left-3 transition-all duration-300'>
+                      Buscar la opción del catalogo
+                    </label>
+                </span>
+                      {/* <p className="text-xs lg:text-base text-[#245A95] font-semibold">Puedes buscar el usuario por su nombre o nombre de usuario</p> */}
+              </div>
               <div className="mt-4 flex justify-center">
                 <TablaRelacionCatalogos
-                  nuevoArregloOpcionesCatalogo={nuevoArregloOpcionesCatalogo}
+                  nuevoArregloOpcionesCatalogo2={nuevoArregloOpcionesCatalogo2}
+                  catalogoRelacion1ProyectoSeleccionado={catalogoRelacion1ProyectoSeleccionado}
                 />
               </div>
             </div>

@@ -231,7 +231,7 @@ const RegistrosForm = ({
     })
       .then((response) => response.json())
       .then((responseData) => {
-        //console.log(responseData);
+        console.log(responseData);
         setListaValores(responseData);
       })
       .catch((error) => console.log(error))
@@ -387,7 +387,7 @@ const RegistrosForm = ({
                     </div>
                   )}
                 </div>
-
+                      {console.log(listaCampos)}
                 <div className="mt-8 mx-4 flex flex-col">
                   {listaCampos.length === 0 ? (
                     <div></div>
@@ -437,6 +437,7 @@ const RegistrosForm = ({
                     </div>
                   )}
                 </div>
+                {console.log(listaValores)}
                 <div className="mt-8 mx-4 flex flex-col">
                   {listaValores.length === 0 ? (
                     <div></div>

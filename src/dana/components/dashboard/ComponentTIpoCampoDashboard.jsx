@@ -576,19 +576,12 @@ export const ComponentTipoCampoDashboard = ({
               name={campo.nombreCampo}
               value={campo.valor}
               options={
-                /* (
+                (
                   getDymanicOptions(
                     campo.nombreCampo,
                     dataProyectoSeleccionado?.catalogos[campo?.nombreCampo]
                       ?.catalogo
                   ) ?? []
-                ).map((option) => ({
-                  label: option,
-                  value: option,
-                })) */
-                (
-                  dataProyectoSeleccionado?.catalogos[campo?.nombreCampo]
-                    ?.catalogo ?? []
                 ).map((option) => ({
                   label: option,
                   value: option,

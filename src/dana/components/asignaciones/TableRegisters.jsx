@@ -23,8 +23,8 @@ export const TableRegisters = ({
           <h1 className="pt-2 xl:pt-6 pl-3 xl:pl-0 text-2xl font-black text-[#245A95] mb-2">
             Registros
           </h1>
-          <div class="flex justify-center lg:ml-0 ml-40 lg:pl-0 pl-8">
-            <table class="w-full bg-white shadow-md">
+          <div className="flex justify-center lg:ml-0 ml-40 lg:pl-0 pl-8">
+            <table className="w-full bg-white shadow-md">
               <thead className="bg-[#245A95] text-white uppercase">
                 <tr className="">
                   <th scope="col" className="relative px-6 py-1">

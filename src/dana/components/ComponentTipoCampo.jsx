@@ -435,6 +435,7 @@ export const ComponentTipoCampo = ({
                   className="w-full appearance-none focus:outline-none bg-transparent"
                   value={hora}
                   onChange={(e) => {
+                    console.log(campo.valor);
                     const formattedDate = format(e.value, "HH:mm");
                     setHora(e.value);
                     form.setFieldValue(field.name, formattedDate);
@@ -550,7 +551,7 @@ export const ComponentTipoCampo = ({
 
         {campo.tipoCampo === "CATALOGO" && (
           <span className="p-float-label relative">
-            {console.log(campo.valor)}
+            {/* {console.log(campo.valor)} */}
             <Field
               className="w-full appearance-none focus:outline-none bg-transparent"
               as={Dropdown}

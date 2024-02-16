@@ -39,8 +39,29 @@ export const ComponentTipoCampoDashboard = ({
   setSignatures,
   photos,
   setPhotos,
+  setTecnico,
+  tecnico,
+  setProyectoAsistencia,
+  proyectoAsistencia,
+  fecha,
+  setFecha,
+  setHoraEntrada,
+  horaEntrada
 }) => {
-  //console.log(dataProyectoSeleccionado);
+  ;
+
+  const getAssitent =  (tec, dat) =>{
+    fetch(`${api}/get/user/assitent/${tec}/${dat.replaceAll("/", "-")}`,{
+      method: "GET",
+      headers:{
+        "Content-Type": "application/json"
+      }
+    })
+    .then((response) => response.text())
+    .then((responseData) => {
+      setHoraEntrada(responseData);
+    })
+  }
 
   const { setFieldValue } = useFormikContext();
 
@@ -434,7 +455,13 @@ export const ComponentTipoCampoDashboard = ({
                   value={selectedDate ? parseDate(selectedDate) : null}
                   dateFormat="dd/MM/yy"
                   onChange={(e) => {
+                   
                     const formattedDate = formatDateToString(e.value);
+                    
+                    if(campo?.nombreCampo === "FECHA DE ASIGNACION"){
+                      setFecha(formattedDate);
+                      getAssitent(tecnico, formattedDate);
+                    }
                     setSelectedDate(formattedDate); // Actualiza la variable de estado con la fecha seleccionada
                     form.setFieldValue(field.name, formattedDate); // Aquí asumo que tienes la variable 'form' disponible en el scope de tu componente
                   }}
@@ -453,11 +480,12 @@ export const ComponentTipoCampoDashboard = ({
               {({ field, form }) => (
                 <Calendar
                   className="w-full appearance-none focus:outline-none bg-transparent"
-                  value={hora}
+                  value={campo?.nombreCampo === "HORA DE ENTRADA" ? parse(horaEntrada, "HH:mm", new Date()) : hora}
                   onChange={(e) => {
                     const formattedDate = format(e.value, "HH:mm");
+                    console.log(formattedDate);
                     setHora(e.value);
-                    form.setFieldValue(field.name, formattedDate);
+                    form.setFieldValue(field.name, campo?.nombreCampo === "HORA DE ENTRADA" ? horaEntrada : formattedDate);
                   }}
                   timeOnly
                 />
@@ -496,8 +524,9 @@ export const ComponentTipoCampoDashboard = ({
               as={InputText}
               className="w-full appearance-none focus:outline-none bg-transparent"
               name={campo.nombreCampo}
-              defaultValue={campo.valor}
+              defaultValue={tecnico!="" && campo?.nombreCampo==="NOMBRE DE TECNICOS" ? tecnico : proyectoAsistencia!="" && campo?.nombreCampo==="PROYECTO" ? proyectoAsistencia : campo.valor}
               maxLength={campo.longitud}
+              disabled={campo.editable === "FALSE"}
               keyfilter={RegExp(
                 `[0-9A-Z ${campo.restriccion
                   .replace("[", "")
@@ -567,9 +596,11 @@ export const ComponentTipoCampoDashboard = ({
             </span>
           </span>
         )}
-
+        
+ {/* {campo?.nombreCampo == "NOMBRE DE TECNICOS" ? campo.valor = tecnico : campo.valor =  campo.valor} */}
         {campo.tipoCampo === "CATALOGO" && (
           <span className="p-float-label relative">
+            {/* {campo?.nombreCampo == "NOMBRE DE TECNICOS" ? campo.valor = tecnico : campo.valor =  campo.valor} */}
             <Field
               className="w-full appearance-none focus:outline-none bg-transparent"
               as={Dropdown}
@@ -577,20 +608,22 @@ export const ComponentTipoCampoDashboard = ({
               value={campo.valor}
               options={
                 (
-                  getDymanicOptions(
-                    campo.nombreCampo,
-                    dataProyectoSeleccionado?.catalogos[campo?.nombreCampo]
-                      ?.catalogo
-                  ) ?? []
+                  dataProyectoSeleccionado?.catalogos[campo?.nombreCampo]
+                    ?.catalogo ?? []
                 ).map((option) => ({
                   label: option,
                   value: option,
-                }))
+                })) 
               }
               filter
               emptyFilterMessage="No se encontraron conincidencias"
               placeholder="Seleccione una opción"
               onChange={(e) => {
+                if(campo?.nombreCampo == "TECNICO"){
+                  setTecnico(e.value);
+                }else if(campo?.nombreCampo == "PROYECTO"){
+                  setProyectoAsistencia(e.value);
+                }
                 campo.valor = e.value;
                 setFieldValue(campo.nombreCampo, e.value);
               }}

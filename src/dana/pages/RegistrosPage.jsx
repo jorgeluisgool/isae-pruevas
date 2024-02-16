@@ -326,7 +326,7 @@ export const RegistrosPage = () => {
                       key={indexAgrupacion}
                       className="bg-[#e2e2e2] rounded-md hs-accordion mt-4 xl:mx-36"
                     >
-                      {console.log(dataProyectoSeleccionado)}
+                      {/* {console.log(dataProyectoSeleccionado)} */}
                       <div
                         className="bg-[#245A95] flex items-center justify-around rounded-md cursor-pointer shadow-slate-900 shadow-md"
                         onClick={() => toggleShow(indexAgrupacion)}

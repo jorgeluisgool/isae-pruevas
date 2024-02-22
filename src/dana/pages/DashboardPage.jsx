@@ -23,11 +23,15 @@ export const DashboardPage = () => {
   const [idCampo, setIdCampo] = useState([]);
   const [ventanaCarga, setVentanaCarga] = useState(false);
   const [horaEntrada, setHoraEntrada] = useState("");
+  const [horaAsignacion, setHoraAsignacion] = useState("");
+  const [asistencia, setAsistencia] = useState("");
+
 
   const { clienteSeleccionado, setUserAuth, userAuth } = useAuth();
 
   const [tecnico, setTecnico] = useState(""); 
   const [proyectoAsistencia, setProyectoAsistencia] = useState("");
+  const [coordinador, setCoordinador] = useState("");
   const [fecha, setFecha] = useState("");
 
   const toggleShow = (index) => {
@@ -39,6 +43,7 @@ export const DashboardPage = () => {
   };
 
   const handleMensajeAceptar = (values) => {
+    console.log(values);
     setVentanaCarga(true);
     setModaAceptarlAbrirCerrar(false);
     const newData = { ...dataProyectoSeleccionado };
@@ -88,7 +93,7 @@ export const DashboardPage = () => {
           };
 
           if (dataColeccion.inventario.idinventario === 0) {
-            setVentanaCarga(newRegister(dataColeccion, proyectoSeleccionado));
+            setVentanaCarga(newRegister(dataColeccion, proyectoSeleccionado, horaEntrada));
           } else {
             if (updateRegister(dataColeccion, proyectoSeleccionado)) {
               setVentanaCarga(false);
@@ -312,6 +317,12 @@ export const DashboardPage = () => {
                                       setFecha={setFecha}
                                       setHoraEntrada={setHoraEntrada}
                                       horaEntrada = {horaEntrada}
+                                      horaAsignacion={horaAsignacion}
+                                      setHoraAsignacion={setHoraAsignacion}
+                                      asistencia={asistencia}
+                                      setAsistencia={setAsistencia}
+                                      coordinador={coordinador}
+                                      setCoordinador={setCoordinador}
                                     />
                                   </div>
                                 </div>

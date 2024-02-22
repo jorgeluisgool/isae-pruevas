@@ -124,7 +124,7 @@ function uint8ArrayAListaInt(uint8Array) {
 }
 
 //this function will be use for news register with same method 
-export function newRegister(dataColeccion, proyectoSeleccionado){
+export function newRegister(dataColeccion, proyectoSeleccionado, hEntrada){
 
   fetch(`${api}/registrar/inventario/${dataColeccion.listaAgrupaciones[0].campos[0].valor}/${dataColeccion.inventario.proyecto.idproyecto}`,{
     method:'GET',
@@ -145,6 +145,9 @@ export function newRegister(dataColeccion, proyectoSeleccionado){
         dataColeccion.listaAgrupaciones[i].idInventario = responseData[0]; 
         
         for(var j = 0; j < dataColeccion.listaAgrupaciones[i].campos.length; j++){
+          if(dataColeccion.listaAgrupaciones[i].campos[j].idCampo==4128){
+            dataColeccion.listaAgrupaciones[i].campos[j].valor = hEntrada;
+          }
           const val = {
           valor : dataColeccion.listaAgrupaciones[i].campos[j].valor || '',
           idCampo: dataColeccion.listaAgrupaciones[i].campos[j].idCampo,

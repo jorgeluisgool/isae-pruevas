@@ -35,7 +35,7 @@ export const AsignacionesPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [currentPageA, setCurrentPageA] = useState(1);
-  const [rowsPerPageA, setRowsPerPageA] = useState(10);
+  const [rowsPerPageA, setRowsPerPageA] = useState(5);
   const [currentPageB, setCurrentPageB] = useState(1);
   const [rowsPerPageB, setRowsPerPageB] = useState(5);
   const [selectedRows, setSelectedRows] = useState([]);
@@ -77,12 +77,12 @@ export const AsignacionesPage = () => {
   );
 
   const totalRowsB = arrayFilter.length;
-  const totalPagesB = Math.ceil(totalRows / rowsPerPage);
+  const totalPagesB = Math.ceil(totalRowsB / rowsPerPageB);
 
   // Obtener índice del último registro en la página actual
-  const indexOfLastRowB = currentPage * rowsPerPage;
+  const indexOfLastRowB = currentPageB * rowsPerPageB;
   // Obtener índice del primer registro en la página actual
-  const indexOfFirstRowB = indexOfLastRow - rowsPerPage;
+  const indexOfFirstRowB = indexOfLastRowB - rowsPerPageB;
   // Obtener los registros para la página actual
   const currentRowsB = arrayFilter.slice(indexOfFirstRowB, indexOfLastRowB);
 

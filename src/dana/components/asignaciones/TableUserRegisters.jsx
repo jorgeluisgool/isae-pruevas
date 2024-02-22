@@ -19,6 +19,7 @@ export const TableUserRegisters = ({
         !showTable ? "opacity-100" : "opacity-0"
       }`}
     >
+      {console.log(currentRowsB)}
       {!showTable ? (
         <div>
           <h1 className="pt-2 xl:pt-6 pl-3 xl:pl-0 text-2xl font-black text-[#245A95] mb-2">

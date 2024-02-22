@@ -1,6 +1,13 @@
 import React from 'react'
 
-export const TablaRelacionCatalogos = ({nuevoArregloOpcionesCatalogo2}) => {
+export const TablaRelacionCatalogos = ({nuevoArregloOpcionesCatalogo2, searchCatalogo1}) => {
+
+  console.log(nuevoArregloOpcionesCatalogo2)
+   // Filtro para el search
+   const filterOpcionesCatalogo2 = nuevoArregloOpcionesCatalogo2.filter((opcion) =>
+   opcion.toLowerCase().includes(searchCatalogo1.toLowerCase()) 
+  );
+
   return (
     <>
     <div className="max-h-screen overflow-y-auto">
@@ -16,7 +23,7 @@ export const TablaRelacionCatalogos = ({nuevoArregloOpcionesCatalogo2}) => {
           </tr>
         </thead>
         <tbody className="w-full divide-y divide-gray-200">
-          {nuevoArregloOpcionesCatalogo2?.map((catalogoOpcion, index) => (
+          {filterOpcionesCatalogo2?.map((catalogoOpcion, index) => (
           <tr 
             key={index} 
             // onClick={(event) => handleTableRowClick(event, registro)}

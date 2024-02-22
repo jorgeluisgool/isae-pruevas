@@ -1,12 +1,16 @@
 import React from 'react'
 
-export const TablaCatalogos = ({listaCatalogoProyecto, nuevoArregloOpcionesCatalogo, setNuevoArregloOpcionesCatalogo}) => {
+export const TablaCatalogos = ({listaCatalogoProyecto, nuevoArregloOpcionesCatalogo, setNuevoArregloOpcionesCatalogo, searchCatalogoAsignacion}) => {
     
   const handleEliminarOpcion = (index) => {
     const nuevoArreglo = [...nuevoArregloOpcionesCatalogo];
     nuevoArreglo.splice(index, 1); // Elimina el elemento en el índice proporcionado
     setNuevoArregloOpcionesCatalogo(nuevoArreglo);
   };
+
+  const filterOpcionesSearchCatalogo = nuevoArregloOpcionesCatalogo.filter((opcion) =>
+   opcion.toLowerCase().includes(searchCatalogoAsignacion.toLowerCase()) 
+  );
 
   return (
     <>
@@ -22,7 +26,7 @@ export const TablaCatalogos = ({listaCatalogoProyecto, nuevoArregloOpcionesCatal
         </thead>
         <div className="max-h-[10rem] overflow-y-auto">
             <tbody className="w-full block divide-y divide-gray-200">
-              {nuevoArregloOpcionesCatalogo?.map((catalogoOpcion, index) => (
+              {filterOpcionesSearchCatalogo?.map((catalogoOpcion, index) => (
                 <tr 
                   key={index} 
                   // onClick={(event) => handleTableRowClick(event, registro)}
@@ -33,7 +37,19 @@ export const TablaCatalogos = ({listaCatalogoProyecto, nuevoArregloOpcionesCatal
                       <div className="text-xs font-medium text-gray-900"><span className='text-[#245A95] font-bold '>{index + 1}-</span> {catalogoOpcion}</div>
                     </div>
                   </td>
-                    <td className="px-6">
+                    <td className="pl-6">
+                      <div className="flex space-x-4 justify-end">
+                        <button
+                          type="button"
+                          // onClick={() => handleEliminarOpcion(index)}
+                          className="hover:shadow-slate-600 border h-6 w-6 bg-orange-600 text-white text-xs xl:text-base font-bold rounded-full shadow-md duration-150 ease-in-out focus:outline-none active:scale-[1.20] transition-all hover:bg-orange-500 ml-auto"
+                          style={{ borderRadius: '50%' }}
+                        >
+                          <ion-icon name="create"></ion-icon>
+                        </button>
+                      </div>
+                    </td>
+                    <td className="pl-4 pr-4">
                       <div className="flex space-x-4 justify-end">
                         <button
                           type="button"

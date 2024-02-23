@@ -22,8 +22,17 @@ export const DashboardPage = () => {
   const [photos, setPhotos] = useState([]);
   const [idCampo, setIdCampo] = useState([]);
   const [ventanaCarga, setVentanaCarga] = useState(false);
+  const [horaEntrada, setHoraEntrada] = useState("");
+  const [horaAsignacion, setHoraAsignacion] = useState("");
+  const [asistencia, setAsistencia] = useState("");
+
 
   const { clienteSeleccionado, setUserAuth, userAuth } = useAuth();
+
+  const [tecnico, setTecnico] = useState(""); 
+  const [proyectoAsistencia, setProyectoAsistencia] = useState("");
+  const [coordinador, setCoordinador] = useState("");
+  const [fecha, setFecha] = useState("");
 
   const toggleShow = (index) => {
     if (index === showAcordion) {
@@ -34,6 +43,7 @@ export const DashboardPage = () => {
   };
 
   const handleMensajeAceptar = (values) => {
+    console.log(values);
     setVentanaCarga(true);
     setModaAceptarlAbrirCerrar(false);
     const newData = { ...dataProyectoSeleccionado };
@@ -83,7 +93,7 @@ export const DashboardPage = () => {
           };
 
           if (dataColeccion.inventario.idinventario === 0) {
-            setVentanaCarga(newRegister(dataColeccion, proyectoSeleccionado));
+            setVentanaCarga(newRegister(dataColeccion, proyectoSeleccionado, horaEntrada));
           } else {
             if (updateRegister(dataColeccion, proyectoSeleccionado)) {
               setVentanaCarga(false);
@@ -160,9 +170,15 @@ export const DashboardPage = () => {
       .catch((error) => console.log(error));
   };
 
+
+
+
+
   useEffect(() => {
     getProjects();
   }, []);
+
+  
 
   return (
     <>
@@ -219,7 +235,11 @@ export const DashboardPage = () => {
           height: "80vh",
           maxHeight: "600px",
         }}
-        onHide={() => setModalAbrirCerrar(false)}
+        onHide={() => {
+          setModalAbrirCerrar(false);
+          setTecnico("");
+          setProyectoAsistencia("");
+        }}
         className="mt-16"
       >
         <h1 className="xl:text-lg font-bold xl:mx-36">
@@ -289,6 +309,20 @@ export const DashboardPage = () => {
                                       setSignatures={setSignatures}
                                       photos={photos}
                                       setPhotos={setPhotos}
+                                      setTecnico={setTecnico}
+                                      tecnico={tecnico}
+                                      setProyectoAsistencia={setProyectoAsistencia}
+                                      proyectoAsistencia={proyectoAsistencia}
+                                      fecha={fecha}
+                                      setFecha={setFecha}
+                                      setHoraEntrada={setHoraEntrada}
+                                      horaEntrada = {horaEntrada}
+                                      horaAsignacion={horaAsignacion}
+                                      setHoraAsignacion={setHoraAsignacion}
+                                      asistencia={asistencia}
+                                      setAsistencia={setAsistencia}
+                                      coordinador={coordinador}
+                                      setCoordinador={setCoordinador}
                                     />
                                   </div>
                                 </div>

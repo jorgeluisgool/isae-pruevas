@@ -39,8 +39,33 @@ export const ComponentTipoCampoDashboard = ({
   setSignatures,
   photos,
   setPhotos,
+  setTecnico,
+  tecnico,
+  setProyectoAsistencia,
+  proyectoAsistencia,
+  fecha,
+  setFecha,
+  setHoraEntrada,
+  horaEntrada,
+  horaAsignacion,
+  setHoraAsignacion,
+  setAsistencia,
+  asistencia,
+  coordinador,
+  setCoordinador
 }) => {
-  //console.log(dataProyectoSeleccionado);
+  const getAssitent = (tec, dat) => {
+    fetch(`${api}/get/user/assitent/${tec}/${dat.replaceAll("/", "-")}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.text())
+      .then((responseData) => {
+        setHoraEntrada(responseData);
+      });
+  };
 
   const { setFieldValue } = useFormikContext();
 
@@ -124,6 +149,25 @@ export const ComponentTipoCampoDashboard = ({
       ...archivosAnteriores,
       ...nuevosArchivos,
     ]);
+  };
+
+  const getTipoAsistencia = (hAsignacion, hEntrada) => {
+    let hA = hAsignacion.split(":").map((num) => parseInt(num, 10));
+    let hE = hEntrada.split(":").map((num) => parseInt(num, 10));
+
+    // Convertir horas y minutos a minutos totales desde medianoche
+    let minutosHA = hA[0] * 60 + hA[1];
+    let minutosHE = hE[0] * 60 + hE[1];
+
+    // Calcular la diferencia en minutos
+    let diferenciaMinutos = minutosHE - minutosHA;
+
+    // Revisar si la entrada está dentro del rango permitido (hasta 15 minutos después)
+    if (diferenciaMinutos <= 15) {
+      setAsistencia("ASISTENCIA");
+    } else {
+      setAsistencia("FALTA");
+    }
   };
 
   const insertarArchivos = async () => {
@@ -231,7 +275,6 @@ export const ComponentTipoCampoDashboard = ({
   useEffect(() => {
     getSiganture();
     getPhoto();
-    getClients();
   }, [dataProyectoSeleccionado]);
 
   // Función para convertir la fecha en formato válido
@@ -435,9 +478,15 @@ export const ComponentTipoCampoDashboard = ({
                   dateFormat="dd/MM/yy"
                   onChange={(e) => {
                     const formattedDate = formatDateToString(e.value);
+
+                    if (campo?.nombreCampo === "FECHA DE ASIGNACION") {
+                      setFecha(formattedDate);
+                      getAssitent(tecnico, formattedDate);
+                    }
                     setSelectedDate(formattedDate); // Actualiza la variable de estado con la fecha seleccionada
                     form.setFieldValue(field.name, formattedDate); // Aquí asumo que tienes la variable 'form' disponible en el scope de tu componente
                   }}
+                  disabled = {campo.editable === "FALSE"}
                 />
               )}
             </Field>
@@ -453,13 +502,28 @@ export const ComponentTipoCampoDashboard = ({
               {({ field, form }) => (
                 <Calendar
                   className="w-full appearance-none focus:outline-none bg-transparent"
-                  value={hora}
+                  value={
+                    campo?.nombreCampo === "HORA DE ENTRADA"
+                      ? parse(horaEntrada, "HH:mm", new Date())
+                      : hora
+                  }
                   onChange={(e) => {
                     const formattedDate = format(e.value, "HH:mm");
+                    if (campo?.nombreCampo === "HORARIO DE ASIGNACION") {
+                      setHoraAsignacion(formattedDate);
+                      getTipoAsistencia(horaEntrada, formattedDate);
+                    }
+
                     setHora(e.value);
-                    form.setFieldValue(field.name, formattedDate);
+                    form.setFieldValue(
+                      field.name,
+                      campo?.nombreCampo === "HORA DE ENTRADA"
+                        ? horaEntrada
+                        : formattedDate
+                    );
                   }}
                   timeOnly
+                  disabled = {campo.editable === "FALSE"}
                 />
               )}
             </Field>
@@ -496,8 +560,18 @@ export const ComponentTipoCampoDashboard = ({
               as={InputText}
               className="w-full appearance-none focus:outline-none bg-transparent"
               name={campo.nombreCampo}
-              defaultValue={campo.valor}
+              defaultValue={
+                tecnico != "" && campo?.nombreCampo === "NOMBRE DE TECNICOS"
+                  ? campo.valor = tecnico
+                  : proyectoAsistencia != "" &&
+                    campo?.nombreCampo === "PROYECTO"
+                  ? campo.valor = proyectoAsistencia
+                  : coordinador != "" && campo?.nombreCampo === "COORDINADOR"
+                  ? campo.valor = coordinador
+                  : campo.valor
+              }
               maxLength={campo.longitud}
+              disabled={campo.editable === "FALSE"}
               keyfilter={RegExp(
                 `[0-9A-Z ${campo.restriccion
                   .replace("[", "")
@@ -521,6 +595,7 @@ export const ComponentTipoCampoDashboard = ({
               keyfilter={RegExp(
                 `[0-9${campo.restriccion.replace("[", "").replace("]", "")}]`
               )}
+              disabled = {campo.editable === "FALSE"}
             />
             <span className="p-inputgroup-addon border border-gray-300 p-2 rounded-md">
               <i className="pi pi-file-edit text-[#245A95] font-bold text-2xl"></i>
@@ -541,6 +616,7 @@ export const ComponentTipoCampoDashboard = ({
                   .replace("[", "")
                   .replace("]", "")}]`
               )}
+              disabled = {campo.editable === "FALSE"}
             />
             <span className="p-inputgroup-addon border border-gray-300 p-2 rounded-md">
               <i className="pi pi-file-edit text-[#245A95] font-bold text-2xl"></i>
@@ -561,6 +637,7 @@ export const ComponentTipoCampoDashboard = ({
                   .replace("[", "")
                   .replace("]", "")}]`
               )}
+              disabled = {campo.editable === "FALSE"}
             />
             <span className="p-inputgroup-addon border border-gray-300 p-2 rounded-md">
               <i className="pi pi-file-edit text-[#245A95] font-bold text-2xl"></i>
@@ -568,40 +645,38 @@ export const ComponentTipoCampoDashboard = ({
           </span>
         )}
 
+        {/* {campo?.nombreCampo == "NOMBRE DE TECNICOS" ? campo.valor = tecnico : campo.valor =  campo.valor} */}
         {campo.tipoCampo === "CATALOGO" && (
           <span className="p-float-label relative">
+            {/* {campo?.nombreCampo == "NOMBRE DE TECNICOS" ? campo.valor = tecnico : campo.valor =  campo.valor} */}
             <Field
               className="w-full appearance-none focus:outline-none bg-transparent"
               as={Dropdown}
               name={campo.nombreCampo}
-              value={campo.valor}
-              options={
-                /* (
-                  getDymanicOptions(
-                    campo.nombreCampo,
-                    dataProyectoSeleccionado?.catalogos[campo?.nombreCampo]
-                      ?.catalogo
-                  ) ?? []
-                ).map((option) => ({
-                  label: option,
-                  value: option,
-                })) */
-                (
-                  dataProyectoSeleccionado?.catalogos[campo?.nombreCampo]
-                    ?.catalogo ?? []
-                ).map((option) => ({
-                  label: option,
-                  value: option,
-                }))
-              }
+              value={asistencia != "" && campo?.nombreCampo === "TIPO DE ASISTENCIA" ? campo.valor = asistencia : campo.valor}
+              options={(
+                dataProyectoSeleccionado?.catalogos[campo?.nombreCampo]
+                  ?.catalogo ?? []
+              ).map((option) => ({
+                label: option,
+                value: option,
+              }))}
               filter
               emptyFilterMessage="No se encontraron conincidencias"
               placeholder="Seleccione una opción"
               onChange={(e) => {
+                if (campo?.nombreCampo == "TECNICO") {
+                  setTecnico(e.value);
+                } else if (campo?.nombreCampo == "PROYECTO") {
+                  setProyectoAsistencia(e.value);
+                } else if (campo?.nombreCampo == "COORDINADOR"){
+                  setCoordinador(e.value);
+                }
                 campo.valor = e.value;
                 setFieldValue(campo.nombreCampo, e.value);
               }}
               maxLength={campo.longitud}
+              disabled = {campo.editable === "FALSE"}
             />
             <span className="p-inputgroup-addon border border-gray-300 p-2 rounded-md">
               <i className="pi pi-file-edit text-[#245A95] font-bold text-2xl"></i>
@@ -629,6 +704,7 @@ export const ComponentTipoCampoDashboard = ({
                 setFieldValue(campo.nombreCampo, e.value);
               }}
               maxLength={campo.longitud}
+              disabled = {campo.editable === "FALSE"}
             />
             <span className="p-inputgroup-addon border border-gray-300 p-2 rounded-md">
               <i className="pi pi-file-edit text-[#245A95] font-bold text-2xl"></i>
@@ -673,6 +749,7 @@ export const ComponentTipoCampoDashboard = ({
                     setValueCheckBox(stringValue);
                     form.setFieldValue(field.name, stringValue);
                   }}
+                  disabled = {campo.editable === "FALSE"}
                 />
               )}
             </Field>
@@ -695,6 +772,7 @@ export const ComponentTipoCampoDashboard = ({
                   .replace("[", "")
                   .replace("]", "")}]`
               )}
+              disabled = {campo.editable === "FALSE"}
               // onChange={''}
             />
 
@@ -742,6 +820,7 @@ export const ComponentTipoCampoDashboard = ({
                 onClick={() => {
                   setModalAbrirFirma(true);
                 }}
+                disabled = {campo.editable === "FALSE"}
               />
             </div>
             <div className="m-auto mt-3">
@@ -751,6 +830,7 @@ export const ComponentTipoCampoDashboard = ({
                 onClick={() => {
                   setModalFirmaAbrirCerrar(true);
                 }}
+                disabled = {campo.editable === "FALSE"}
               >
                 <ion-icon name="create"></ion-icon> Firmar
               </button>
@@ -772,6 +852,7 @@ export const ComponentTipoCampoDashboard = ({
               onClick={() => {
                 handlebtnEvidencias(campo);
               }}
+              disabled = {campo.editable === "FALSE"}
             >
               <ion-icon name="images"></ion-icon> Subir evidencia
             </button>

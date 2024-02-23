@@ -24,8 +24,6 @@ export const DialogConfirmacionOpcionesCatalogo = ({mensajeConfirmacionOpcionCat
     </h2>
     <h1 className='text-base font-bold mt-4'>AL CATÁLOGO <span className='text-black'>'{catalogoProyectoSeleccionado}'</span>?</h1>
 </div>
-
-
         <div className='mt-8'>
           <button
             type='submit'

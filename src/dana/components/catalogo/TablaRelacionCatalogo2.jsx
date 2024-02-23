@@ -1,18 +1,18 @@
 import React from 'react'
 
-export const TablaRelacionCatalogos = ({searchCatalogo1, listaOpcionesCatalogo1Relacion}) => {
+export const TablaRelacionCatalogo2 = ({searchCatalogo2, listaOpcionesCatalogo2Relacion}) => {
 
-  console.log(listaOpcionesCatalogo1Relacion)
+    console.log(listaOpcionesCatalogo2Relacion)
  
    // Filtro para el search
-   const filterOpcionesCatalogo2 = listaOpcionesCatalogo1Relacion.filter((opcion) =>
-   opcion.toLowerCase().includes(searchCatalogo1.toLowerCase()) 
+   const filterOpcionesCatalogo2 = listaOpcionesCatalogo2Relacion.filter((opcion) =>
+   opcion.toLowerCase().includes(searchCatalogo2.toLowerCase()) 
   );
 
   return (
     <>
     <div className="max-h-screen overflow-y-auto shadow-md">
-    <table className="min-w-ful bg-white rounded-lg overflow-hidden shadow-md">
+    <table className="min-w-full bg-white rounded-lg overflow-hidden shadow-md">
         <thead className="bg-[#245A95] text-white uppercase">
           <tr className='text-left'>
             <th scope="col" className="px-7 py-2 w-12"> {/* Ancho fijo */}

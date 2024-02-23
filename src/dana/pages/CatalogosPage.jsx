@@ -6,6 +6,7 @@ import { TablaCatalogos } from "../components/catalogo/TablaCatalogos";
 import { TablaRelacionCatalogos } from "../components/catalogo/TablaRelacionCatalogos";
 import { DialogConfirmacionOpcionesCatalogo } from "../../ui/components/DialogConfirmacionOpcionesCatalogo";
 import { VentanaCargaIsae } from "../../ui/components/VentanaCargaIsae";
+import { TablaRelacionCatalogo2 } from "../components/catalogo/TablaRelacionCatalogo2";
 
 export const CatalogosPage = () => {
   const [proyectos, setProyectos] = useState([]);
@@ -13,20 +14,44 @@ export const CatalogosPage = () => {
   const [catalogoProyecto, setCatalogoProyecto] = useState([]);
   const [catalogoProyectoSeleccionado, setCatalogoProyectoSeleccionado] = useState([]);
   const [catalogoRelacion1ProyectoSeleccionado, setCatalogoRelacion1ProyectoSeleccionado] = useState([]);
+  const [catalogoRelacion2ProyectoSeleccionado, setCatalogoRelacion2ProyectoSeleccionado] = useState([]);
   const [nuevoValorCatalo, setNuevoValorCatalo] = useState("");
   const [listaCatalogoProyecto, setListaCatalogoProyecto] = useState([]);
   const [nuevoArregloOpcionesCatalogo, setNuevoArregloOpcionesCatalogo] = useState([]);
   const [nuevoArregloOpcionesCatalogo2, setNuevoArregloOpcionesCatalogo2] = useState([]);
   const [searchCatalogoAsignacion, setSearchCatalogoAsignacion] = useState('');
   const [searchCatalogo1, setSearchCatalogo1] = useState('');
+  const [searchCatalogo2, setSearchCatalogo2] = useState('');
   const [mensajeConfirmacionOpcionCatalogo, setMensajeConfirmacionOpcionCatalogo] = useState(false);
   const [ventanaDeCarga, setVentanaDeCarga] = useState(false);
+  const [listaOpcionesCatalogo1Relacion, setListaOpcionesCatalogo1Relacion] = useState([]);
+  const [listaOpcionesCatalogo2Relacion, setListaOpcionesCatalogo2Relacion] = useState([]);
+  const [isVisible, setIsVisible] = useState(true);
+
+  useEffect(() => {
+    const handleScroll = () => {
+        const divContenedor = document.getElementById('tuDivContenedor');
+        if (divContenedor) {
+            const { top, bottom } = divContenedor.getBoundingClientRect();
+            setIsVisible(top >= 0 && bottom <= window.innerHeight);
+        }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+        window.removeEventListener('scroll', handleScroll);
+    };
+}, []);
 
   const handleSearchAsignacion = (event) => {
     setSearchCatalogoAsignacion(event.target.value);
   };
 
-  const handleSearch = (event) => {
+  const handleSearchCatalogo1Relacion = (event) => {
+    setSearchCatalogo1(event.target.value);
+  };
+
+  const handleSearchCatalogo2Relacion = (event) => {
     setSearchCatalogo1(event.target.value);
   };
 
@@ -96,6 +121,7 @@ export const CatalogosPage = () => {
 
         setNuevoArregloOpcionesCatalogo(jsonData.catalogo ?? []);
         setCatalogoRelacion1ProyectoSeleccionado(jsonData.catalogo ?? []);
+        // setCatalogoRelacion2ProyectoSeleccionado(jsonData.catalogo ?? []);
       } catch (error) {
         console.log("Error:", error);
       }
@@ -104,7 +130,7 @@ export const CatalogosPage = () => {
     fetchData();
   }, [catalogoProyectoSeleccionado]);
 
-  // Obtener Opciones Catálogo del catalogo seleccionado tabla 2
+  // Obtener Opciones Catálogo del catalogo seleccionado tabla 1 Relacion 
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -124,7 +150,9 @@ export const CatalogosPage = () => {
         console.log(jsonData);
         setListaCatalogoProyecto(jsonData);
 
-        setNuevoArregloOpcionesCatalogo2(jsonData.catalogo ?? []);
+        // setNuevoArregloOpcionesCatalogo2(jsonData.catalogo ?? []);
+        setListaOpcionesCatalogo1Relacion(jsonData.catalogo ?? []);
+
       } catch (error) {
         console.log("Error:", error);
       }
@@ -132,6 +160,39 @@ export const CatalogosPage = () => {
 
     fetchData();
   }, [catalogoRelacion1ProyectoSeleccionado]);
+
+
+  // console.log(catalogoRelacion2ProyectoSeleccionado)
+  // Obtener Opciones Catálogo del catalogo seleccionado tabla 2 Relacion 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          `${api}/obtener/catalogo/datos/proyecto/${catalogoRelacion2ProyectoSeleccionado}`,
+          {
+            method: "POST", // o 'PUT', 'DELETE', etc., según el método que debas usar
+            headers: {
+              "Content-Type": "application/json", // o el tipo de contenido adecuado
+              // otras cabeceras según sea necesario
+            },
+            body: JSON.stringify(proyectoSeleccionado),
+          }
+        );
+
+        const jsonData = await response.json();
+        console.log(jsonData);
+        setListaCatalogoProyecto(jsonData);
+
+        // setNuevoArregloOpcionesCatalogo2(jsonData.catalogo ?? []);
+        setListaOpcionesCatalogo2Relacion(jsonData.catalogo ?? [])
+
+      } catch (error) {
+        console.log("Error:", error);
+      }
+    };
+
+    fetchData();
+  }, [catalogoRelacion2ProyectoSeleccionado]);
 
   //  useEffect(() => {
   //      const fetchData = async () => {
@@ -180,6 +241,7 @@ export const CatalogosPage = () => {
     }
   };
 
+  // Funcion de guardar las nuevas opciones del catalogo seleccionado
   const handleGuardar = () => {
 
     setVentanaDeCarga(true);
@@ -197,6 +259,7 @@ export const CatalogosPage = () => {
 
         setVentanaDeCarga(false);
         setMensajeConfirmacionOpcionCatalogo(false);
+        setNuevoArregloOpcionesCatalogo2([]);
 
       } catch (error) {
         console.log('Error:', error);
@@ -277,7 +340,7 @@ export const CatalogosPage = () => {
                       value={catalogoProyectoSeleccionado}
                       onChange={(e) => {
                         setCatalogoProyectoSeleccionado(e.target.value);
-                        setNuevoArregloOpcionesCatalogo2([])
+                        setNuevoArregloOpcionesCatalogo2([]);
                       }}
                       disabled={Object.keys(proyectoSeleccionado).length === 0}
                     />
@@ -317,7 +380,11 @@ export const CatalogosPage = () => {
                     </label>
                   </span>
                 </div>
-                <div className="pt-6 cursor-pointer inset-x-0 bottom-4 right-6 flex gap-3 justify-center xl:justify-end">
+                {
+                  nuevoValorCatalo.length === 0 ?
+                  <div></div>
+                  :
+                  <div className="pt-6 cursor-pointer inset-x-0 bottom-4 right-6 flex gap-3 justify-center xl:justify-end">
                   <button
                     type="button" // Asegúrate de que el tipo sea 'submit'
                     className="hover:shadow-slate-600 border h-10 px-4 bg-[#245A95] text-white text-sm xl:text-lg font-bold rounded-full shadow-md duration-150 ease-in-out focus:outline-none active:scale-[1.20] transition-all hover:bg-sky-600"
@@ -326,6 +393,7 @@ export const CatalogosPage = () => {
                     <ion-icon name="add-circle"></ion-icon> Agregar
                   </button>
                 </div>
+                }
               </div>
               <div className="lg:col-span-2 lg:mt-8 flex flex-col items-center">
                 <div className="p-inputgroup lg:px-16 pb-8">
@@ -350,7 +418,11 @@ export const CatalogosPage = () => {
                   nuevoArregloOpcionesCatalogo={nuevoArregloOpcionesCatalogo}
                   setNuevoArregloOpcionesCatalogo={setNuevoArregloOpcionesCatalogo}
                 />
-                <div className="mt-8 cursor-pointer inset-x-0 bottom-4 right-6 flex gap-3 justify-center xl:justify-end">
+                {
+                  nuevoArregloOpcionesCatalogo2.length === 0 ? 
+                  <div></div>
+                  :
+                  <div className="mt-8 cursor-pointer inset-x-0 bottom-4 right-6 flex gap-3 justify-center xl:justify-end">
                   <button
                     type="button" // Asegúrate de que el tipo sea 'submit'
                     className="hover:shadow-slate-600 border h-10 px-4 bg-[#245A95] text-white text-sm xl:text-lg font-bold rounded-full shadow-md duration-150 ease-in-out focus:outline-none active:scale-[1.20] transition-all hover:bg-sky-600"
@@ -359,6 +431,8 @@ export const CatalogosPage = () => {
                     <ion-icon name="save"></ion-icon> Guardar
                   </button>
                 </div>
+                }
+                
               </div>
             </div>
           
@@ -366,7 +440,7 @@ export const CatalogosPage = () => {
         {/* //////////////////////////////////////// */}
         {/* SEGUNDA SECCIÓN DE RELACIÓN DE CATALOGOS */}
         {/* //////////////////////////////////////// */}
-        <div className="mx-4 xl:mx-20 my-4 px-4 pb-6 bg-white rounded-lg overflow-hidden">
+        <div className="mx-4 xl:mx-20 my-4 px-4 pb-16 bg-white rounded-lg overflow-hidden relative" id="tuDivContenedor">
         <h1 className="mt-2 pl-3 text-2xl font-black text-[#245A95]">
           Relación de catálogos del proyecto:{' '}
           {Object.keys(proyectoSeleccionado).length === 0 ? (
@@ -409,13 +483,13 @@ export const CatalogosPage = () => {
                         className="w-full appearance-none focus:outline-none bg-transparent border-b-2 border-[#245A95] text-gray-700 transition-all duration-300 focus:border-[#245A95]"
                         name="searchCatalogo1"
                         value={searchCatalogo1}
-                        onChange={handleSearch}
+                        onChange={handleSearchCatalogo1Relacion}
                     /> 
                     <span className="bg-[#245A95] p-2 px-3 rounded-r-lg shadow-md">
                       <i className="pi pi-search text-white font-light text-xl"></i>
                     </span>
                     <label htmlFor="name" className='text-sm text-[#245A95] font-extrabold absolute top-2 left-3 transition-all duration-300'>
-                      Buscar la opción del catalogo
+                      Buscar la opción del catálogo
                     </label>
                 </span>
                       {/* <p className="text-xs lg:text-base text-[#245A95] font-semibold">Puedes buscar el usuario por su nombre o nombre de usuario</p> */}
@@ -423,8 +497,9 @@ export const CatalogosPage = () => {
               <div className="mt-4 flex justify-center">
                 <TablaRelacionCatalogos
                   searchCatalogo1={searchCatalogo1}
-                  nuevoArregloOpcionesCatalogo2={nuevoArregloOpcionesCatalogo2}
+                  
                   catalogoRelacion1ProyectoSeleccionado={catalogoRelacion1ProyectoSeleccionado}
+                  listaOpcionesCatalogo1Relacion={listaOpcionesCatalogo1Relacion}
                 />
               </div>
             </div>
@@ -436,7 +511,13 @@ export const CatalogosPage = () => {
                 <span className="p-float-label w-full">
                   <Dropdown
                     className="w-full appearance-none focus:outline-none bg-transparent border-b-2 border-[#245A95] text-gray-700 transition-all duration-300 focus:border-[#245A95]"
-                    name="catalogo1"
+                    name="catalogo2"
+                    options={catalogoProyecto}
+                    filter
+                    value={catalogoRelacion2ProyectoSeleccionado}
+                    onChange={(e) => {
+                      setCatalogoRelacion2ProyectoSeleccionado(e.target.value);
+                    }}
                   />
                   <span className=" bg-[#245A95] p-2 px-3 rounded-r-lg shadow-md">
                     <i className="pi pi-file-edit text-white font-light text-xl"></i>
@@ -449,9 +530,44 @@ export const CatalogosPage = () => {
                   </label>
                 </span>
               </div>
+              <div className="p-inputgroup lg:px-16 pt-8">
+                <span className='p-float-label w-full'>
+                    <InputText
+                        className="w-full appearance-none focus:outline-none bg-transparent border-b-2 border-[#245A95] text-gray-700 transition-all duration-300 focus:border-[#245A95]"
+                        name="searchCatalogo2"
+                        value={searchCatalogo2}
+                        onChange={handleSearchCatalogo2Relacion}
+                    /> 
+                    <span className="bg-[#245A95] p-2 px-3 rounded-r-lg shadow-md">
+                      <i className="pi pi-search text-white font-light text-xl"></i>
+                    </span>
+                    <label htmlFor="name" className='text-sm text-[#245A95] font-extrabold absolute top-2 left-3 transition-all duration-300'>
+                      Buscar la opción del catálogo
+                    </label>
+                </span>
+                      {/* <p className="text-xs lg:text-base text-[#245A95] font-semibold">Puedes buscar el usuario por su nombre o nombre de usuario</p> */}
+              </div>
+              <div className="mt-4 flex justify-center">
+                <TablaRelacionCatalogo2
+                  searchCatalogo2={searchCatalogo2}
+                  // nuevoArregloOpcionesCatalogo2={nuevoArregloOpcionesCatalogo2}
+                  catalogoRelacion2ProyectoSeleccionado={catalogoRelacion2ProyectoSeleccionado}
+                  listaOpcionesCatalogo2Relacion={listaOpcionesCatalogo2Relacion}
+                />
+              </div>
             </div>
-            
           </div>
+          {/* {isVisible && ( */}
+                <div className="absolute inset-x-0 right-6 flex gap-3 justify-center pt-4">
+                    <button
+                        type="button"
+                        className="hover:shadow-slate-600 border h-10 px-4 bg-[#245A95] text-white text-sm xl:text-lg font-bold rounded-full shadow-md duration-150 ease-in-out focus:outline-none active:scale-[1.20] transition-all hover:bg-sky-600"
+                        // onClick={() => setMensajeConfirmacionOpcionCatalogo(true)}
+                    >
+                        <ion-icon name="save"></ion-icon> Guardar
+                    </button>
+                </div>
+            {/* )} */}
         </div>
       </div>
     </>

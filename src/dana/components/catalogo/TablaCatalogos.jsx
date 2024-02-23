@@ -45,7 +45,7 @@ export const TablaCatalogos = ({listaCatalogoProyecto, nuevoArregloOpcionesCatal
                           className="hover:shadow-slate-600 border h-6 w-6 bg-orange-600 text-white text-xs xl:text-base font-bold rounded-full shadow-md duration-150 ease-in-out focus:outline-none active:scale-[1.20] transition-all hover:bg-orange-500 ml-auto"
                           style={{ borderRadius: '50%' }}
                         >
-                          <ion-icon name="create"></ion-icon>
+                          <i className="pi pi-file-edit"></i>
                         </button>
                       </div>
                     </td>

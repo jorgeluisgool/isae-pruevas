@@ -1,8 +1,15 @@
-import React from 'react'
+import React, { useState } from 'react'
+import { Checkbox } from 'primereact/checkbox';
+        
 
-export const TablaRelacionCatalogos = ({searchCatalogo1, listaOpcionesCatalogo1Relacion}) => {
 
-  console.log(listaOpcionesCatalogo1Relacion)
+export const TablaRelacionCatalogos = ({searchCatalogo1, listaOpcionesCatalogo1Relacion, selectedOptionIndex, setSelectedOptionIndex, setSelectedOption, catalogoRelacion2ProyectoSeleccionado, checkValorSeleccionado}) => {
+
+  const handleOptionClick = (index, catalogoOpcion) => {
+    setSelectedOptionIndex(index === selectedOptionIndex ? null : index);
+    setSelectedOption(index === selectedOptionIndex ? null : catalogoOpcion);
+  };
+  
  
    // Filtro para el search
    const filterOpcionesCatalogo2 = listaOpcionesCatalogo1Relacion.filter((opcion) =>
@@ -16,7 +23,7 @@ export const TablaRelacionCatalogos = ({searchCatalogo1, listaOpcionesCatalogo1R
         <thead className="bg-[#245A95] text-white uppercase">
           <tr className='text-left'>
             <th scope="col" className="px-7 py-2 w-12"> {/* Ancho fijo */}
-              <ion-icon name="checkmark-circle"></ion-icon>
+              <ion-icon name="checkbox"></ion-icon>
             </th>
             <th scope="col" className="px-3 py-2">
               <span>Opciones del catálogo:</span>
@@ -28,22 +35,24 @@ export const TablaRelacionCatalogos = ({searchCatalogo1, listaOpcionesCatalogo1R
           <tr 
             key={index} 
             // onClick={(event) => handleTableRowClick(event, registro)}
-            className='cursor-pointer hover:bg-[#E2E2E2]'
+            className={`${catalogoRelacion2ProyectoSeleccionado.length === 0 ? '' : 'cursor-pointer'} hover:bg-[#E2E2E2]`}
           >
             <td className="px-6 text-center"> {/* Centra el contenido horizontalmente */}
-              <button
-                // onClick={() => handleEliminarOpcion(index)}
-                className="hover:shadow-slate-600 border border-green-700 h-6 w-6 bg-white text-white hover:text-white text-xs xl:text-base font-bold rounded-full shadow-md duration-150 ease-in-out focus:outline-none active:scale-[1.20] transition-all hover:bg-green-700"
-                style={{ borderRadius: '50%' }}
-              >
-                <ion-icon name="checkmark-circle"></ion-icon>
-              </button>
+              <Checkbox 
+                inputId={`option-${index}`}
+                checked={index === selectedOptionIndex}
+                onChange={() => handleOptionClick(index, catalogoOpcion)}
+                disabled={catalogoRelacion2ProyectoSeleccionado.length === 0}
+              />
             </td>
             <td className="px-2">
-              <div className="text-xs font-medium text-gray-900 overflow-hidden"> {/* Limita el texto y agrega desbordamiento */}
-              <span className='text-[#245A95] font-bold '>{index + 1}- </span> {catalogoOpcion}
-              </div>
-            </td>
+  <div className={`text-xs font-medium ${catalogoRelacion2ProyectoSeleccionado.length === 0 ? 'text-gray-400' : 'text-black'} overflow-hidden`}>
+    <span className={`font-bold ${catalogoRelacion2ProyectoSeleccionado.length === 0 ? 'text-gray-400' : 'text-[#245A95]'}`}>
+      {index + 1}- 
+    </span> 
+    {catalogoOpcion}
+  </div>
+</td>
           </tr>
           ))} 
         </tbody>

@@ -27,6 +27,15 @@ export const CatalogosPage = () => {
   const [listaOpcionesCatalogo1Relacion, setListaOpcionesCatalogo1Relacion] = useState([]);
   const [listaOpcionesCatalogo2Relacion, setListaOpcionesCatalogo2Relacion] = useState([]);
   const [isVisible, setIsVisible] = useState(true);
+  const [selectedOptionIndex, setSelectedOptionIndex] = useState(null);
+  const [selectedOptionIndex2, setSelectedOptionIndex2] = useState(null);
+  const [checkedItems, setCheckedItems] = useState({});
+  const [selectedOption, setSelectedOption] = useState('');
+  const [selectedOption2, setSelectedOption2] = useState('');
+  const [valoresCatalogoHijo, setValoresCatalogoHijo] = useState([]);
+
+  console.log(catalogoRelacion1ProyectoSeleccionado)
+  console.log(selectedOption) 
 
   useEffect(() => {
     const handleScroll = () => {
@@ -52,7 +61,7 @@ export const CatalogosPage = () => {
   };
 
   const handleSearchCatalogo2Relacion = (event) => {
-    setSearchCatalogo1(event.target.value);
+    setSearchCatalogo2(event.target.value);
   };
 
   // OBTENER TODOS LOS PROYECTOS
@@ -194,31 +203,6 @@ export const CatalogosPage = () => {
     fetchData();
   }, [catalogoRelacion2ProyectoSeleccionado]);
 
-  //  useEffect(() => {
-  //      const fetchData = async () => {
-  //        try {
-  //          const response = await fetch(`${api}/crear/catalogo/idproyecto/edifico`, {
-  //            method: 'POST', // o 'PUT', 'DELETE', etc., según el método que debas usar
-  //            headers: {
-  //              'Content-Type': 'application/json', // o el tipo de contenido adecuado
-  //              // otras cabeceras según sea necesario
-  //            },
-  //            body: JSON.stringify(arreglo2SinArregloAnterior),
-  //          });
-
-  //          const jsonData = await response.json();
-  //          // console.log(jsonData);
-  //          setListaCatalogoProyecto(jsonData);
-
-  //          setNuevoArregloOpcionesCatalogo(jsonData.catalogo ?? [])
-  //        } catch (error) {
-  //          console.log('Error:', error);
-  //        }
-  //      };
-
-  //      fetchData();
-  //    }, [catalogoProyectoSeleccionado]);
-
   // FUNCION QUE VA AGREGANDO LOS VALORES NUEVOS AL NUEVO ARREGLO
   const handleAgregar = () => {
 
@@ -269,6 +253,69 @@ export const CatalogosPage = () => {
     fetchData();
   };
 
+  
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const response = await fetch(`${api}/obtener/catalogorelacionado/${proyectoSeleccionado.idproyecto}`, {
+            method: 'POST', // o 'PUT', 'DELETE', etc., según el método que debas usar
+            headers: {
+              'Content-Type': 'application/json', // o el tipo de contenido adecuado
+              // otras cabeceras según sea necesario
+            },
+            body: JSON.stringify({
+              "tipoCatalogoPadre": catalogoRelacion1ProyectoSeleccionado,
+              "catalogoPadre": selectedOption,
+              "tipoCatalogoHijo": null,
+              "catalogoHijo": []
+            }),
+          });
+  
+          const jsonData = await response.json();
+          console.log(jsonData);
+          setValoresCatalogoHijo(jsonData.catalogoHijo)
+          
+        } catch (error) {
+          console.log('Error:', error);
+        }
+      };
+  
+      fetchData();
+    }, [catalogoRelacion1ProyectoSeleccionado, selectedOption]);
+  
+    const handleGuardarRelacion = () => {
+
+      setVentanaDeCarga(true);
+  
+      const fetchData = async () => {
+        try {
+          const response = await fetch(`${api}/crear/catalogo/relacionado/${proyectoSeleccionado.idproyecto}`, {
+            method: 'POST', // o 'PUT', 'DELETE', etc., según el método que debas usar
+            headers: {
+              'Content-Type': 'application/json', // o el tipo de contenido adecuado
+              // otras cabeceras según sea necesario
+            },
+            body: JSON.stringify(
+              { "tipoCatalogoPadre": catalogoRelacion1ProyectoSeleccionado,
+                "catalogoPadre": selectedOption,
+                "tipoCatalogoHijo": catalogoRelacion2ProyectoSeleccionado,
+                "catalogoHijo": valoresCatalogoHijo
+              }
+            ),
+          });
+  
+          setVentanaDeCarga(false);
+          // setMensajeConfirmacionOpcionCatalogo(false);
+          // setNuevoArregloOpcionesCatalogo2([]);
+  
+        } catch (error) {
+          console.log('Error:', error);
+        }
+      };
+  
+      fetchData();
+    };
+
   return (
     <>
       <VentanaCargaIsae 
@@ -301,6 +348,7 @@ export const CatalogosPage = () => {
                 value={proyectoSeleccionado}
                 onChange={(e) => {
                   setProyectoSeleccionado(e.target.value);
+                  setListaOpcionesCatalogo1Relacion([]);
                 }}
               />
               <span className=" bg-[#245A95] p-2 px-3 rounded-r-lg shadow-md">
@@ -461,9 +509,14 @@ export const CatalogosPage = () => {
                     name="catalogo1"
                     options={catalogoProyecto}
                     filter
-                    value={catalogoRelacion1ProyectoSeleccionado}
+                    value={
+                      catalogoRelacion1ProyectoSeleccionado                    
+                    }
                     onChange={(e) => {
                       setCatalogoRelacion1ProyectoSeleccionado(e.target.value);
+                      setListaOpcionesCatalogo2Relacion([]);
+                      setCatalogoRelacion2ProyectoSeleccionado([]);
+                      setSelectedOptionIndex(null);
                     }}
                   />
                   <span className=" bg-[#245A95] p-2 px-3 rounded-r-lg shadow-md">
@@ -483,7 +536,7 @@ export const CatalogosPage = () => {
                         className="w-full appearance-none focus:outline-none bg-transparent border-b-2 border-[#245A95] text-gray-700 transition-all duration-300 focus:border-[#245A95]"
                         name="searchCatalogo1"
                         value={searchCatalogo1}
-                        onChange={handleSearchCatalogo1Relacion}
+                        onChange={(handleSearchCatalogo1Relacion)}
                     /> 
                     <span className="bg-[#245A95] p-2 px-3 rounded-r-lg shadow-md">
                       <i className="pi pi-search text-white font-light text-xl"></i>
@@ -497,13 +550,18 @@ export const CatalogosPage = () => {
               <div className="mt-4 flex justify-center">
                 <TablaRelacionCatalogos
                   searchCatalogo1={searchCatalogo1}
-                  
+                  selectedOptionIndex={selectedOptionIndex}
+                  setSelectedOptionIndex={setSelectedOptionIndex}
                   catalogoRelacion1ProyectoSeleccionado={catalogoRelacion1ProyectoSeleccionado}
                   listaOpcionesCatalogo1Relacion={listaOpcionesCatalogo1Relacion}
+                  setSelectedOption={setSelectedOption}
+                  catalogoRelacion2ProyectoSeleccionado={catalogoRelacion2ProyectoSeleccionado}
                 />
               </div>
             </div>
-            <div className="">
+            {
+              catalogoRelacion1ProyectoSeleccionado.length != 0 ?
+              <div className="">
               <h1 className="pt-2 xl:pt-6 pl-3 mb-6 text-base font-black text-[#245A95]">
                 2. Catálogo 2: Opcion o opciones relacionadas
               </h1>
@@ -512,9 +570,11 @@ export const CatalogosPage = () => {
                   <Dropdown
                     className="w-full appearance-none focus:outline-none bg-transparent border-b-2 border-[#245A95] text-gray-700 transition-all duration-300 focus:border-[#245A95]"
                     name="catalogo2"
-                    options={catalogoProyecto}
+                    options={catalogoProyecto.filter(opcion => opcion != catalogoRelacion1ProyectoSeleccionado)}
                     filter
-                    value={catalogoRelacion2ProyectoSeleccionado}
+                    value={
+                      catalogoRelacion2ProyectoSeleccionado
+                    }
                     onChange={(e) => {
                       setCatalogoRelacion2ProyectoSeleccionado(e.target.value);
                     }}
@@ -553,16 +613,28 @@ export const CatalogosPage = () => {
                   // nuevoArregloOpcionesCatalogo2={nuevoArregloOpcionesCatalogo2}
                   catalogoRelacion2ProyectoSeleccionado={catalogoRelacion2ProyectoSeleccionado}
                   listaOpcionesCatalogo2Relacion={listaOpcionesCatalogo2Relacion}
+                  setCheckedItems={setCheckedItems}
+                  checkedItems={checkedItems}
+                  valoresCatalogoHijo={valoresCatalogoHijo}
+                  setValoresCatalogoHijo={setValoresCatalogoHijo}
+                  setSelectedOption2={setSelectedOption2}
+                  selectedOptionIndex2={selectedOptionIndex2}
+                  setSelectedOptionIndex2={setSelectedOptionIndex2}
                 />
               </div>
             </div>
+            :
+            <>
+            </>
+            }
+            
           </div>
           {/* {isVisible && ( */}
                 <div className="absolute inset-x-0 right-6 flex gap-3 justify-center pt-4">
                     <button
                         type="button"
                         className="hover:shadow-slate-600 border h-10 px-4 bg-[#245A95] text-white text-sm xl:text-lg font-bold rounded-full shadow-md duration-150 ease-in-out focus:outline-none active:scale-[1.20] transition-all hover:bg-sky-600"
-                        // onClick={() => setMensajeConfirmacionOpcionCatalogo(true)}
+                        onClick={handleGuardarRelacion}
                     >
                         <ion-icon name="save"></ion-icon> Guardar
                     </button>
@@ -573,3 +645,21 @@ export const CatalogosPage = () => {
     </>
   );
 };
+
+
+
+
+
+
+
+
+// /crear/catalogo/relacionado/234
+
+// {
+//   "tipoCatalogoPadre": "ESTADO",
+//   "catalogoPadre": "TOLUCA",
+//   "tipoCatalogoHijo": "EDIFICIO",
+//   "catalogoHijo": [
+//       "SUCURSAL REGIONAL METROPOLITANA"
+//   ]
+// }

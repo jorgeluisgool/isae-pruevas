@@ -3,9 +3,10 @@ import { Checkbox } from 'primereact/checkbox';
         
 
 
-export const TablaRelacionCatalogos = ({searchCatalogo1, listaOpcionesCatalogo1Relacion, selectedOptionIndex, setSelectedOptionIndex, setSelectedOption, catalogoRelacion2ProyectoSeleccionado, checkValorSeleccionado}) => {
+export const TablaRelacionCatalogos = ({searchCatalogo1, listaOpcionesCatalogo1Relacion, selectedOptionIndex, setSelectedOptionIndex, setSelectedOption, catalogoRelacion2ProyectoSeleccionado, checkValorSeleccionado, setVentanaDeCarga}) => {
 
   const handleOptionClick = (index, catalogoOpcion) => {
+    setVentanaDeCarga(true)
     setSelectedOptionIndex(index === selectedOptionIndex ? null : index);
     setSelectedOption(index === selectedOptionIndex ? null : catalogoOpcion);
   };
@@ -41,7 +42,7 @@ export const TablaRelacionCatalogos = ({searchCatalogo1, listaOpcionesCatalogo1R
               <Checkbox 
                 inputId={`option-${index}`}
                 checked={index === selectedOptionIndex}
-                onChange={() => handleOptionClick(index, catalogoOpcion)}
+                onChange={() => (handleOptionClick(index, catalogoOpcion))}
                 disabled={catalogoRelacion2ProyectoSeleccionado.length === 0}
               />
             </td>

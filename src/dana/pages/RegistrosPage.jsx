@@ -362,6 +362,9 @@ export const RegistrosPage = () => {
                                   </div>
                                   <div className="col-span-3">
                                     <ComponentTipoCampo
+                                    setDataProyectoSeleccionado={
+                                      setDataProyectoSeleccionado
+                                    }
                                       dataProyectoSeleccionado={
                                         dataProyectoSeleccionado
                                       }

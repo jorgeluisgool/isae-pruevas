@@ -25,6 +25,7 @@ import {
 
 export const ComponentTipoCampo = ({
   campo,
+  setDataProyectoSeleccionado,
   dataProyectoSeleccionado,
   values,
   indexAgrupacion,
@@ -58,6 +59,32 @@ export const ComponentTipoCampo = ({
   const [archivosSeleccionados, setArchivosSeleccionados] = useState([]);
   const dropAreaRef = useRef(null);
 
+  //console.log(dataProyectoSeleccionado);
+  if(campo.tipoCampo === "CATALOGO" && campo.restriccion.includes('CAT')){
+    console.log(campo.restriccion.split(',')[1])
+    console.log(campo.nombreCampo + ":");
+    const tempData = {...dataProyectoSeleccionado}
+
+    tempData.catalogos[campo.restriccion.split(',')[1]].catalogo = []
+      console.log(tempData);
+
+      
+    /* dataProyectoSeleccionado?.catalogos[campo?.restriccion.split(',')[1]]
+      ?.catalogo = [] */
+      /* setDataProyectoSeleccionado(prevState => ({
+        ...prevState,
+        catalogos: {
+            ...prevState.catalogos,
+            [campo?.restriccion.split(',')[1]]: {
+                ...prevState.catalogos[campo?.restriccion.split(',')[1]],
+                catalogo: []
+            }
+        }
+    })); */
+      
+    console.log(dataProyectoSeleccionado?.catalogos[campo?.restriccion.split(',')[1]]
+      ?.catalogo);
+  }
   // Agregar eventos de arrastrar y soltar
   const handleDragOver = (e) => {
     e.preventDefault();
@@ -550,8 +577,9 @@ export const ComponentTipoCampo = ({
         )}
 
         {campo.tipoCampo === "CATALOGO" && (
+          
           <span className="p-float-label relative">
-            {/* {console.log(campo.valor)} */}
+            {/* {console.log(campo)} */}            
             <Field
               className="w-full appearance-none focus:outline-none bg-transparent"
               as={Dropdown}

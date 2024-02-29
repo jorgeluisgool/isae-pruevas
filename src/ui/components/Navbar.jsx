@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
+import { useLocation } from 'react-router-dom';
 
 export const Navbar = () => {
   // funcionamiento del estado del Menu
@@ -18,10 +19,18 @@ export const Navbar = () => {
   //         replace: true
   //     });
   // }
-
+  const location = useLocation();
   const [open, setOpen] = useState(false);
+  const [selectedOption, setSelectedOption] = useState(location.pathname);
+
+  console.log(location.pathname)
+
   const navigate = useNavigate();
   const navbarRef = useRef(null);
+
+  const handleOptionClick = (option) => {
+    setSelectedOption(option);
+  };
 
   const onLogout = () => {
     localStorage.removeItem("token");
@@ -79,10 +88,12 @@ export const Navbar = () => {
               open ? "top-20" : "top-[-520px]"
             } `}
           >
-            <li className="nav-item transition duration-500 ease-in-out transform hover:-translate-y-2 hover:shadow-2xl mr-3">
+            <li className={`nav-item transition duration-500 ease-in-out transform hover:-translate-y-3 hover:shadow-2xl mr-3 ${selectedOption === '/Proyectos' ? '-translate-y-3 text-white underline' : 'text-[#d9d9d9]'}`}
+            >
               <Link
-                className="flex p-2 items-center text-[#E2E2E2] px-0 rounded-lg text-lg font-semibold hover:text-white"
+                className="flex p-2 items-center px-0 rounded-lg text-lg font-semibold hover:text-white"
                 to="/proyectos"
+                onClick={() => handleOptionClick('/Proyectos')}
               >
                 <div className="xl:hidden">
                   <div className="bg-white rounded-full h-10 w-10 flex items-center justify-center shadow-lg drop-shadow-md text-[#245A95] text-3xl">
@@ -94,10 +105,11 @@ export const Navbar = () => {
                 </div>
               </Link>
             </li>
-            <li className="nav-item transition duration-500 ease-in-out transform hover:-translate-y-2 hover:shadow-2xl mr-3">
+            <li className={`nav-item transition duration-500 ease-in-out transform hover:-translate-y-3 hover:shadow-2xl mr-3 ${selectedOption === '/usuarios' ? '-translate-y-3 text-white underline' : 'text-[#d9d9d9]'}`}>
               <Link
-                className="flex p-2 items-center text-[#E2E2E2] px-0 rounded-lg text-lg font-semibold hover:text-white"
+                className="flex p-2 items-center px-0 rounded-lg text-lg font-semibold hover:text-white"
                 to="/usuarios"
+                onClick={() => handleOptionClick('/usuarios')}
               >
                 <div className="xl:hidden">
                   <div className="bg-white rounded-full h-10 w-10 flex items-center justify-center shadow-lg drop-shadow-md text-[#245A95] text-3xl">
@@ -109,10 +121,11 @@ export const Navbar = () => {
                 </div>
               </Link>
             </li>
-            <li className="nav-item transition duration-500 ease-in-out transform hover:-translate-y-2 hover:shadow-2xl mr-3">
+            <li className={`nav-item transition duration-500 ease-in-out transform hover:-translate-y-3 hover:shadow-2xl mr-3 ${selectedOption === '/catalogos' ? '-translate-y-3 text-white underline' : 'text-[#d9d9d9]'}`}>
               <Link
-                className="flex p-2 items-center text-[#E2E2E2] px-0 rounded-lg text-lg font-semibold hover:text-white"
+                className="flex p-2 items-center px-0 rounded-lg text-lg font-semibold hover:text-white"
                 to="/catalogos"
+                onClick={() => handleOptionClick('/catalogos')}
               >
                 <div className="xl:hidden">
                   <div className="bg-white rounded-full h-10 w-10 flex items-center justify-center shadow-lg drop-shadowxl text-[#245A95] text-3xl">
@@ -124,10 +137,11 @@ export const Navbar = () => {
                 </div>
               </Link>
             </li>
-            <li className="nav-item transition duration-500 ease-in-out transform hover:-translate-y-2 hover:shadow-2xl mr-3">
+            <li className={`nav-item transition duration-500 ease-in-out transform hover:-translate-y-3 hover:shadow-2xl mr-3 ${selectedOption === '/asignaciones' ? '-translate-y-3 text-white underline' : 'text-[#d9d9d9]'}`}>
               <Link
-                className="flex p-2 items-center text-[#E2E2E2] px-0 rounded-lg text-lg font-semibold hover:text-white"
+                className="flex p-2 items-center px-0 rounded-lg text-lg font-semibold hover:text-white"
                 to="/asignaciones"
+                onClick={() => handleOptionClick('/asignaciones')}
               >
                 <div className="xl:hidden">
                   <div className="bg-white rounded-full h-10 w-10 flex items-center justify-center shadow-lg drop-shadow-md text-[#245A95] text-3xl">
@@ -139,10 +153,11 @@ export const Navbar = () => {
                 </div>
               </Link>
             </li>
-            <li className="nav-item transition duration-500 ease-in-out transform hover:-translate-y-2 hover:shadow-2xl mr-3">
+            <li className={`nav-item transition duration-500 ease-in-out transform hover:-translate-y-3 hover:shadow-2xl mr-3 ${selectedOption === '/registros' ? '-translate-y-3 text-white underline' : 'text-[#d9d9d9]'}`}>
               <Link
-                className="flex p-2 items-center text-[#E2E2E2] px-0 rounded-lg text-lg font-semibold hover:text-white"
+                className="flex p-2 items-center px-0 rounded-lg text-lg font-semibold hover:text-white"
                 to="/clientes"
+                onClick={() => handleOptionClick('/registros')}
               >
                 <div className="xl:hidden">
                   <div className="bg-white rounded-full h-10 w-10 flex items-center justify-center shadow-lg drop-shadow-md text-[#245A95] text-3xl">
@@ -154,10 +169,11 @@ export const Navbar = () => {
                 </div>
               </Link>
             </li>
-            <li className="nav-item transition duration-500 ease-in-out transform hover:-translate-y-2 hover:shadow-2xl mr-3">
+            <li className={`nav-item transition duration-500 ease-in-out transform hover:-translate-y-3 hover:shadow-2xl mr-3 ${selectedOption === '/asistencia' ? '-translate-y-3 text-white underline' : 'text-[#d9d9d9]'}`}>
               <Link
-                className="flex p-2 items-center text-[#E2E2E2] px-0 rounded-lg text-lg font-semibold hover:text-white"
+                className="flex p-2 items-center px-0 rounded-lg text-lg font-semibold hover:text-white"
                 to="/asistencia"
+                onClick={() => handleOptionClick('/asistencia')}
               >
                 <div className="xl:hidden">
                   <div className="bg-white rounded-full h-10 w-10 flex items-center justify-center shadow-lg drop-shadow-md text-[#245A95] text-3xl">
@@ -169,10 +185,11 @@ export const Navbar = () => {
                 </div>
               </Link>
             </li>
-            <li className="nav-item transition duration-500 ease-in-out transform hover:-translate-y-2 hover:shadow-2xl mr-3">
+            <li className={`nav-item transition duration-500 ease-in-out transform hover:-translate-y-3 hover:shadow-2xl mr-3 ${selectedOption === '/dashboard' ? '-translate-y-3 text-white underline' : 'text-[#d9d9d9]'}`}>
               <Link
                 className="flex p-2 items-center text-[#E2E2E2] px-0 rounded-lg text-lg font-semibold hover:text-white"
                 to="/dashboard"
+                onClick={() => handleOptionClick('/dashboard')}
               >
                 <div className="xl:hidden">
                   <div className="bg-white rounded-full h-10 w-10 flex items-center justify-center shadow-lg drop-shadow-md text-[#245A95] text-3xl">
@@ -184,7 +201,7 @@ export const Navbar = () => {
                 </div>
               </Link>
             </li>
-            <li className="nav-item transition duration-500 ease-in-out transform hover:-translate-y-2 hover:shadow-2xl mr-3">
+            {/* <li className="nav-item transition duration-500 ease-in-out transform hover:-translate-y-2 hover:shadow-2xl mr-3">
               <Link
                 className="flex p-2 items-center text-[#E2E2E2] px-0 rounded-lg text-lg font-semibold hover:text-white"
                 to="/"
@@ -198,8 +215,8 @@ export const Navbar = () => {
                   <p className="text-xl font-semibold">Balance</p>
                 </div>
               </Link>
-            </li>
-            <li className="nav-item transition duration-500 ease-in-out transform hover:-translate-y-2 hover:shadow-2xl mr-3">
+            </li> */}
+            {/* <li className="nav-item transition duration-500 ease-in-out transform hover:-translate-y-2 hover:shadow-2xl mr-3">
               <Link
                 className="flex p-2 items-center text-[#E2E2E2] px-0 rounded-lg text-lg font-semibold hover:text-white"
                 to="/"
@@ -213,7 +230,7 @@ export const Navbar = () => {
                   <p className="text-xl font-semibold">Duplicados</p>
                 </div>
               </Link>
-            </li>
+            </li> */}
             {/* Resto de elementos del menú */}
             <button
               className="bg-[#245A95] text-white border border-white hover:bg-white hover:text-[#245A95] shadow-md py-2 px-3 mt-2 rounded-full md:ml-4 duration-500 font-bold"

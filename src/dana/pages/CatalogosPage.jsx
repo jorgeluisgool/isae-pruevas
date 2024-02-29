@@ -7,6 +7,7 @@ import { TablaRelacionCatalogos } from "../components/catalogo/TablaRelacionCata
 import { DialogConfirmacionOpcionesCatalogo } from "../../ui/components/DialogConfirmacionOpcionesCatalogo";
 import { VentanaCargaIsae } from "../../ui/components/VentanaCargaIsae";
 import { TablaRelacionCatalogo2 } from "../components/catalogo/TablaRelacionCatalogo2";
+import { DialogConfirmacion } from "../../ui/components/DialogConfirmacion";
 
 export const CatalogosPage = () => {
   const [proyectos, setProyectos] = useState([]);
@@ -26,31 +27,14 @@ export const CatalogosPage = () => {
   const [ventanaDeCarga, setVentanaDeCarga] = useState(false);
   const [listaOpcionesCatalogo1Relacion, setListaOpcionesCatalogo1Relacion] = useState([]);
   const [listaOpcionesCatalogo2Relacion, setListaOpcionesCatalogo2Relacion] = useState([]);
-  const [isVisible, setIsVisible] = useState(true);
+  const [isVisibleButton, setIsVisibleButton] = useState(false);
   const [selectedOptionIndex, setSelectedOptionIndex] = useState(null);
   const [selectedOptionIndex2, setSelectedOptionIndex2] = useState(null);
   const [checkedItems, setCheckedItems] = useState({});
   const [selectedOption, setSelectedOption] = useState('');
   const [selectedOption2, setSelectedOption2] = useState('');
   const [valoresCatalogoHijo, setValoresCatalogoHijo] = useState([]);
-
-  console.log(catalogoRelacion1ProyectoSeleccionado)
-  console.log(selectedOption) 
-
-  useEffect(() => {
-    const handleScroll = () => {
-        const divContenedor = document.getElementById('tuDivContenedor');
-        if (divContenedor) {
-            const { top, bottom } = divContenedor.getBoundingClientRect();
-            setIsVisible(top >= 0 && bottom <= window.innerHeight);
-        }
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => {
-        window.removeEventListener('scroll', handleScroll);
-    };
-}, []);
+  const [modaAceptarlAbrirCerrar, setModaAceptarlAbrirCerrar] = useState(false);
 
   const handleSearchAsignacion = (event) => {
     setSearchCatalogoAsignacion(event.target.value);
@@ -229,6 +213,7 @@ export const CatalogosPage = () => {
   const handleGuardar = () => {
 
     setVentanaDeCarga(true);
+    catalogoRelacion2ProyectoSeleccionado([])
 
     const fetchData = async () => {
       try {
@@ -274,9 +259,11 @@ export const CatalogosPage = () => {
           const jsonData = await response.json();
           console.log(jsonData);
           setValoresCatalogoHijo(jsonData.catalogoHijo)
+          setVentanaDeCarga(false);
           
         } catch (error) {
           console.log('Error:', error);
+          setVentanaDeCarga(false);
         }
       };
   
@@ -286,6 +273,7 @@ export const CatalogosPage = () => {
     const handleGuardarRelacion = () => {
 
       setVentanaDeCarga(true);
+      setModaAceptarlAbrirCerrar(false)
   
       const fetchData = async () => {
         try {
@@ -349,6 +337,7 @@ export const CatalogosPage = () => {
                 onChange={(e) => {
                   setProyectoSeleccionado(e.target.value);
                   setListaOpcionesCatalogo1Relacion([]);
+                  // catalogoRelacion2ProyectoSeleccionado([]);
                 }}
               />
               <span className=" bg-[#245A95] p-2 px-3 rounded-r-lg shadow-md">
@@ -451,6 +440,7 @@ export const CatalogosPage = () => {
                           name="searchCatalogoAsignacion"
                           value={searchCatalogoAsignacion}
                           onChange={handleSearchAsignacion}
+                          disabled={Object.keys(proyectoSeleccionado).length === 0}
                       /> 
                       <span className="bg-[#245A95] p-2 px-3 rounded-r-lg shadow-md">
                         <i className="pi pi-search text-white font-light text-xl"></i>
@@ -489,6 +479,11 @@ export const CatalogosPage = () => {
         {/* SEGUNDA SECCIÓN DE RELACIÓN DE CATALOGOS */}
         {/* //////////////////////////////////////// */}
         <div className="mx-4 xl:mx-20 my-4 px-4 pb-16 bg-white rounded-lg overflow-hidden relative" id="tuDivContenedor">
+        <DialogConfirmacion 
+          modaAceptarlAbrirCerrar={modaAceptarlAbrirCerrar}
+          setModaAceptarlAbrirCerrar={setModaAceptarlAbrirCerrar}
+          handleGuardarRelacion={handleGuardarRelacion}
+        />
         <h1 className="mt-2 pl-3 text-2xl font-black text-[#245A95]">
           Relación de catálogos del proyecto:{' '}
           {Object.keys(proyectoSeleccionado).length === 0 ? (
@@ -518,6 +513,7 @@ export const CatalogosPage = () => {
                       setCatalogoRelacion2ProyectoSeleccionado([]);
                       setSelectedOptionIndex(null);
                     }}
+                    disabled={Object.keys(proyectoSeleccionado).length === 0}
                   />
                   <span className=" bg-[#245A95] p-2 px-3 rounded-r-lg shadow-md">
                     <i className="pi pi-file-edit text-white font-light text-xl"></i>
@@ -537,6 +533,7 @@ export const CatalogosPage = () => {
                         name="searchCatalogo1"
                         value={searchCatalogo1}
                         onChange={(handleSearchCatalogo1Relacion)}
+                        disabled={Object.keys(proyectoSeleccionado).length === 0}
                     /> 
                     <span className="bg-[#245A95] p-2 px-3 rounded-r-lg shadow-md">
                       <i className="pi pi-search text-white font-light text-xl"></i>
@@ -556,6 +553,7 @@ export const CatalogosPage = () => {
                   listaOpcionesCatalogo1Relacion={listaOpcionesCatalogo1Relacion}
                   setSelectedOption={setSelectedOption}
                   catalogoRelacion2ProyectoSeleccionado={catalogoRelacion2ProyectoSeleccionado}
+                  setVentanaDeCarga={setVentanaDeCarga}
                 />
               </div>
             </div>
@@ -563,7 +561,7 @@ export const CatalogosPage = () => {
               catalogoRelacion1ProyectoSeleccionado.length != 0 ?
               <div className="">
               <h1 className="pt-2 xl:pt-6 pl-3 mb-6 text-base font-black text-[#245A95]">
-                2. Catálogo 2: Opcion o opciones relacionadas
+                2. Catálogo 2: Opción u opciones relacionadas
               </h1>
               <div className="p-inputgroup lg:px-16">
                 <span className="p-float-label w-full">
@@ -629,17 +627,17 @@ export const CatalogosPage = () => {
             }
             
           </div>
-          {/* {isVisible && ( */}
+          {valoresCatalogoHijo != undefined && (
                 <div className="absolute inset-x-0 right-6 flex gap-3 justify-center pt-4">
                     <button
                         type="button"
                         className="hover:shadow-slate-600 border h-10 px-4 bg-[#245A95] text-white text-sm xl:text-lg font-bold rounded-full shadow-md duration-150 ease-in-out focus:outline-none active:scale-[1.20] transition-all hover:bg-sky-600"
-                        onClick={handleGuardarRelacion}
+                        onClick={() => setModaAceptarlAbrirCerrar(true)}
                     >
-                        <ion-icon name="save"></ion-icon> Guardar
+                        <ion-icon name="git-compare"></ion-icon> Relacionar
                     </button>
                 </div>
-            {/* )} */}
+            )}
         </div>
       </div>
     </>

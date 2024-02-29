@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { api } from "../helpers/variablesGlobales";
 import useAuth from "../hooks/useAuth";
 import { Link } from "react-router-dom";
+import { InputText } from "primereact/inputtext";
 
 export const ClientesRegistrosPage = () => {
   const { userAuth, setUserAuth, setClienteSeleccionado } = useAuth();
@@ -21,8 +22,11 @@ export const ClientesRegistrosPage = () => {
       }
     };
 
-    fetchData();
-  }, []);
+    // Ejecutar fetchData después de 1 segundo
+    const timeoutId = setTimeout(() => {
+      fetchData();
+    }, 2000);
+  }, [clientes]);
 
   // funcion que hace que al hacer refesh se mantenga el usuario activo
   useEffect(() => {
@@ -38,7 +42,7 @@ export const ClientesRegistrosPage = () => {
     // Ejecutar fetchData después de 1 segundo
     const timeoutId = setTimeout(() => {
       fetchData();
-    }, 2000);
+    }, 1000);
 
     // Limpiar el temporizador en caso de que el componente se desmonte antes de que se complete el tiempo de espera
     // return () => clearTimeout(timeoutId);
@@ -46,11 +50,31 @@ export const ClientesRegistrosPage = () => {
 
   return (
     <>
-      <h1 className="pt-6 pl-3 xl:pl-20 text-4xl font-black text-[#245A95]">
+      <h1 className="pt-2 pl-3 xl:pl-20 text-4xl font-black text-[#245A95]">
         Clientes
       </h1>
       <div className="mx-4 xl:mx-20 my-4 px-4 py-2 shadow-md bg-white rounded-lg overflow-hidden">
-        <div className="grid grid-cols-2 xl:grid-cols-3 gap-8 m-4 text-center mx-auto lg:ml-20">
+      <h1 className="text-2xl font-bold text-[#245A95] pb-2">Selecciona un cliente para poder ver sus registros.</h1>
+      <div className="p-inputgroup md:px-40 lg:px-60 xl:px-80">
+        <span className="p-float-label w-full mt-6">
+          <InputText
+            className="w-full appearance-none focus:outline-none bg-transparent border-b-2 border-[#245A95] text-gray-700 transition-all duration-300 focus:border-[#245A95]"
+            name="perfil"
+            // value={nuevoValorCatalo.toUpperCase()}
+            
+          />
+          <span className=" bg-[#245A95] p-2 px-3 rounded-r-lg shadow-md">
+            <i className="pi pi-file-edit text-white font-light text-xl"></i>
+          </span>
+          <label
+            htmlFor="nombrealberca"
+            className="text-sm text-[#245A95] font-extrabold absolute top-2 left-3 transition-all duration-300"
+          >
+            Busca el cliente
+          </label>
+        </span>
+      </div>
+        <div className="grid grid-cols-2 xl:grid-cols-3 gap-8 m-4 text-center">
           {clientes.map((cliente, index) => (
             <Link
               key={index}

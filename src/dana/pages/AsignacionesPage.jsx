@@ -33,7 +33,7 @@ export const AsignacionesPage = () => {
 
   //Pagination Table
   const [currentPage, setCurrentPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
   const [currentPageA, setCurrentPageA] = useState(1);
   const [rowsPerPageA, setRowsPerPageA] = useState(5);
   const [currentPageB, setCurrentPageB] = useState(1);
@@ -172,6 +172,8 @@ export const AsignacionesPage = () => {
         .then((responseData) => {
           getUsersProjects(iduser);
           setModalAssignment(true);
+          // setSelectedUser(null);
+          setSelectedProject(null);
         })
         .catch((error) => console.log(error));
     }
@@ -305,8 +307,8 @@ export const AsignacionesPage = () => {
           </div>
         </div>
       )}
-      <div className="pb-6">
-        <h1 className="pt-2 xl:pt-6 pl-3 xl:pl-20 text-4xl font-black text-[#245A95]">
+      <div className="">
+        <h1 className="pt-2 pl-3 xl:pl-20 text-4xl font-black text-[#245A95]">
           Asignaciones
         </h1>
         <div
@@ -316,65 +318,79 @@ export const AsignacionesPage = () => {
           <h1 className="mt-2 pl-3 text-2xl font-black text-[#245A95]">
             Asignación de proyectos
           </h1>
+          
           <section>
-            <div className="grid sm:grid-cols-3 gap-8">
-              <div className="p-inputgroup mt-3 lg:mt-6 ">
-                <span className="p-float-label w-full mt-2">
-                  <Dropdown
-                    className="w-full appearance-none focus:outline-none bg-transparent border-b-2 border-[#245A95] text-gray-700 transition-all duration-300 focus:border-[#245A95]"
-                    name="usuario"
-                    options={users}
-                    optionLabel="usuario"
-                    value={selectedUser}
-                    filter
-                    onChange={(eve) => {
-                      setSelectedUser(eve.target.value);
-                      getUsersProjects(eve.target.value.idusuario);
-                    }}
-                  />
-                  <span className=" bg-[#245A95] p-2 px-3 rounded-r-lg shadow-md">
-                    <i className="pi pi-file-edit text-white font-light text-xl"></i>
+            <div className="grid sm:grid-cols-2 gap-8">
+              <div className="mt-3">
+                <h1 className="pt-2 xl:pt-6 pl-3 mb-6 text-base font-black text-neutral-900">
+                  <span className="text-[#245A95] text-4xl">1</span> Selecciona el usuario a quie le asignaras el proyecto
+                </h1>
+                <div className="p-inputgroup">
+                  <span className="p-float-label w-full mt-2">
+                    <Dropdown
+                      className="w-full appearance-none focus:outline-none bg-transparent border-b-2 border-[#245A95] text-gray-700 transition-all duration-300 focus:border-[#245A95]"
+                      name="usuario"
+                      options={users}
+                      optionLabel="usuario"
+                      value={selectedUser}
+                      filter
+                      onChange={(eve) => {
+                        setSelectedUser(eve.target.value);
+                        getUsersProjects(eve.target.value.idusuario);
+                      }}
+                    />
+                    <span className=" bg-[#245A95] p-2 px-3 rounded-r-lg shadow-md">
+                      <i className="pi pi-file-edit text-white font-light text-xl"></i>
+                    </span>
+                    <label
+                      htmlFor="nombrealberca"
+                      className="text-sm text-[#245A95] font-extrabold absolute top-2 left-3 transition-all duration-300"
+                    >
+                      Usuarios
+                    </label>
                   </span>
-                  <label
-                    htmlFor="nombrealberca"
-                    className="text-sm text-[#245A95] font-extrabold absolute top-2 left-3 transition-all duration-300"
-                  >
-                    Usuarios
-                  </label>
-                </span>
+                </div>
               </div>
-
-              <div className="p-inputgroup mt-3 lg:mt-6 ">
-                <span className="p-float-label w-full mt-2">
-                  <Dropdown
-                    className="w-full appearance-none focus:outline-none bg-transparent border-b-2 border-[#245A95] text-gray-700 transition-all duration-300 focus:border-[#245A95]"
-                    name="proyecto"
-                    options={projects.filter(
-                      (project) =>
-                        !usersProjects.some(
-                          (userProject) =>
-                            userProject.idproyecto === project.idproyecto
-                        )
-                    )}
-                    optionLabel="proyecto"
-                    value={selectedProject}
-                    filter
-                    onChange={(eve) => {
-                      setSelectedProject(eve.target.value);
-                    }}
-                  />
-                  <span className=" bg-[#245A95] p-2 px-3 rounded-r-lg shadow-md">
-                    <i className="pi pi-file-edit text-white font-light text-xl"></i>
+              <div className="mt-3">
+                <h1 className="pt-2 xl:pt-6 pl-3 mb-6 text-base font-black text-neutral-900">
+                  <span className="text-[#245A95] text-4xl">2</span> Selecciona el proyecto a asignar
+                </h1>
+                <div className="p-inputgroup">
+                  <span className="p-float-label w-full mt-2">
+                    <Dropdown
+                      className="w-full appearance-none focus:outline-none bg-transparent border-b-2 border-[#245A95] text-gray-700 transition-all duration-300 focus:border-[#245A95]"
+                      name="proyecto"
+                      options={projects.filter(
+                        (project) =>
+                          !usersProjects.some(
+                            (userProject) =>
+                              userProject.idproyecto === project.idproyecto
+                          )
+                      )}
+                      optionLabel="proyecto"
+                      value={selectedProject}
+                      filter
+                      onChange={(eve) => {
+                        setSelectedProject(eve.target.value);
+                      }}
+                    />
+                    <span className=" bg-[#245A95] p-2 px-3 rounded-r-lg shadow-md">
+                      <i className="pi pi-file-edit text-white font-light text-xl"></i>
+                    </span>
+                    <label
+                      htmlFor="nombrealberca"
+                      className="text-sm text-[#245A95] font-extrabold absolute top-2 left-3 transition-all duration-300"
+                    >
+                      Proyectos
+                    </label>
                   </span>
-                  <label
-                    htmlFor="nombrealberca"
-                    className="text-sm text-[#245A95] font-extrabold absolute top-2 left-3 transition-all duration-300"
-                  >
-                    Proyectos
-                  </label>
-                </span>
+                </div>
               </div>
-              <div className="flex justify-center items-center">
+                
+            </div>
+            {
+              selectedProject != null ? 
+              <div className="flex justify-center items-center pt-6">
                 <button
                   type="button"
                   className="hover:shadow-slate-600 border h-10 px-4 bg-[#245A95] text-white text-lg font-bold shadow-md duration-150 ease-in-out focus:outline-none active:scale-[1.20] transition-all hover:bg-sky-600 rounded-full"
@@ -385,13 +401,17 @@ export const AsignacionesPage = () => {
                     )
                   }
                 >
-                  Asignar
+                  <ion-icon name="person-add"></ion-icon> Asignar
                 </button>
               </div>
-            </div>
+              :
+              <>
+              </>
+            }
+            
 
             {tables && showTable ? (
-              <div className="flex items-center justify-center flex-col my-12">
+              <div className="flex items-center justify-center flex-col">
                 <img
                   src="/src/assets/isae.png"
                   alt="Icono"

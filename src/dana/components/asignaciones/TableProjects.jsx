@@ -22,21 +22,21 @@ export const TableProjects = ({
     >
       {showTable ? (
         <div>
-          <h1 className="pt-2 xl:pt-6 pl-3 xl:pl-0 text-2xl font-black text-[#245A95] mb-2">
+          <h1 className="pt-6 pl-3 xl:pl-0 text-2xl font-black text-[#245A95] mb-2">
             Proyectos asignados
           </h1>
           <div class="flex justify-center lg:ml-0 ml-80 lg:pl-0 pl-10">
-            <table class="w-full bg-white shadow-md">
+            <table class="min-w-full bg-white rounded-lg overflow-hidden shadow-md">
               <thead className="bg-[#245A95] text-white uppercase">
                 <tr className="text-left">
                   <th scope="col" className="relative px-6 py-3">
                     <div className="items-center">
-                      <span>USUARIO</span>
+                      <span>PROYECTO</span>
                     </div>
                   </th>
                   <th scope="col" className="relative px-6 py-3">
                     <div className="items-center">
-                      <span>PROYECTO</span>
+                      <span>USUARIO</span>
                     </div>
                   </th>
                   <th scope="col" className="relative px-6 py-3">
@@ -63,16 +63,7 @@ export const TableProjects = ({
                       <td className="px-6 py-2">
                         <div className="flex items-center">
                           <div className="ml-2">
-                            <div className="lg:text-sm text-xs text-xs font-medium text-gray-900 cursor-pointer">
-                              {selectedUser.usuario}
-                            </div>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-2">
-                        <div className="flex items-center">
-                          <div className="ml-2">
-                            <div className="lg:text-sm text-xs text-xs font-medium text-gray-900 cursor-pointer">
+                            <div className="lg:text-sm text-xs font-medium text-gray-900 cursor-pointer">
                               {project.proyecto}
                             </div>
                           </div>
@@ -81,7 +72,16 @@ export const TableProjects = ({
                       <td className="px-6 py-2">
                         <div className="flex items-center">
                           <div className="ml-2">
-                            <div className="lg:text-sm text-xs text-xs font-medium text-gray-900 cursor-pointer">
+                            <div className="lg:text-sm text-xs font-medium text-gray-900 cursor-pointer">
+                              {selectedUser.usuario}
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-2">
+                        <div className="flex items-center">
+                          <div className="ml-2">
+                            <div className="lg:text-sm text-xs font-medium text-gray-900 cursor-pointer">
                               {project.tipoproyecto.descripcion}
                             </div>
                           </div>
@@ -90,7 +90,7 @@ export const TableProjects = ({
                       <td className="px-6 py-2">
                         <div className="flex items-center">
                           <div className="ml-2">
-                            <div className="lg:text-sm text-xs text-xs font-medium text-gray-900 cursor-pointer">
+                            <div className="lg:text-sm text-xs font-medium text-gray-900 cursor-pointer">
                               {project.fechacreacion}
                             </div>
                           </div>

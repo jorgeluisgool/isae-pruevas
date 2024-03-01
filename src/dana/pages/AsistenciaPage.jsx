@@ -157,13 +157,20 @@ export const AsistenciaPage = () => {
         </div>
       )}
       <div className="pb-6">
-        <h1 className="pt-2 xl:pt-6 pl-3 xl:pl-20 text-4xl font-black text-[#245A95]">
+        <h1 className="pt-2 pl-3 xl:pl-20 text-4xl font-black text-[#245A95]">
           Asistencia
         </h1>
         <div className="mx-4 xl:mx-20 my-4 px-4 py-2 shadow-md bg-white rounded-lg overflow-hidden">
+        <h1 className="mt-2 pl-3 text-2xl font-black text-[#245A95]">
+          Consulata de asistencia
+        </h1>
+        <h1 className="pt-2 xl:pt-6 pl-3 mb-6 text-base font-black text-neutral-900">
+          <span className="text-[#245A95] text-4xl">1</span> Selecciona el rago de fechas que deseas consultar asistencia 
+        </h1>
           <section>
-            <div className="p-inputgroup mt-6 grid md:grid-cols-3">
-              <span className="p-float-label  w-full xl:pr-10 mb-10">
+          <div className="mt-6 grid md:grid-cols-2 sm:gap-12">
+            <div className="p-inputgroup">
+              <span className="p-float-label w-full mb-10">
                 <Calendar
                   className="w-1/2 appearance-none focus:outline-none bg-transparent placeholder-gray-900 "
                   value={
@@ -185,9 +192,10 @@ export const AsistenciaPage = () => {
                 >
                   Fecha inical
                 </label>
-              </span>
-
-              <span className="p-float-label  w-full xl:pr-10 mb-10">
+              </span>      
+            </div>
+            <div className="p-inputgroup">
+              <span className="p-float-label w-full mb-10">
                 <Calendar
                   className="w-1/2 appearance-none focus:outline-none bg-transparent placeholder-gray-900"
                   value={selectedDateEnd ? parseDate(selectedDateEnd) : null}
@@ -208,41 +216,46 @@ export const AsistenciaPage = () => {
                   Fecha final
                 </label>
               </span>
+            </div> 
+          </div>
 
-              {listaUsuarios.length > 0 ? (
-                <div className="">
-                  <span className="p-float-label  w-full xl:pr-10 mb-10">
-                    <InputText
-                      className="w-1/2 appearance-none focus:outline-none bg-transparent border-b-2 border-[#245A95] text-gray-700 transition-all duration-300 focus:border-[#245A95]"
-                      name="perfil"
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                    />
-                    <span className=" bg-[#245A95] p-2 px-3 rounded-r-lg shadow-md">
-                      <i className="pi pi-file-edit text-white font-light text-xl"></i>
-                    </span>
-                    <label
-                      htmlFor="nombrealberca"
-                      className="lg:text-sm text-xs text-[#245A95] font-extrabold absolute top-2 left-3 transition-all duration-300"
-                    >
-                      Buscar usuario
-                    </label>
+          {
+              selectedDateEnd != null ?  
+              <div className="flex justify-center">
+                <button
+                  type="button"
+                  className="hover:shadow-slate-600 border h-10 px-4 bg-[#245A95] text-white text-lg font-bold rounded-full shadow-md duration-150 ease-in-out focus:outline-none active:scale-[1.20] transition-all hover:bg-sky-600"
+                  onClick={getUserAssistance}
+                >
+                  <i className="pi pi-search text-white font-light text-xl"></i> Consultar
+                </button>
+              </div>
+              : 
+              <></>
+            }
+            {listaUsuarios.length > 0 ? (
+                <div className="p-inputgroup md:px-40 lg:px-60 xl:px-80">
+                <span className="p-float-label w-full mt-6">
+                  <InputText
+                    className="w-full appearance-none focus:outline-none bg-transparent"
+                    name="perfil"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
+                  <span className=" bg-[#245A95] p-2 px-3 rounded-r-lg shadow-md">
+                    <i className="pi pi-search text-white font-light text-xl"></i>
                   </span>
+                  <label
+                    htmlFor="nombrealberca"
+                    className="text-sm text-[#245A95] font-extrabold absolute top-2 left-3 transition-all duration-300"
+                  >
+                    Buscar usuario
+                  </label>
+                </span>
                 </div>
               ) : (
                 <></>
               )}
-            </div>
-
-            <div className="flex justify-center items-center">
-              <button
-                type="button"
-                className="hover:shadow-slate-600 border h-10 px-4 bg-[#245A95] text-white text-lg font-bold rounded-full shadow-md duration-150 ease-in-out focus:outline-none active:scale-[1.20] transition-all hover:bg-sky-600"
-                onClick={getUserAssistance}
-              >
-                Buscar
-              </button>
-            </div>
           </section>
           <section>
             {listaUsuarios.length == 0 ? (
@@ -333,7 +346,7 @@ export const AsistenciaPage = () => {
                           <td className="px-6 py-2">
                             <div className="flex items-center">
                               <div className="ml-8">
-                                <div className="lg:text-sm text-xs text-xs font-medium text-gray-900 cursor-pointer">
+                                <div className="lg:text-sm text-xs font-medium text-gray-900 cursor-pointer">
                                   {usuario.nombre}
                                 </div>
                                 {/* <div className="lg:text-sm text-xs text-gray-500">{registro.email}</div> */}
@@ -454,7 +467,7 @@ export const AsistenciaPage = () => {
         className="pt-16"
       >
         {
-          <div className="shadow-md bg-white rounded-lg">
+          <div className="overflow-x-auto">
             <table className="min-w-full bg-white rounded-lg overflow-hidden shadow-md">
               <thead className="bg-[#245A95] text-white uppercase">
                 <tr className="text-left">

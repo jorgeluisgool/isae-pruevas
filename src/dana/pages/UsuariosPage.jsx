@@ -69,31 +69,32 @@ export const UsuariosPage = () => {
     <div className="pb-6">
     <h1 className="pt-2 pl-3 xl:pl-20 text-4xl font-black text-[#245A95]">Usuarios</h1>
       <div className='mx-4 xl:mx-20 my-4 px-4 py-2 shadow-md bg-white rounded-lg overflow-hidden'>
+      <h1 className="mt-2 pl-3 text-2xl font-black text-[#245A95]">
+        Tabla de usuarios
+      </h1>
         <div className='lg:m-4'>
             <div className="overflow-x-auto">
                 <div className=" mx-4 xl:mx-10">
-                    <div className='grid grid-cols-2 md:grid-cols-4 xl:grid-cols-6 gap-8'>
-                        <div className="p-inputgroup mb-5 mt-2 col-span-3 xl:col-start-3">
-                            <div className="flex flex-col">
-                                <span className='p-float-label relative pt-2'>
-                                    <InputText
-                                        className="w-full appearance-none focus:outline-none bg-transparent"
-                                        name="direccion"
-                                        value={searchTerm}
-                                        onChange={handleSearch}
-                                    /> 
-                                    <span className="p-inputgroup-addon border border-gray-300 p-2 rounded-md">
-                                      <i className="pi pi-search text-[#245A95] font-bold text-2xl"></i>
-                                    </span>
-                                    <label htmlFor="name" className='text-lg text-[#245A95] font-semibold absolute top-0 left-0 transform'>
-                                      Busca el usuario
-                                    </label>
-                                </span>
-                                <p className="text-xs lg:text-base text-[#245A95] font-semibold">Puedes buscar el usuario por su nombre o nombre de usuario</p>
-                            </div>
-                        </div>     
-                    </div>
-                    <div className=" pb-1">
+                  <div className="p-inputgroup md:px-40 lg:px-60 xl:px-80">
+                    <span className="p-float-label w-full mt-6">
+                      <InputText
+                        className="w-full appearance-none focus:outline-none bg-transparent"
+                        name="direccion"
+                        value={searchTerm}
+                        onChange={handleSearch}
+                      />
+                      <span className=" bg-[#245A95] p-2 px-3 rounded-r-lg shadow-md">
+                        <i className="pi pi-file-edit text-white font-light text-xl"></i>
+                      </span>
+                      <label
+                        htmlFor="nombrealberca"
+                        className="text-sm text-[#245A95] font-extrabold absolute top-2 left-3 transition-all duration-300"
+                      >
+                        Busca el usuario
+                      </label>
+                    </span>
+                  </div>       
+                    <div className="py-2">
                         <button
                           type="button"
                           className="hover:shadow-slate-600 border h-10 px-4 bg-[#245A95] text-white text-xs xl:text-lg font-bold rounded-full shadow-md duration-150 ease-in-out focus:outline-none active:scale-[1.20] transition-all hover:bg-sky-600"

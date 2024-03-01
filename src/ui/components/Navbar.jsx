@@ -88,7 +88,7 @@ export const Navbar = () => {
               open ? "top-20" : "top-[-520px]"
             } `}
           >
-            <li className={`nav-item transition duration-500 ease-in-out transform hover:-translate-y-3 hover:shadow-2xl mr-3 ${selectedOption === '/Proyectos' ? '-translate-y-3 text-white underline' : 'text-[#d9d9d9]'}`}
+            <li className={`nav-item transition duration-500 ease-in-out transform hover:-translate-y-3 hover:shadow-2xl mr-3 ${selectedOption === '/Proyectos' ? '-translate-y-3 text-white underline shadow-2xl' : 'text-[#d9d9d9]'}`}
             >
               <Link
                 className="flex p-2 items-center px-0 rounded-lg text-lg font-semibold hover:text-white"
@@ -105,7 +105,7 @@ export const Navbar = () => {
                 </div>
               </Link>
             </li>
-            <li className={`nav-item transition duration-500 ease-in-out transform hover:-translate-y-3 hover:shadow-2xl mr-3 ${selectedOption === '/usuarios' ? '-translate-y-3 text-white underline' : 'text-[#d9d9d9]'}`}>
+            <li className={`nav-item transition duration-500 ease-in-out transform hover:-translate-y-3 hover:shadow-2xl mr-3 ${selectedOption === '/usuarios' ? '-translate-y-3 text-white underline shadow-2xl' : 'text-[#d9d9d9]'}`}>
               <Link
                 className="flex p-2 items-center px-0 rounded-lg text-lg font-semibold hover:text-white"
                 to="/usuarios"
@@ -121,7 +121,7 @@ export const Navbar = () => {
                 </div>
               </Link>
             </li>
-            <li className={`nav-item transition duration-500 ease-in-out transform hover:-translate-y-3 hover:shadow-2xl mr-3 ${selectedOption === '/catalogos' ? '-translate-y-3 text-white underline' : 'text-[#d9d9d9]'}`}>
+            <li className={`nav-item transition duration-500 ease-in-out transform hover:-translate-y-3 hover:shadow-2xl mr-3 ${selectedOption === '/catalogos' ? '-translate-y-3 text-white underline shadow-2xl' : 'text-[#d9d9d9]'}`}>
               <Link
                 className="flex p-2 items-center px-0 rounded-lg text-lg font-semibold hover:text-white"
                 to="/catalogos"
@@ -137,7 +137,7 @@ export const Navbar = () => {
                 </div>
               </Link>
             </li>
-            <li className={`nav-item transition duration-500 ease-in-out transform hover:-translate-y-3 hover:shadow-2xl mr-3 ${selectedOption === '/asignaciones' ? '-translate-y-3 text-white underline' : 'text-[#d9d9d9]'}`}>
+            <li className={`nav-item transition duration-500 ease-in-out transform hover:-translate-y-3 hover:shadow-2xl mr-3 ${selectedOption === '/asignaciones' ? '-translate-y-3 text-white underline shadow-2xl' : 'text-[#d9d9d9]'}`}>
               <Link
                 className="flex p-2 items-center px-0 rounded-lg text-lg font-semibold hover:text-white"
                 to="/asignaciones"
@@ -153,7 +153,7 @@ export const Navbar = () => {
                 </div>
               </Link>
             </li>
-            <li className={`nav-item transition duration-500 ease-in-out transform hover:-translate-y-3 hover:shadow-2xl mr-3 ${selectedOption === '/registros' ? '-translate-y-3 text-white underline' : 'text-[#d9d9d9]'}`}>
+            <li className={`nav-item transition duration-500 ease-in-out transform hover:-translate-y-3 hover:shadow-2xl mr-3 ${selectedOption === '/registros' ? '-translate-y-3 text-white underline shadow-2xl' : 'text-[#d9d9d9]'}`}>
               <Link
                 className="flex p-2 items-center px-0 rounded-lg text-lg font-semibold hover:text-white"
                 to="/clientes"
@@ -169,7 +169,7 @@ export const Navbar = () => {
                 </div>
               </Link>
             </li>
-            <li className={`nav-item transition duration-500 ease-in-out transform hover:-translate-y-3 hover:shadow-2xl mr-3 ${selectedOption === '/asistencia' ? '-translate-y-3 text-white underline' : 'text-[#d9d9d9]'}`}>
+            <li className={`nav-item transition duration-500 ease-in-out transform hover:-translate-y-3 hover:shadow-2xl mr-3 ${selectedOption === '/asistencia' ? '-translate-y-3 text-white underline shadow-2xl' : 'text-[#d9d9d9]'}`}>
               <Link
                 className="flex p-2 items-center px-0 rounded-lg text-lg font-semibold hover:text-white"
                 to="/asistencia"
@@ -185,9 +185,9 @@ export const Navbar = () => {
                 </div>
               </Link>
             </li>
-            <li className={`nav-item transition duration-500 ease-in-out transform hover:-translate-y-3 hover:shadow-2xl mr-3 ${selectedOption === '/dashboard' ? '-translate-y-3 text-white underline' : 'text-[#d9d9d9]'}`}>
+            <li className={`nav-item transition duration-500 ease-in-out transform hover:-translate-y-3 hover:shadow-2xl mr-3 ${selectedOption === '/dashboard' ? '-translate-y-3 text-white underline shadow-2xl' : 'text-[#d9d9d9]'}`}>
               <Link
-                className="flex p-2 items-center text-[#E2E2E2] px-0 rounded-lg text-lg font-semibold hover:text-white"
+                className="flex p-2 items-center px-0 rounded-lg text-lg font-semibold hover:text-white"
                 to="/dashboard"
                 onClick={() => handleOptionClick('/dashboard')}
               >

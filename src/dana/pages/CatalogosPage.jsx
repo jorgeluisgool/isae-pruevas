@@ -322,8 +322,8 @@ export const CatalogosPage = () => {
           Catálogos
         </h1>
         <div className="mx-4 xl:mx-20 my-4 px-4 pb-6 bg-white rounded-lg overflow-hidden">
-          <h1 className="pt-2 xl:pt-6 pl-3 text-base font-black text-[#245A95]">
-            1. Selecciona el proyecto
+          <h1 className="pt-2 xl:pt-6 pl-3 text-base font-black text-neutral-900">
+          <span className="text-[#245A95] text-4xl">1</span> Selecciona el proyecto
           </h1>
           <div className="p-inputgroup mt-6 grid md:grid-cols-3">
             <span className="p-float-label  w-full">
@@ -364,8 +364,8 @@ export const CatalogosPage = () => {
           
             <div className="mt-4 grid sm:grid-cols-3 gap-8">
               <div className="">
-                <h1 className="pt-2 pl-3 text-base font-black text-[#245A95]">
-                  2. Selecciona el catálogo al que deseas asignar una opción
+                <h1 className="pt-2 pl-3 text-base font-black text-neutral-900">
+                  <span className="text-[#245A95] text-4xl">2</span> Selecciona el catálogo al que deseas asignar una opción
                 </h1>
                 <div className="p-inputgroup">
                   <span className="p-float-label w-full mt-6">
@@ -392,8 +392,8 @@ export const CatalogosPage = () => {
                     </label>
                   </span>
                 </div>
-                <h1 className="pt-2 pl-3 text-base font-black text-[#245A95]">
-                  3. Agregar el valor a el catálogo seleccionado
+                <h1 className="pt-2 pl-3 text-base font-black text-neutral-900">
+                  <span className="text-[#245A95] text-4xl">3</span> Agregar el valor a el catálogo seleccionado
                 </h1>
                 <div className="p-inputgroup">
                   <span className="p-float-label w-full mt-6">
@@ -494,8 +494,8 @@ export const CatalogosPage = () => {
         </h1> 
           <div className="grid lg:grid-cols-2 gap-8">
             <div className="">
-              <h1 className="pt-2 xl:pt-6 pl-3 mb-6 text-base font-black text-[#245A95]">
-                1. Catálogo 1: Opción a relacionar
+              <h1 className="pt-2 xl:pt-6 pl-3 mb-6 text-base font-black text-neutral-900">
+                <span className="text-[#245A95] text-4xl">2</span> Catálogo 1: Opción a relacionar
               </h1>
               <div className="p-inputgroup lg:px-16">
                 <span className="p-float-label w-full">
@@ -560,8 +560,8 @@ export const CatalogosPage = () => {
             {
               catalogoRelacion1ProyectoSeleccionado.length != 0 ?
               <div className="">
-              <h1 className="pt-2 xl:pt-6 pl-3 mb-6 text-base font-black text-[#245A95]">
-                2. Catálogo 2: Opción u opciones relacionadas
+              <h1 className="pt-2 xl:pt-6 pl-3 mb-6 text-base font-black text-neutral-900">
+                <span className="text-[#245A95] text-4xl">3</span> Catálogo 2: Opción u opciones relacionadas
               </h1>
               <div className="p-inputgroup lg:px-16">
                 <span className="p-float-label w-full">

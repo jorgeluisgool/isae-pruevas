@@ -186,9 +186,13 @@ export const CrearProyectoForm = () => {
             {({values, errors, setFieldValue}) => (
                 <Form>
                     <div className='mx-4 xl:mx-20 my-4 px-4 py-2 shadow-md bg-white rounded-lg overflow-hidden'>
-                    <label className="mx-0 my-1 text-xl font-bold text-[#245A95]">
+                    {/* <label className="mx-0 my-1 text-xl font-bold text-[#245A95]">
                         CREAR PROYECTO
-                    </label>
+                    </label> */}
+
+                    <h1 className="mt-2 pl-3 text-2xl font-black text-[#245A95]">
+                      Crear proyecto
+                    </h1>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                         <div className="mt-2 flex items-center gap-x-4">
                             <button onClick={handleDownloadPlantilla} className="shadow-md bg-transparent hover:bg-[#245A95] hover:text-white text-[#245A95] scroll-ml-5 w-14 h-14 active:scale-[.98] transition-all py-3 rounded-xl bg-[#245A95] text-4xl font-bold">
@@ -199,7 +203,7 @@ export const CrearProyectoForm = () => {
                             </h1>
                         </div>
                         <div className='mt-5 flex flex-col gap-y-1 w-full'>
-                            <div className="p-inputgroup">
+                            {/* <div className="p-inputgroup">
                                 <span className='p-float-label relative'>
                                     <Field
                                         className="w-full appearance-none focus:outline-none bg-transparent"
@@ -218,10 +222,34 @@ export const CrearProyectoForm = () => {
                             </div>
                             <ErrorMessage name="proyecto" component={() => (
                                 <span className="text-red-600"><ion-icon name="alert-circle-sharp"></ion-icon> {errors.proyecto}</span>
-                            )}/>   
+                            )}/>  */}
+
+                            <div className="p-inputgroup">
+                              <span className="p-float-label w-full">
+                                <InputText
+                                  className="w-full appearance-none focus:outline-none bg-transparent border-b-2 border-[#245A95] text-gray-700 transition-all duration-300 focus:border-[#245A95]"
+                                  name="proyecto"
+                                  value={values.proyecto}
+                                  onChange={(e) => setFieldValue("proyecto", e.target.value.toUpperCase())}
+                                  // disabled={Object.keys(proyectoSeleccionado).length === 0}
+                                />
+                                <span className=" bg-[#245A95] p-2 px-3 rounded-r-lg shadow-md">
+                                  <i className="pi pi-file-edit text-white font-light text-xl"></i>
+                                </span>
+                                <label
+                                  htmlFor="name"
+                                  className="text-sm text-[#245A95] font-extrabold absolute top-2 left-3 transition-all duration-300"
+                                >
+                                  Proyecto
+                                </label>
+                              </span>
+                            </div>  
+                            <ErrorMessage name="proyecto" component={() => (
+                                <span className="text-red-600"><ion-icon name="alert-circle-sharp"></ion-icon> {errors.proyecto}</span>
+                            )}/>
                         </div>  
                         <div className="mt-5 flex flex-col gap-y-1 w-full">
-                            <div className="p-inputgroup">
+                            {/* <div className="p-inputgroup">
                                 <span className='p-float-label relative'>
                                     <Field
                                         className="w-full appearance-none focus:outline-none bg-transparent"
@@ -237,7 +265,28 @@ export const CrearProyectoForm = () => {
                                         Tipo de proyecto
                                     </label>
                                 </span>
-                            </div>
+                            </div> */}
+
+                          <div className="p-inputgroup">
+                            <span className="p-float-label w-full">
+                              <Dropdown
+                                className="w-full appearance-none focus:outline-none bg-transparent border-b-2 border-[#245A95] text-gray-700 transition-all duration-300 focus:border-[#245A95]"
+                                name="tipo"
+                                options={tipoProyecto}
+                                optionLabel="name"
+                                filter
+                              />
+                              <span className=" bg-[#245A95] p-2 px-3 rounded-r-lg shadow-md">
+                                <i className="pi pi-file-edit text-white font-light text-xl"></i>
+                              </span>
+                              <label
+                                htmlFor="nombrealberca"
+                                className="text-sm text-[#245A95] font-extrabold absolute top-2 left-3 transition-all duration-300"
+                              >
+                                Tipo de proyecto
+                              </label>
+                            </span>
+                          </div>
                         </div>
                         <div className="mt-5 flex flex-col gap-y-1">
                             <input 

@@ -8,6 +8,7 @@ export const ClientesRegistrosPage = () => {
   const { userAuth, setUserAuth, setClienteSeleccionado } = useAuth();
 
   const [clientes, setClientes] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -48,6 +49,14 @@ export const ClientesRegistrosPage = () => {
     // return () => clearTimeout(timeoutId);
   }, []);
 
+  const handleSearch = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
+  // Filtro para el search
+  const filterClientes = clientes.filter((cliente) =>
+    cliente.cliente.toLowerCase().includes(searchTerm.toLowerCase()) 
+  );
   return (
     <>
       <h1 className="pt-2 pl-3 xl:pl-20 text-4xl font-black text-[#245A95]">
@@ -60,8 +69,8 @@ export const ClientesRegistrosPage = () => {
           <InputText
             className="w-full appearance-none focus:outline-none bg-transparent border-b-2 border-[#245A95] text-gray-700 transition-all duration-300 focus:border-[#245A95]"
             name="perfil"
-            // value={nuevoValorCatalo.toUpperCase()}
-            
+            value={searchTerm}
+            onChange={handleSearch}    
           />
           <span className=" bg-[#245A95] p-2 px-3 rounded-r-lg shadow-md">
             <i className="pi pi-file-edit text-white font-light text-xl"></i>
@@ -75,7 +84,7 @@ export const ClientesRegistrosPage = () => {
         </span>
       </div>
         <div className="grid grid-cols-2 xl:grid-cols-3 gap-8 m-4 text-center">
-          {clientes.map((cliente, index) => (
+          {filterClientes.map((cliente, index) => (
             <Link
               key={index}
               to="/registros"

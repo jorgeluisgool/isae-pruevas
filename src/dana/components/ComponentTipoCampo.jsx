@@ -25,7 +25,8 @@ import {
 
 export const ComponentTipoCampo = ({
   campo,
-  setDataProyectoSeleccionado,
+  actualizarDataProyecto,
+  projectSelected,
   dataProyectoSeleccionado,
   values,
   indexAgrupacion,
@@ -60,31 +61,24 @@ export const ComponentTipoCampo = ({
   const dropAreaRef = useRef(null);
 
   //console.log(dataProyectoSeleccionado);
-  if(campo.tipoCampo === "CATALOGO" && campo.restriccion.includes('CAT')){
-    console.log(campo.restriccion.split(',')[1])
-    console.log(campo.nombreCampo + ":");
-    const tempData = {...dataProyectoSeleccionado}
+  useEffect(() => {
+    if (campo.tipoCampo === "CATALOGO" && campo.restriccion.includes('CAT')) {
+      //console.log(campo.restriccion.split(',')[1]);
+      //console.log(campo.nombreCampo + ":");
 
-    tempData.catalogos[campo.restriccion.split(',')[1]].catalogo = []
-      console.log(tempData);
+      const tempData = { ...dataProyectoSeleccionado };
+      tempData.catalogos[campo.restriccion.split(',')[1]].catalogo = [];
 
-      
-    /* dataProyectoSeleccionado?.catalogos[campo?.restriccion.split(',')[1]]
-      ?.catalogo = [] */
-      /* setDataProyectoSeleccionado(prevState => ({
-        ...prevState,
-        catalogos: {
-            ...prevState.catalogos,
-            [campo?.restriccion.split(',')[1]]: {
-                ...prevState.catalogos[campo?.restriccion.split(',')[1]],
-                catalogo: []
-            }
-        }
-    })); */
-      
-    console.log(dataProyectoSeleccionado?.catalogos[campo?.restriccion.split(',')[1]]
-      ?.catalogo);
-  }
+     // console.log(tempData);
+
+      // Comparar tempData con dataProyectoSeleccionado para evitar bucles infinitos
+      if (JSON.stringify(tempData) !== JSON.stringify(dataProyectoSeleccionado)) {
+        actualizarDataProyecto(tempData);
+      }
+
+      //console.log(dataProyectoSeleccionado?.catalogos[campo?.restriccion.split(',')[1]].catalogo);
+    }
+  }, [campo, dataProyectoSeleccionado, actualizarDataProyecto]);
   // Agregar eventos de arrastrar y soltar
   const handleDragOver = (e) => {
     e.preventDefault();
@@ -105,6 +99,26 @@ export const ComponentTipoCampo = ({
     // Procesar los archivos (puedes enviarlos al servidor aquí)
     subirArchivos(files);
   };
+
+  const putCatalogo = (catRel, valCatSelect) =>{
+    fetch(`${api}/obtener/catalogo/datos/proyecto/relacionado/${catRel}/${valCatSelect}`,{
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(projectSelected)
+    })
+    .then((response) => response.json())
+    .then((responseData) => {
+      console.log(responseData);
+      const tempData = { ...dataProyectoSeleccionado };
+      tempData.catalogos[catRel].catalogo = responseData.catalogo;
+      if (JSON.stringify(tempData) !== JSON.stringify(dataProyectoSeleccionado)) {
+        actualizarDataProyecto(tempData);
+      }
+    })
+    .catch((error) => console.log(error))
+  }
 
   const borrarEvidencia = () => {
     fetch(`${api}/eliminar/evidencias/web`, {
@@ -603,6 +617,9 @@ export const ComponentTipoCampo = ({
                 setSelectedValueCatalogo(e.value);
                 campo.valor = e.value;
                 setFieldValue(campo.nombreCampo, e.value);
+                if(campo.restriccion.includes("CAT")){
+                  putCatalogo(campo.restriccion.split(",")[1], e.value);
+                }
               }}
               maxLength={campo.longitud}
             />

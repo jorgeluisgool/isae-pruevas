@@ -4,20 +4,22 @@ import { Player } from '@lottiefiles/react-lottie-player';
 
 export const DialogRegistroGuardado = ({modalRegistroGuardado, setModalRegistroGuardado, dataMensajeRegistroGuardado}) => {
 
-    useEffect(() => {
-        if (modalRegistroGuardado) {
-          const timer = setTimeout(() => {
-            setModalRegistroGuardado(false);
-          }, 2400); // 5000 milisegundos = 5 segundos
+     useEffect(() => {
+         if (modalRegistroGuardado) {
+           const timer = setTimeout(() => {
+             setModalRegistroGuardado(false);
+           }, 2400); // 5000 milisegundos = 5 segundos
     
-          return () => clearTimeout(timer);
-        }
-      }, [modalRegistroGuardado]);
+           return () => clearTimeout(timer);
+         }
+       }, [modalRegistroGuardado]);
 
+      
   return (
     <Dialog 
         header='MENSAJE' 
         visible={modalRegistroGuardado} 
+        closable={false} 
         style={{
             // position: 'fixed',
             // top: '20px', // Ajusta la distancia desde la parte superior
@@ -29,7 +31,7 @@ export const DialogRegistroGuardado = ({modalRegistroGuardado, setModalRegistroG
             boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)', // Agrega una sombra para el efecto de elevación
             backgroundColor: '#ffffff', // Ajusta el color de fondo del Dialog
           }} 
-        onHide={() => setModalRegistroGuardado(false)}
+        // onHide={() => setModalRegistroGuardado(false)}
     >
         <div className='text-center'>
             <Player src='https://lottie.host/da9fce7b-d61d-4dd2-adff-7f9cffae9bd0/AQpy3VS18s.json'
@@ -41,7 +43,7 @@ export const DialogRegistroGuardado = ({modalRegistroGuardado, setModalRegistroG
             <h1 className='text-lg font-bold'>{dataMensajeRegistroGuardado}</h1>
         </div>
         
-        <div className='mt-8'>
+        {/* <div className='mt-8'>
             <button 
                 type='button'
                 onClick={() => setModalRegistroGuardado(false)}
@@ -49,7 +51,7 @@ export const DialogRegistroGuardado = ({modalRegistroGuardado, setModalRegistroG
             >
                 ACEPTAR
             </button>
-        </div>
+        </div> */}
     </Dialog>
   )
 }

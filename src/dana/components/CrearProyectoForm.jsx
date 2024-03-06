@@ -19,7 +19,7 @@ const tipoProyecto = [
 ];
 
 
-export const CrearProyectoForm = () => {
+export const CrearProyectoForm = ({setFormularioState}) => {
 
     const { dataArchivoExcel, setDataArchivoExcel } = useContext(ExampleContex);
     const { data: proyectos, loading } = useFetchProjects();
@@ -124,19 +124,6 @@ export const CrearProyectoForm = () => {
         navigate('/camposproyecto');
     }
 
-    const handleDownloadPlantilla = () => {
-      const csvList = [
-        ['campo', 'tipocampo', 'agrupacion', 'restriccion', 'longitud'],
-        ['(NOMBRE DEL CAMPO)', '(TIPO DEL CAMPO (NUMERICO,ALFANUMERICO,CORREO,ALFABETICO,CATALOGO,FIRMA,FOTO,CALENDARIO,CHECKBOX))', '(NOMBRE DE LA AGRUPACION DE LOS CAMPOS)', '(CARACTERES A UTILIZAR)', '(10)'],
-      ];
-    
-      const csv = csvList.map(row => row.map(cell => `"${cell}"`).join(',')).join('\n');
-      const content = btoa(unescape(encodeURIComponent(csv)));
-      const anchor = document.createElement('a');
-      anchor.href = `data:application/octet-stream;charset=utf-16le;base64,${content}`;
-      anchor.download = 'PantillaCamposProyecto.csv';
-      anchor.click();
-    }
     
     return (
         <>
@@ -171,7 +158,7 @@ export const CrearProyectoForm = () => {
 
               if (proyectosFilter === undefined){
                 // aqui se mandan los valores del formulario al context para usarlos en la vista camposProyecto
-                setDataCrearProyecto( valores);
+                setDataCrearProyecto(valores);
 
                 // hace que los inputs del formulario se reinicien al estado inicial al hacer click 
                 resetForm();
@@ -185,45 +172,9 @@ export const CrearProyectoForm = () => {
         >
             {({values, errors, setFieldValue}) => (
                 <Form>
-                    <div className='mx-4 xl:mx-20 my-4 px-4 py-2 shadow-md bg-white rounded-lg overflow-hidden'>
-                    {/* <label className="mx-0 my-1 text-xl font-bold text-[#245A95]">
-                        CREAR PROYECTO
-                    </label> */}
-
-                    <h1 className="mt-2 pl-3 text-2xl font-black text-[#245A95]">
-                      Crear proyecto
-                    </h1>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                        <div className="mt-2 flex items-center gap-x-4">
-                            <button onClick={handleDownloadPlantilla} className="shadow-md bg-transparent hover:bg-[#245A95] hover:text-white text-[#245A95] scroll-ml-5 w-14 h-14 active:scale-[.98] transition-all py-3 rounded-xl bg-[#245A95] text-4xl font-bold">
-                                <ion-icon name="document-text"></ion-icon>
-                            </button>
-                            <h1 className='text-xs text-[#245A95] font-semibold'>
-                                Plantilla de campos para generar proyecto 
-                            </h1>
-                        </div>
+                    <div className='mx-4 my-4 px-4 py-2 bg-white rounded-lg overflow-hidden'>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">        
                         <div className='mt-5 flex flex-col gap-y-1 w-full'>
-                            {/* <div className="p-inputgroup">
-                                <span className='p-float-label relative'>
-                                    <Field
-                                        className="w-full appearance-none focus:outline-none bg-transparent"
-                                        as={InputText}
-                                        name="proyecto"
-                                        value={values.proyecto}
-                                        onChange={(e) => setFieldValue("proyecto", e.target.value.toUpperCase())}
-                                    /> 
-                                    <span className="p-inputgroup-addon border border-gray-300 p-2 rounded-md">
-                                      <i className="pi pi-file-edit text-[#245A95] font-bold text-2xl"></i>
-                                    </span>
-                                    <label htmlFor="name" className='text-lg text-[#245A95] font-semibold absolute top-0 left-0 transform'>
-                                      Proyecto
-                                    </label>
-                                </span>
-                            </div>
-                            <ErrorMessage name="proyecto" component={() => (
-                                <span className="text-red-600"><ion-icon name="alert-circle-sharp"></ion-icon> {errors.proyecto}</span>
-                            )}/>  */}
-
                             <div className="p-inputgroup">
                               <span className="p-float-label w-full">
                                 <InputText
@@ -240,7 +191,7 @@ export const CrearProyectoForm = () => {
                                   htmlFor="name"
                                   className="text-sm text-[#245A95] font-extrabold absolute top-2 left-3 transition-all duration-300"
                                 >
-                                  Proyecto
+                                  Nombre del proyecto
                                 </label>
                               </span>
                             </div>  
@@ -249,30 +200,15 @@ export const CrearProyectoForm = () => {
                             )}/>
                         </div>  
                         <div className="mt-5 flex flex-col gap-y-1 w-full">
-                            {/* <div className="p-inputgroup">
-                                <span className='p-float-label relative'>
-                                    <Field
-                                        className="w-full appearance-none focus:outline-none bg-transparent"
-                                        as={Dropdown}
-                                        name="tipo"
-                                        options={tipoProyecto}
-                                        optionLabel="name"
-                                    />
-                                    <span className="p-inputgroup-addon border border-gray-300 p-2 rounded-md">
-                                        <i className="pi pi-search text-[#245A95] font-bold text-2xl"></i>
-                                    </span>
-                                    <label htmlFor="tipo" className='text-lg text-[#245A95] font-semibold absolute top-0 left-0 transform'>
-                                        Tipo de proyecto
-                                    </label>
-                                </span>
-                            </div> */}
-
                           <div className="p-inputgroup">
                             <span className="p-float-label w-full">
                               <Dropdown
                                 className="w-full appearance-none focus:outline-none bg-transparent border-b-2 border-[#245A95] text-gray-700 transition-all duration-300 focus:border-[#245A95]"
                                 name="tipo"
                                 options={tipoProyecto}
+                                value={values.tipo} // Establece el valor seleccionado
+                                onChange={(e) => setFieldValue("tipo", e.target.value)}
+                                // value={values.tipo}
                                 optionLabel="name"
                                 filter
                               />
@@ -310,14 +246,24 @@ export const CrearProyectoForm = () => {
                             )}/>
                         </div>
                     </div>
-                        <div className="flex">
-                            <button
-                              type="submit"
-                              className="ml-auto w-14 h-14 object-cover active:scale-[.98] py-3 bg-transparent hover:bg-[#245A95] hover:text-white text-[#245A95] text-2xl font-bold inline-block rounded-full bg-primary p-2 uppercase leading-normal shadow-md transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] mt-4">
-                              <ion-icon name="arrow-forward"></ion-icon>
-                            </button>
-                        </div>
                     </div>
+                    <div className="cursor-pointer absolute inset-x-0 bottom-4 right-6 flex gap-3 justify-end">
+                      <button
+                        type="submit"  // Asegúrate de que el tipo sea 'submit'
+                        className="hover:shadow-slate-600 border h-8 px-3 bg-[#245A95] text-white text-sm lg:text-lg font-bold rounded-full shadow-md duration-150 ease-in-out focus:outline-none active:scale-[1.20] transition-all hover:bg-sky-600"
+                      >
+                        <ion-icon name="save"></ion-icon> Aceptar
+                      </button>    
+                      <button
+                        className="hover:shadow-slate-600 border h-8 px-3 bg-[#245A95] text-white text-sm lg:text-lg font-bold rounded-full shadow-md duration-150 ease-in-out focus:outline-none active:scale-[1.20] transition-all hover:bg-sky-600"
+                        onClick={() => {
+                          setFormularioState(false);
+                        }}
+                        type='button'
+                      >
+                        <ion-icon name="close-circle"></ion-icon> Cancelar
+                      </button>
+                    </div> 
                 </Form>
             )}
         </Formik> 

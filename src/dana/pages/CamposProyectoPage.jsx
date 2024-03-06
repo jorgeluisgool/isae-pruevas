@@ -11,13 +11,18 @@ import { useFetchProjects } from '../hooks/useFetchProjects';
 import { api } from '../helpers/variablesGlobales';
 import { Dialog } from 'primereact/dialog';
 import { Player } from '@lottiefiles/react-lottie-player';
+import { VentanaCargaIsae } from '../../ui/components/VentanaCargaIsae';
+import { DialogCorfirmacionCrearProyecto } from '../../ui/components/DialogCorfirmacionCrearProyecto';
+import { DialogRegistroGuardado } from '../../ui/components/DialogRegistroGuardado';
 
 /// COMPONETE ///
 const CamposProyectoPage = () => {
 
   const [showDialog, setShowDialog] = useState(false);
+  const [ventanaDeCarga, setVentanaDeCarga] = useState(false);
+  const [modaAceptarlAbrirCerrar, setModaAceptarlAbrirCerrar] = useState(false);
 
-  const { userAuth, setUserAuth, dataCrearProyecto } = useAuth();
+  const { userAuth, setUserAuth, dataCrearProyecto, setModalRegistroGuardado } = useAuth();
   // console.log(dataCrearProyecto.tipo.name)
 
   // Función que mantiene el estado del usuario al hacer refesh
@@ -53,25 +58,32 @@ const CamposProyectoPage = () => {
   }
 
   const onSubmit = () => {
-
-      fetch(`${api}/crear/proyecto/${dataCrearProyecto.proyecto}/${dataCrearProyecto.tipo.name}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json' 
-        },
-        body: JSON.stringify(dataArchivoExcel) 
-      })
-        .then(response => response.json())
-        .then(responseData => {
-          // Lógica adicional después de enviar los datos a la API
-          // ...
-          console.log('Respuesta de la API:', responseData);
-          setShowDialog(true);
-        })
-        .catch(error => console.log(error));
-
-        // setShowDialog(true);
-  }; 
+    setModaAceptarlAbrirCerrar(false);
+    setVentanaDeCarga(true);
+  
+    //  console.log(dataArchivoExcel)
+    //  console.log(dataCrearProyecto.tipo.name);
+     fetch(`${api}/crear/proyecto/${dataCrearProyecto.proyecto}/${dataCrearProyecto.tipo.name}`, {
+       method: 'POST',
+       headers: {
+         'Content-Type': 'application/json' 
+       },
+       body: JSON.stringify(dataArchivoExcel) 
+     })
+     .then(response => {
+       console.log('Respuesta de la API:', response);
+       setVentanaDeCarga(false);
+       handleClickRegresar();
+       setModalRegistroGuardado(true)
+       // Otro código a ejecutar si la solicitud se completó correctamente
+     })   
+     .catch(error => {
+       console.log('Error al enviar la solicitud:', error);
+       setVentanaDeCarga(false);
+       // Otro código a ejecutar si la solicitud falla
+     });
+  };
+  
 
   const handleDialogClose = () => {
     setShowDialog(false);
@@ -85,6 +97,16 @@ const CamposProyectoPage = () => {
 
   return (
     <>
+      <VentanaCargaIsae 
+        ventanaDeCarga={ventanaDeCarga}
+      />
+      <DialogCorfirmacionCrearProyecto 
+        modaAceptarlAbrirCerrar={modaAceptarlAbrirCerrar}
+        setModaAceptarlAbrirCerrar={setModaAceptarlAbrirCerrar}
+        mensaje={'¿SEGURO QUE QUIERES CREAR ESTE PROYECTO?'}
+        onSubmit={onSubmit}
+        setVentanaDeCarga={setVentanaDeCarga}
+      />
       <h1 className="pt-6 pb-8 pl-4 text-4xl font-black">Campos proyecto: { <span className='text-[#245A95]'>{example.dataCrearProyecto.proyecto}</span> }</h1>
       <DndContext
         collisionDetection={closestCenter}
@@ -105,8 +127,8 @@ const CamposProyectoPage = () => {
             </div>
           </div>
       </DndContext>
-      <BotonFlotanteGuardar onClick={onSubmit} />
-      <BotonFlotanteRegresar onClick={handleClickRegresar} />
+      <BotonFlotanteGuardar setModaAceptarlAbrirCerrar={setModaAceptarlAbrirCerrar} />
+      <BotonFlotanteRegresar onClick={handleClickRegresar}/>
 
       <Dialog
           visible={showDialog}

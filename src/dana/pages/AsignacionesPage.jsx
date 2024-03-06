@@ -321,9 +321,9 @@ export const AsignacionesPage = () => {
           
           <section>
             <div className="grid sm:grid-cols-2 gap-8">
-              <div className="mt-3">
+              <div className="">
                 <h1 className="pt-2 xl:pt-6 pl-3 mb-6 text-base font-black text-neutral-900">
-                  <span className="text-[#245A95] text-4xl">1</span> Selecciona el usuario a quie le asignaras el proyecto
+                  <span className="text-[#245A95] text-4xl">1</span> Selecciona el usuario al cual le asignaras el proyecto
                 </h1>
                 <div className="p-inputgroup">
                   <span className="p-float-label w-full mt-2">
@@ -351,7 +351,7 @@ export const AsignacionesPage = () => {
                   </span>
                 </div>
               </div>
-              <div className="mt-3">
+              <div className="">
                 <h1 className="pt-2 xl:pt-6 pl-3 mb-6 text-base font-black text-neutral-900">
                   <span className="text-[#245A95] text-4xl">2</span> Selecciona el proyecto a asignar
                 </h1>
@@ -439,6 +439,8 @@ export const AsignacionesPage = () => {
             )}
           </section>
         </div>
+
+        {/* PARTE DE ASIGNACION DE REGISTROS */}
         <div
           className="mx-4 xl:mx-20 my-4 px-4 py-2 shadow-md bg-white rounded-lg overflow-hidden"
           onClick={() => setShowTable(false)}
@@ -447,8 +449,11 @@ export const AsignacionesPage = () => {
             Asignación de registros
           </h1>
           <section>
-            <div className="p-inputgroup mt-3 lg:mt-6 grid sm:grid-cols-4 gap-8">
+            <div className="p-inputgroup grid sm:grid-cols-2 gap-x-8">
               <div className="">
+                <h1 className="pt-2 xl:pt-6 pl-3 mb-6 text-base font-black text-neutral-900">
+                  <span className="text-[#245A95] text-4xl">1</span> Selecciona el usuario al cual le asignaras el registro
+                </h1>
                 <span className="p-float-label w-full mt-2">
                   <Dropdown
                     className="w-full appearance-none focus:outline-none bg-transparent border-b-2 border-[#245A95] text-gray-700 transition-all duration-300 focus:border-[#245A95]"
@@ -477,6 +482,9 @@ export const AsignacionesPage = () => {
               </div>
 
               <div className="">
+                <h1 className="pt-2 xl:pt-6 pl-3 mb-6 text-base font-black text-neutral-900">
+                  <span className="text-[#245A95] text-4xl">2</span> Selecciona el proyecto para mostrar sus registros
+                </h1>
                 <span className="p-float-label w-full mt-2">
                   <Dropdown
                     className="w-full appearance-none focus:outline-none bg-transparent border-b-2 border-[#245A95] text-gray-700 transition-all duration-300 focus:border-[#245A95]"
@@ -504,8 +512,11 @@ export const AsignacionesPage = () => {
                 </span>
               </div>
 
-              <div className="">
-                <span className="p-float-label w-full mt-2">
+              <div className="pt-4">
+                <h1 className="pl-3 mb-6 text-base font-black text-neutral-900">
+                  <span className="text-[#245A95] text-4xl">3</span> Selecciona el campo y búscalo por el mismo si es necesario
+                </h1>
+                <span className="p-float-label w-full">
                   <Dropdown
                     className="w-full appearance-none focus:outline-none bg-transparent border-b-2 border-[#245A95] text-gray-700 transition-all duration-300 focus:border-[#245A95]"
                     name="proyecto"
@@ -532,7 +543,10 @@ export const AsignacionesPage = () => {
                 </span>
               </div>
 
-              <div className="">
+              <div className="pt-4">
+                <h1 className="pl-3 mb-6 text-base font-black text-neutral-900">
+                  <span className="text-[#245A95] text-4xl">4</span> Selecciona el valor del campo seleccionado
+                </h1>
                 <span className="p-float-label w-full mt-2">
                   <Dropdown
                     className="w-full appearance-none focus:outline-none bg-transparent border-b-2 border-[#245A95] text-gray-700 transition-all duration-300 focus:border-[#245A95]"
@@ -556,42 +570,42 @@ export const AsignacionesPage = () => {
                 </span>
               </div>
             </div>
-            <div className="mt-5 lg:mt-6 grid sm:grid-cols-3 gap-8">
-              <div className="flex justify-center items-center">
-                <button
-                  type="button"
-                  className="hover:shadow-slate-600 border h-10 px-4 bg-[#245A95] text-white text-lg font-bold shadow-md duration-150 ease-in-out focus:outline-none active:scale-[1.20] transition-all hover:bg-sky-600 rounded-full"
-                  onClick={() => assignRegisters(selectedUser.idusuario)}
-                >
-                  Asignar
-                </button>
-              </div>
+            {
+              selectedValueField != '' ?
+              <div className="lg:mt-6 grid sm:grid-cols-3 gap-8">
+                <div className="flex justify-end items-center">
 
-              <div className="flex justify-center items-center">
-                <button
-                  type="button"
-                  className="hover:shadow-slate-600 border h-10 px-4 bg-[#245A95] text-white text-lg font-bold shadow-md duration-150 ease-in-out focus:outline-none active:scale-[1.20] transition-all hover:bg-sky-600 rounded-full"
-                  onClick={() => getRegisters(selectedUsersProjects.idproyecto)}
-                >
-                  Mostrar todos
-                </button>
+                </div>
+                <div className="flex justify-center items-center">
+                  <button
+                    type="button"
+                    className="hover:shadow-slate-600 border h-10 px-4 bg-[#245A95] text-white text-lg font-bold shadow-md duration-150 ease-in-out focus:outline-none active:scale-[1.20] transition-all hover:bg-sky-600 rounded-full"
+                    onClick={() =>
+                      getRegistersField(
+                        selectedUsersProjects.idproyecto,
+                        selectedValueField
+                      )
+                    }
+                  >
+                  <i className="pi pi-search text-white font-light text-xl"></i>  Buscar
+                  </button>
+                </div>
+                <div className="flex justify-center lg:justify-end items-center">
+                  <button
+                    type="button"
+                    className="hover:shadow-slate-600 border h-10 px-4 bg-[#245A95] text-white text-lg font-bold shadow-md duration-150 ease-in-out focus:outline-none active:scale-[1.20] transition-all hover:bg-sky-600 rounded-full"
+                    onClick={() => getRegisters(selectedUsersProjects.idproyecto)}
+                  >
+                    Mostrar todos
+                  </button>
+                </div>
               </div>
-
-              <div className="flex justify-center items-center">
-                <button
-                  type="button"
-                  className="hover:shadow-slate-600 border h-10 px-4 bg-[#245A95] text-white text-lg font-bold shadow-md duration-150 ease-in-out focus:outline-none active:scale-[1.20] transition-all hover:bg-sky-600 rounded-full"
-                  onClick={() =>
-                    getRegistersField(
-                      selectedUsersProjects.idproyecto,
-                      selectedValueField
-                    )
-                  }
-                >
-                  Buscar
-                </button>
-              </div>
-            </div>
+              :
+              <>
+              </>
+            }
+            
+            
             {tables && !showTable ? (
               <div className="flex items-center justify-center flex-col my-12">
                 <img
@@ -638,6 +652,16 @@ export const AsignacionesPage = () => {
                 </div>
               </div>
             )}
+
+              <div className="flex justify-center items-center pt-4">
+                <button
+                  type="button"
+                  className="hover:shadow-slate-600 border h-10 px-4 bg-[#245A95] text-white text-lg font-bold shadow-md duration-150 ease-in-out focus:outline-none active:scale-[1.20] transition-all hover:bg-sky-600 rounded-full"
+                  onClick={() => assignRegisters(selectedUser.idusuario)}
+                >
+                  <ion-icon name="person-add"></ion-icon>  Asignar
+                </button>
+              </div>
           </section>
         </div>
       </div>

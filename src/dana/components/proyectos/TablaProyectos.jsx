@@ -99,7 +99,7 @@ export const TablaProyectos = ({proyectos, searchTerm, setModalBase, setProyecto
                 </td>
                 <td className="px-6">
                   <div className="flex space-x-4">
-                  <div className="text-sm font-medium text-gray-900">{proyecto.tipoproyecto.descripcion}</div>
+                  <div className="text-sm font-medium text-gray-900">{proyecto?.tipoproyecto.descripcion}</div>
                   </div>
                 </td>
                 <td className="px-6">

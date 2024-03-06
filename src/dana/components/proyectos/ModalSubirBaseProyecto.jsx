@@ -40,12 +40,15 @@ export const ModalSubirBaseProyecto = ({modalBase, setModalBase, proyectoSelecci
     console.log(usuarioSeleccionado.idusuario);
     console.log(proyectoSeleccionado.idproyecto);
 
+    // Convertir Uint8Array a un arreglo de enteros
+    const arregloEnteros = Array.from(arregloBytesExcel, byte => byte);
+
     fetch(`${api}/obtener/excel/datos/proyecto/${usuarioSeleccionado.idusuario}/${proyectoSeleccionado.idproyecto}`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/octet-stream',
+        'Content-Type': 'application/json',
       },
-      body: new Uint8Array(arregloBytesExcel), 
+      body: JSON.stringify(arregloEnteros)
     })
       .then(response => response.json())
       .then(responseData => {

@@ -23,13 +23,13 @@ export const TableRegisters = ({
           <h1 className="pt-2 xl:pt-6 pl-3 xl:pl-0 text-2xl font-black text-[#245A95] mb-2">
             Registros
           </h1>
-          <div className="flex justify-center lg:ml-0 ml-40 lg:pl-0 pl-8">
-            <table className="w-full bg-white shadow-md">
+          <div className="flex justify-center lg:ml-0 ml-40 lg:pl-0 pl-10">
+            <table className="min-w-full bg-white rounded-lg overflow-hidden shadow-md">
               <thead className="bg-[#245A95] text-white uppercase">
                 <tr className="">
                   <th scope="col" className="relative px-6 py-1">
                     <div className="items-center">
-                      <span>SELECCIONAR</span>
+                      <span></span>
                     </div>
                   </th>
                   <th scope="col" className="relative px-6 py-1">
@@ -67,7 +67,7 @@ export const TableRegisters = ({
                       <td className="px-6 py-2">
                         <div className="flex items-center">
                           <div className="ml-2">
-                            <div className="lg:text-xs text-xs text-xs font-medium text-gray-900 cursor-pointer">
+                            <div className="lg:text-xs text-xs font-medium text-gray-900 cursor-pointer">
                               {registers.folio}
                             </div>
                           </div>
@@ -76,7 +76,7 @@ export const TableRegisters = ({
                       <td className="px-6 py-2">
                         <div className="flex items-center">
                           <div className="ml-2">
-                            <div className="lg:text-xs text-xs text-xs font-medium text-gray-900 cursor-pointer">
+                            <div className="lg:text-xs text-xs font-medium text-gray-900 cursor-pointer">
                               {registers.fechacreacion}
                             </div>
                           </div>
@@ -85,7 +85,7 @@ export const TableRegisters = ({
                       <td className="px-6 py-2">
                         <div className="flex items-center">
                           <div className="ml-2">
-                            <div className="lg:text-xs text-xs text-xs font-medium text-gray-900 cursor-pointer">
+                            <div className="lg:text-xs text-xs font-medium text-gray-900 cursor-pointer">
                               {registers.estatus}
                             </div>
                           </div>
@@ -97,7 +97,7 @@ export const TableRegisters = ({
             </table>
           </div>
 
-          <div className="flex items-center justify-between mt-4">
+          <div className="flex items-center justify-between mt-4 pl-4">
             <div className="flex items-center">
               <span className="mr-2 text-[#245A95] font-bold text-xs lg:text-lg">
                 Datos:

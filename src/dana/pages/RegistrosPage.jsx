@@ -48,6 +48,17 @@ export const RegistrosPage = () => {
   const [showAcordion, setShowAcordion] = useState(null);
   const [ventanaCarga, setVentanaCarga] = useState(false);
 
+
+  console.log(proyectoSeleccionado);
+
+  const projectSelected = {
+    idproyecto: proyectoSeleccionado?.proyecto?.idproyecto || "",
+    proyecto: proyectoSeleccionado?.proyecto?.proyecto || "",
+    descripcion: proyectoSeleccionado?.proyecto?.tipoproyecto.descripcion || "",
+    fechacreacion: proyectoSeleccionado?.proyecto?.fechacreacion || "",
+  }
+
+  console.log(projectSelected);
   const mandarDatos = {};
 
   const toggleShow = (index) => {
@@ -145,6 +156,7 @@ export const RegistrosPage = () => {
 
           if (dataColeccion.inventario.idinventario === 0) {
             newRegister(dataColeccion, proyectoSeleccionado);
+            setVentanaCarga(false);
           } else {
             if (updateRegister(dataColeccion, proyectoSeleccionado)) {
               setVentanaCarga(false);
@@ -226,6 +238,10 @@ export const RegistrosPage = () => {
     });
 
     setDataProyectoSeleccionado(newData);
+  };
+
+  const actualizarDataProyecto = (tempData) => {
+    setDataProyectoSeleccionado(tempData);
   };
 
   // funcion que hace que al hacer refesh se mantenga el usuario activo
@@ -362,12 +378,11 @@ export const RegistrosPage = () => {
                                   </div>
                                   <div className="col-span-3">
                                     <ComponentTipoCampo
-                                    setDataProyectoSeleccionado={
-                                      setDataProyectoSeleccionado
-                                    }
+                                    actualizarDataProyecto={actualizarDataProyecto}
                                       dataProyectoSeleccionado={
                                         dataProyectoSeleccionado
                                       }
+                                      projectSelected ={projectSelected}
                                       itemagrupacion={itemagrupacion}
                                       campo={item}
                                       indexAgrupacion={indexAgrupacion}

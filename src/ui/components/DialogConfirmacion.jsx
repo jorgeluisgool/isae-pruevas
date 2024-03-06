@@ -28,6 +28,7 @@ export const DialogConfirmacion = ({handleMensajeAceptar, modaAceptarlAbrirCerra
           <button
             type='submit'
             onClick={
+              /* handleChildSubmit */
               (handleChildSubmit,
               handleGuardarRelacion)   
             }

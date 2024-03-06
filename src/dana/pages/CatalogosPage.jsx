@@ -213,7 +213,7 @@ export const CatalogosPage = () => {
   const handleGuardar = () => {
 
     setVentanaDeCarga(true);
-    catalogoRelacion2ProyectoSeleccionado([])
+    setCatalogoRelacion2ProyectoSeleccionado([])
 
     const fetchData = async () => {
       try {

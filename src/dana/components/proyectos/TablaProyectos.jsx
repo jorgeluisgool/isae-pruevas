@@ -68,7 +68,7 @@ export const TablaProyectos = ({proyectos, searchTerm, setModalBase, setProyecto
               </th>
               <th scope="col" className="relative px-6 py-3">
                 <div className="items-center">
-                  <span>Subir base</span>
+                  <span>Subir registros</span>
                 </div>
               </th>
               <th scope="col" className="relative px-6 py-3">
@@ -113,7 +113,8 @@ export const TablaProyectos = ({proyectos, searchTerm, setModalBase, setProyecto
                       type="button"
                       onClick={() => {
                         setProyectoSeleccionado(proyecto);
-                        setVentanaCarga(true);
+                        // setVentanaCarga(true);
+                        
                         fetch(
                           `${api}/obtener/datos/nuevo/registro`,
                           {

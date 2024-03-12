@@ -10,6 +10,7 @@ import { InputText } from "primereact/inputtext";
 import { ModalSubirBaseProyecto } from "../components/proyectos/ModalSubirBaseProyecto";
 import { ModalFormularioNuevoProyecto } from "../components/proyectos/ModalFormularioNuevoProyecto";
 import { DialogRegistroGuardado } from "../../ui/components/DialogRegistroGuardado";
+import { DialogConfirmacionDescarga } from "../../ui/components/DialogConfirmacionDescarga";
 
 
 const ProyectosPage = () => {
@@ -20,7 +21,7 @@ const ProyectosPage = () => {
   const [modalBase, setModalBase] = useState(false);
   const [proyectoSeleccionado, setProyectoSeleccionado] = useState([]);
   const [formularioState, setFormularioState] = useState(false);
-  // const [modalRegistroGuardado, setModalRegistroGuardado] = useState(false);
+  const [modaAceptarlAbrirCerrar, setModaAceptarlAbrirCerrar] = useState(false);
 
   useEffect(() => {
     const loggedInUser = localStorage.getItem("user");
@@ -32,7 +33,7 @@ const ProyectosPage = () => {
     }
   }, []);
 
-  const { data: proyectos, loading } = useFetchProjects();
+  const { data: proyectos, loading } = useFetchProjects(userAuth, setModaAceptarlAbrirCerrar);
 
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
@@ -128,6 +129,7 @@ const ProyectosPage = () => {
                     searchTerm = {searchTerm}
                     setModalBase = {setModalBase}
                     setProyectoSeleccionado = {setProyectoSeleccionado}
+                    setModaAceptarlAbrirCerrar={setModaAceptarlAbrirCerrar}
                   />
                 </div> 
               </div> 
@@ -141,6 +143,12 @@ const ProyectosPage = () => {
                 modalBase = {modalBase}
                 setModalBase = {setModalBase}
                 proyectoSeleccionado = {proyectoSeleccionado}
+              />
+
+              <DialogConfirmacionDescarga 
+                mensaje={'Seguro que desea descargar la plantilla'}
+                modaAceptarlAbrirCerrar={modaAceptarlAbrirCerrar}
+                setModaAceptarlAbrirCerrar={setModaAceptarlAbrirCerrar}
               />
               </div> 
           </div> 

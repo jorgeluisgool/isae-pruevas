@@ -13,14 +13,15 @@ const acomodarDatos = (lista) => {
   return nuevaLista;
 }
 
-export const useFetchProjects = ()=>{
+export const useFetchProjects = (userAuth)=>{
+  
     const [state, setState] = useState({
         data: [],
         loading: true
     });
 
     useEffect(() => {
-        getProyectos(api)
+        getProyectos(api, userAuth)
           .then(proyectos => {
             // console.log('Cargando datos...');
             setState({

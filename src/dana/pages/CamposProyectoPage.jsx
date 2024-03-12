@@ -58,11 +58,12 @@ const CamposProyectoPage = () => {
   }
 
   const onSubmit = () => {
-    setModaAceptarlAbrirCerrar(false);
-    setVentanaDeCarga(true);
+     setModaAceptarlAbrirCerrar(false);
+     setVentanaDeCarga(true);
   
-    //  console.log(dataArchivoExcel)
-    //  console.log(dataCrearProyecto.tipo.name);
+    console.log(dataArchivoExcel)
+    console.log(dataCrearProyecto.proyecto);
+    console.log(dataCrearProyecto.tipo.name);
      fetch(`${api}/crear/proyecto/${dataCrearProyecto.proyecto}/${dataCrearProyecto.tipo.name}`, {
        method: 'POST',
        headers: {

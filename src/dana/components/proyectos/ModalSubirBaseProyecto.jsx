@@ -90,7 +90,7 @@ export const ModalSubirBaseProyecto = ({modalBase, setModalBase, proyectoSelecci
 
   return (
     <>
-        <Dialog header={`SUBIR REGISTROS A: ${proyectoSeleccionado.proyecto}`} visible={modalBase} baseZIndex={-1} onHide={() => setModalBase(false)} className='xl:mt-0 mx-3 b-6 sm:w-3/4 md:w-3/4 lg:w-3/4'>
+        <Dialog header={`SUBIR REGISTROS A: ${proyectoSeleccionado.proyecto}`} visible={modalBase} baseZIndex={-1} onHide={() => setModalBase(false)} className='xl:mt-0 sm:w-3/4 md:w-3/4 lg:w-3/4'>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4 mb-10"> 
                 <div className="">
                     <h1 className="text-base font-black text-[#245A95]">1. Selecciona un usuario</h1> 

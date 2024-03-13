@@ -98,7 +98,7 @@ export const FormularioUsuarios = ({initialValues, formularioState, setFormulari
 
   return (
     <>
-        <Dialog header='DAR DE ALTA NUEVO USUARIO' visible={formularioState} baseZIndex={-1} onHide={() => setFormularioState(false)} className='pt-20 xl:mt-0 mx-3 b-6 sm:w-3/4 md:w-3/4 lg:w-3/4'>
+        <Dialog header='DAR DE ALTA NUEVO USUARIO' visible={formularioState} baseZIndex={-1} onHide={() => setFormularioState(false)} className='pt-20 xl:mt-0 b-6 sm:w-3/4 md:w-3/4 lg:w-3/4'>
             <Formik
               initialValues={ usuarioSeleccionado === undefined ? initialValues : usuarioSeleccionado}  
               onSubmit={handleSubmit}

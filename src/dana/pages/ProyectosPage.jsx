@@ -104,14 +104,14 @@ const ProyectosPage = () => {
                 >
                   <ion-icon name="person-add"></ion-icon> Nuevo proyecto
                 </button>
-                <div className="mt-2 flex items-center gap-x-4">
+                <div className="flex items-center gap-x-4">
                   <button 
                     onClick={handleDownloadPlantilla} 
-                    className="shadow-md bg-transparent hover:bg-[#245A95] hover:text-white text-[#245A95] scroll-ml-5 w-14 h-14 active:scale-[.98] transition-all py-3 rounded-xl bg-[#245A95] text-4xl font-bold"
+                    className="shadow-md bg-transparent hover:bg-[#245A95] hover:text-white text-[#245A95] scroll-ml-5 w-14 h-14 active:scale-[.98] transition-all rounded-xl bg-[#245A95] text-4xl font-bold"
                   >
                     <ion-icon name="document-text"></ion-icon>
                   </button>
-                  <h1 className='text-xs text-[#245A95] font-semibold'>
+                  <h1 className='hidden lg:block text-xs text-[#245A95] font-semibold'>
                     Plantilla de campos para generar proyecto 
                   </h1>
                 </div>

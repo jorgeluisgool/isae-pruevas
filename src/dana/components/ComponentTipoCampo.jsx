@@ -39,8 +39,11 @@ export const ComponentTipoCampo = ({
   setSignatures,
   photos,
   setPhotos,
+  longitudCampoAlfanumerico,
+  setLongitudCampoAlfanumerico, 
+
 }) => {
-  //console.log(dataProyectoSeleccionado);
+  console.log(campo);
 
   const { setFieldValue } = useFormikContext();
 
@@ -58,6 +61,9 @@ export const ComponentTipoCampo = ({
   const [idFiles, setIdFiles] = useState([]);
   const [archivosEliminar, setArchivosEliminar] = useState([]);
   const [archivosSeleccionados, setArchivosSeleccionados] = useState([]);
+
+  const [longitudCampoAlfabetico, setLongitudCampoAlfabetico] = useState('');
+  
   const dropAreaRef = useRef(null);
 
   //console.log(dataProyectoSeleccionado);
@@ -447,11 +453,11 @@ export const ComponentTipoCampo = ({
     <>
       <div className="p-inputgroup">
         {campo.tipoCampo === "CALENDARIO" && (
-          <span className="p-float-label relative">
+          <span className="p-float-label w-full">
             <Field name={campo.nombreCampo}>
               {({ field, form }) => (
                 <Calendar
-                  className="w-full appearance-none focus:outline-none bg-transparent"
+                  className="w-full appearance-none focus:outline-none bg-transparent border-b-2 border-[#245A95] text-gray-700 transition-all duration-300 focus:border-[#245A95]"
                   value={selectedDate ? parseDate(selectedDate) : null}
                   dateFormat="dd/MM/yy"
                   onChange={(e) => {
@@ -462,21 +468,21 @@ export const ComponentTipoCampo = ({
                 />
               )}
             </Field>
-            <span className="p-inputgroup-addon border border-gray-300 p-2 rounded-md">
-              <i className="pi pi-calendar-plus text-[#245A95] font-bold text-2xl"></i>
+            <span className="bg-[#245A95] p-2 px-3 rounded-r-lg shadow-md">
+              <i className="pi pi-calendar-plus text-white font-light text-xl"></i>
             </span>
           </span>
         )}
 
         {campo.tipoCampo === "HORA" && (
-          <span className="p-float-label relative">
+          <span className="p-float-label w-full">
             <Field name={campo.nombreCampo}>
               {({ field, form }) => (
                 <Calendar
                   className="w-full appearance-none focus:outline-none bg-transparent"
                   value={hora}
                   onChange={(e) => {
-                    console.log(campo.valor);
+                    // console.log(campo.valor);
                     const formattedDate = format(e.value, "HH:mm");
                     setHora(e.value);
                     form.setFieldValue(field.name, formattedDate);
@@ -485,57 +491,69 @@ export const ComponentTipoCampo = ({
                 />
               )}
             </Field>
-            <span className="p-inputgroup-addon border border-gray-300 p-2 rounded-md">
-              <i className="pi pi-file-edit text-[#245A95] font-bold text-2xl"></i>
+            <span className="bg-[#245A95] p-2 px-3 rounded-r-lg shadow-md">
+              <i className="pi pi-file-edit text-white font-light text-xl"></i>
             </span>
           </span>
         )}
 
         {campo.tipoCampo === "ALFABETICO" && (
-          <span className="p-float-label relative">
+          
+            <span className="p-float-label w-full">
             <Field
               as={InputText}
-              className="w-full appearance-none focus:outline-none bg-transparent"
+              className="w-full appearance-none focus:outline-none bg-transparent border-b-2 border-[#245A95] text-gray-700 transition-all duration-300 focus:border-[#245A95]"
               name={campo.nombreCampo}
               defaultValue={campo.valor}
               maxLength={campo.longitud}
               // onChange={(e) => {
+              //   setLongitudCampoAlfabetico(e.target.value.length)
               //   e.target.value = e.target.value.toUpperCase();
               // }}
               keyfilter={RegExp(
                 `[A-Z ${campo.restriccion.replace("[", "").replace("]", "")}]`
               )}
             />
-            <span className="p-inputgroup-addon border border-gray-300 p-2 rounded-md">
-              <i className="pi pi-file-edit text-[#245A95] font-bold text-2xl"></i>
+            <span className="bg-[#245A95] p-2 px-3 rounded-r-lg shadow-md">
+              <i className="pi pi-file-edit text-white font-light text-xl"></i>
             </span>
           </span>
+          
+          
         )}
 
-        {campo.tipoCampo === "ALFANUMERICO" && (
-          <span className="p-float-label relative">
-            <Field
-              as={InputText}
-              className="w-full appearance-none focus:outline-none bg-transparent"
-              name={campo.nombreCampo}
-              defaultValue={campo.valor}
-              maxLength={campo.longitud}
-              keyfilter={RegExp(
-                `[0-9A-Z ${campo.restriccion
-                  .replace("[", "")
-                  .replace("]", "")}]`
-              )}
-            />
-            <span className="p-inputgroup-addon border border-gray-300 p-2 rounded-md">
-              <i className="pi pi-file-edit text-[#245A95] font-bold text-2xl"></i>
-            </span>
-          </span>
+{campo.tipoCampo === "ALFANUMERICO" && (
+  
+    <span className="p-float-label w-full">
+      <Field
+        as={InputText}
+        className="w-full appearance-none focus:outline-none bg-transparent border-b-2 border-[#245A95] text-gray-700 transition-all duration-300 focus:border-[#245A95]"
+        name={campo.nombreCampo}
+        defaultValue={campo.valor}
+        maxLength={campo.longitud}
+        // onChange={(e) => {
+        //   setLongitudCampoAlfanumerico(e.target.value.length);
+        //   e.target.value = e.target.value.toUpperCase();
+        // }}
+        keyfilter={RegExp(
+          `[0-9A-Z ${campo.restriccion
+            .replace("[", "")
+            .replace("]", "")}]`
         )}
+      />
+      <span className="bg-[#245A95] p-2 px-3 rounded-r-lg shadow-md">
+        <i className="pi pi-file-edit text-white font-light text-xl"></i>
+      </span>
+    </span>
+   
+  
+)}
+
 
         {campo.tipoCampo === "NUMERICO" && (
-          <span className="p-float-label relative">
+          <span className="p-float-label w-full">
             <Field
-              className="w-full appearance-none focus:outline-none bg-transparent"
+              className="w-full appearance-none focus:outline-none bg-transparent border-b-2 border-[#245A95] text-gray-700 transition-all duration-300 focus:border-[#245A95]"
               as={InputText}
               name={campo.nombreCampo}
               defaultValue={campo.valor}
@@ -544,16 +562,16 @@ export const ComponentTipoCampo = ({
                 `[0-9${campo.restriccion.replace("[", "").replace("]", "")}]`
               )}
             />
-            <span className="p-inputgroup-addon border border-gray-300 p-2 rounded-md">
-              <i className="pi pi-file-edit text-[#245A95] font-bold text-2xl"></i>
+            <span className="bg-[#245A95] p-2 px-3 rounded-r-lg shadow-md">
+              <i className="pi pi-file-edit text-white font-light text-xl"></i>
             </span>
           </span>
         )}
 
         {campo.tipoCampo === "CORREO" && (
-          <span className="p-float-label relative">
+          <span className="p-float-label w-full">
             <Field
-              className="w-full appearance-none focus:outline-none bg-transparent"
+              className="w-full appearance-none focus:outline-none bg-transparent border-b-2 border-[#245A95] text-gray-700 transition-all duration-300 focus:border-[#245A95]"
               as={InputText}
               name={campo.nombreCampo}
               defaultValue={campo.valor}
@@ -564,16 +582,16 @@ export const ComponentTipoCampo = ({
                   .replace("]", "")}]`
               )}
             />
-            <span className="p-inputgroup-addon border border-gray-300 p-2 rounded-md">
-              <i className="pi pi-file-edit text-[#245A95] font-bold text-2xl"></i>
+            <span className="bg-[#245A95] p-2 px-3 rounded-r-lg shadow-md">
+              <i className="pi pi-file-edit text-white font-light text-xl"></i>
             </span>
           </span>
         )}
 
         {campo.tipoCampo === "CODIGO" && (
-          <span className="p-float-label relative">
+          <span className="p-float-label w-full">
             <Field
-              className="w-full appearance-none focus:outline-none bg-transparent"
+              className="w-full appearance-none focus:outline-none bg-transparent border-b-2 border-[#245A95] text-gray-700 transition-all duration-300 focus:border-[#245A95]"
               as={InputText}
               name={campo.nombreCampo}
               defaultValue={campo.valor}
@@ -584,18 +602,18 @@ export const ComponentTipoCampo = ({
                   .replace("]", "")}]`
               )}
             />
-            <span className="p-inputgroup-addon border border-gray-300 p-2 rounded-md">
-              <i className="pi pi-file-edit text-[#245A95] font-bold text-2xl"></i>
+            <span className="bg-[#245A95] p-2 px-3 rounded-r-lg shadow-md">
+              <i className="pi pi-file-edit text-white font-light text-xl"></i>
             </span>
           </span>
         )}
 
         {campo.tipoCampo === "CATALOGO" && (
           
-          <span className="p-float-label relative">
+          <span className="p-float-label w-full">
             {/* {console.log(campo)} */}            
             <Field
-              className="w-full appearance-none focus:outline-none bg-transparent"
+              className="w-full appearance-none focus:outline-none bg-transparent border-b-2 border-[#245A95] text-gray-700 transition-all duration-300 focus:border-[#245A95]"
               as={Dropdown}
               name={campo.nombreCampo}
               value={campo.valor}
@@ -623,16 +641,16 @@ export const ComponentTipoCampo = ({
               }}
               maxLength={campo.longitud}
             />
-            <span className="p-inputgroup-addon border border-gray-300 p-2 rounded-md">
-              <i className="pi pi-file-edit text-[#245A95] font-bold text-2xl"></i>
+            <span className="bg-[#245A95] p-2 px-3 rounded-r-lg shadow-md">
+              <i className="pi pi-file-edit text-white font-light text-xl"></i>
             </span>
           </span>
         )}
 
         {campo.tipoCampo === "CATALOGO-INPUT" && (
-          <span className="p-float-label relative">
+          <span className="p-float-label w-full">
             <Field
-              className="w-full appearance-none focus:outline-none bg-transparent"
+              className="w-full appearance-none focus:outline-none bg-transparent border-b-2 border-[#245A95] text-gray-700 transition-all duration-300 focus:border-[#245A95]"
               as={Dropdown}
               name={campo.nombreCampo}
               value={campo.valor}
@@ -651,19 +669,19 @@ export const ComponentTipoCampo = ({
               }}
               maxLength={campo.longitud}
             />
-            <span className="p-inputgroup-addon border border-gray-300 p-2 rounded-md">
-              <i className="pi pi-file-edit text-[#245A95] font-bold text-2xl"></i>
+            <span className="bg-[#245A95] p-2 px-3 rounded-r-lg shadow-md">
+              <i className="pi pi-file-edit text-white font-light text-xl"></i>
             </span>
           </span>
         )}
 
         {/* {campo.tipoCampo === 'CHECKBOX' && (
-          <span className='p-float-label relative'>
+          <span className='p-float-label w-full'>
             <Field name={campo.nombreCampo}>
               {({ field, form }) => (
                 
                 <Checkbox
-                className="w-full appearance-none focus:outline-none bg-transparent"
+                className="w-full appearance-none focus:outline-none bg-transparent border-b-2 border-[#245A95] text-gray-700 transition-all duration-300 focus:border-[#245A95]"
                 checked={field.value === 'true'}
                 checked={valueCheckBox === 'true'}
                 onChange={(e) => {
@@ -678,11 +696,11 @@ export const ComponentTipoCampo = ({
         )} */}
 
         {campo.tipoCampo === "CHECKBOX" && (
-          <span className="p-float-label relative">
+          <span className="p-float-label w-full">
             <Field name={campo.nombreCampo}>
               {({ field, form }) => (
                 <Checkbox
-                  className="w-full appearance-none focus:outline-none bg-transparent"
+                  className="w-full appearance-none focus:outline-none bg-transparent border-b-2 border-[#245A95] text-gray-700 transition-all duration-300 focus:border-[#245A95]"
                   checked={
                     field.value !== undefined
                       ? field.value === "TRUE"
@@ -701,12 +719,12 @@ export const ComponentTipoCampo = ({
         )}
 
         {campo.tipoCampo === "FOTO" && (
-          <span className="p-float-label relative">
+          <span className="p-float-label w-full">
             {/*  <span className="bg-[#4CAF50] border border-gray-300 p-2 rounded-md">
               <i className="pi pi-check-square text-white font-bold text-2xl"></i>
             </span> */}
             <Field
-              className="w-full appearance-none focus:outline-none bg-transparent ml-1 mr-1"
+              className="w-full appearance-none focus:outline-none bg-transparent border-b-2 border-[#245A95] text-gray-700 transition-all duration-300 focus:border-[#245A95] ml-1 mr-1"
               as={InputText}
               name={campo.nombreCampo}
               defaultValue={campo.valor}
@@ -881,7 +899,7 @@ export const ComponentTipoCampo = ({
         /* style={{ width: '70vw', height:'40vw' }}  */
         onHide={() => setModalEvidencia(false)}
       >
-        <span className="p-float-label relative">
+        <span className="p-float-label w-full">
           <Toast ref={toast}></Toast>
 
           <div

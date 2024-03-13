@@ -266,7 +266,6 @@ const RegistrosForm = ({
           </div>
         </div>
       )}
-
       <Formik initialValues={initialValues} onSubmit={onSubmit}>
         {(formik, values) => (
           <Form>
@@ -276,8 +275,36 @@ const RegistrosForm = ({
               </h1>
               <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-2 gap-3">
                 <div className="mt-8 mx-4 flex flex-col">
-                  <div className="p-inputgroup flex-1">
-                    <span className="p-float-label relative">
+
+                {/* <div className="p-inputgroup mt-6 grid md:grid-cols-3">
+                  <span className="p-float-label  w-full">
+                    <Dropdown
+                      className="w-full appearance-none focus:outline-none bg-transparent border-b-2 border-[#245A95] text-gray-700 transition-all duration-300 focus:border-[#245A95]"
+                      name="proyecto"
+                      options={proyectos}
+                      optionLabel="proyecto"
+                      filter
+                      value={proyectoSeleccionado}
+                      onChange={(e) => {
+                        setProyectoSeleccionado(e.target.value);
+                        setListaOpcionesCatalogo1Relacion([]);
+                        // catalogoRelacion2ProyectoSeleccionado([]);
+                      }}
+                    />
+                    <span className=" bg-[#245A95] p-2 px-3 rounded-r-lg shadow-md">
+                      <i className="pi pi-file-edit text-white font-light text-xl"></i>
+                    </span>
+                    <label
+                      htmlFor="nombrealberca"
+                      className="text-sm text-[#245A95] font-extrabold absolute top-2 left-3 transition-all duration-300"
+                    >
+                      Proyecto
+                    </label>
+                  </span>
+                </div> */}
+
+                  <div className="p-inputgroup">
+                    <span className="p-float-label w-full">
                       <Field
                         as={Dropdown}
                         name="listaProyectosFiltrados"
@@ -322,14 +349,14 @@ const RegistrosForm = ({
                         //       .catch(error => console.log(error));
                         // }}
                         value={proyectosSeleccionados[0]}
-                        className="w-full appearance-none focus:outline-none bg-transparent"
+                        className="w-full appearance-none focus:outline-none bg-transparent border-b-2 border-[#245A95] text-gray-700 transition-all duration-300 focus:border-[#245A95]"
                       />
-                      <span className="p-inputgroup-addon border border-gray-300 p-2 rounded-md">
-                        <i className="pi pi-file text-[#245A95] font-bold text-2xl"></i>
+                      <span className="bg-[#245A95] p-2 px-3 rounded-r-lg shadow-md">
+                        <i className="pi pi-file text-white font-light text-xl"></i>
                       </span>
                       <label
                         htmlFor="name"
-                        className="text-lg text-[#245A95] font-semibold absolute top-0 left-0 transform"
+                        className="text-sm text-[#245A95] font-extrabold absolute top-2 left-3 transition-all duration-300"
                       >
                         Nombre de proyecto
                       </label>
@@ -340,8 +367,8 @@ const RegistrosForm = ({
                   {listaCampos.length === 0 ? (
                     <div></div>
                   ) : (
-                    <div className="p-inputgroup flex-1">
-                      <span className="p-float-label relative">
+                    <div className="p-inputgroup">
+                      <span className="p-float-label w-full">
                         <Field
                           as={MultiSelect}
                           name="usuarios"
@@ -372,14 +399,14 @@ const RegistrosForm = ({
                           // }}
                           value={usuariosSeleccionados}
                           display="chip"
-                          className="w-full appearance-none focus:outline-none bg-transparent"
+                          className="w-full appearance-none focus:outline-none bg-transparent border-b-2 border-[#245A95] text-gray-700 transition-all duration-300 focus:border-[#245A95]"
                         />
-                        <span className="p-inputgroup-addon border border-gray-300 p-2 rounded-md">
-                          <i className="pi pi-users text-[#245A95] font-bold text-2xl"></i>
+                        <span className="bg-[#245A95] p-2 px-3 rounded-r-lg shadow-md">
+                          <i className="pi pi-users text-white font-light text-xl"></i>
                         </span>
                         <label
                           htmlFor="name"
-                          className="text-lg text-[#245A95] font-semibold absolute top-0 left-0 transform"
+                          className="text-sm text-[#245A95] font-extrabold absolute top-2 left-3 transition-all duration-300"
                         >
                           Usuarios
                         </label>
@@ -392,8 +419,8 @@ const RegistrosForm = ({
                   {listaCampos.length === 0 ? (
                     <div></div>
                   ) : (
-                    <div className="p-inputgroup flex-1">
-                      <span className="p-float-label relative">
+                    <div className="p-inputgroup">
+                      <span className="p-float-label w-full">
                         <Field
                           as={Dropdown}
                           name="BuscarCampo"
@@ -422,14 +449,14 @@ const RegistrosForm = ({
                           // }}
                           value={campoSeleccionado}
                           display="chip"
-                          className="w-full appearance-none focus:outline-none bg-transparent"
+                          className="w-full appearance-none focus:outline-none bg-transparent border-b-2 border-[#245A95] text-gray-700 transition-all duration-300 focus:border-[#245A95]"
                         />
-                        <span className="p-inputgroup-addon border border-gray-300 p-2 rounded-md">
-                          <i className="pi pi-search text-[#245A95] font-bold text-2xl"></i>
+                        <span className="bg-[#245A95] p-2 px-3 rounded-r-lg shadow-md">
+                          <i className="pi pi-search text-white font-light text-xl"></i>
                         </span>
                         <label
                           htmlFor="name"
-                          className="text-lg text-[#245A95] font-semibold absolute top-0 left-0 transform"
+                          className="text-sm text-[#245A95] font-extrabold absolute top-2 left-3 transition-all duration-300"
                         >
                           Buscar por:
                         </label>
@@ -443,7 +470,7 @@ const RegistrosForm = ({
                     <div></div>
                   ) : (
                     <div className="p-inputgroup flex-1">
-                      <span className="p-float-label relative">
+                      <span className="p-float-label w-full">
                         <Field
                           as={Dropdown}
                           name="valores"
@@ -467,14 +494,14 @@ const RegistrosForm = ({
                           }}
                           value={valorSeleccionado}
                           display="chip"
-                          className="w-full appearance-none focus:outline-none bg-transparent"
+                          className="w-full appearance-none focus:outline-none bg-transparent border-b-2 border-[#245A95] text-gray-700 transition-all duration-300 focus:border-[#245A95]"
                         />
-                        <span className="p-inputgroup-addon border border-gray-300 p-2 rounded-md">
-                          <i className="pi pi-search text-[#245A95] font-bold text-2xl"></i>
+                        <span className="bg-[#245A95] p-2 px-3 rounded-r-lg shadow-md">
+                          <i className="pi pi-search text-white font-light text-xl"></i>
                         </span>
                         <label
                           htmlFor="name"
-                          className="text-lg text-[#245A95] font-semibold absolute top-0 left-0 transform"
+                          className="text-sm text-[#245A95] font-extrabold absolute top-2 left-3 transition-all duration-300"
                         >
                           Buscar:
                         </label>

@@ -20,6 +20,8 @@ import {
   updateRegister,
 } from "../components/functions/Functions";
 import { DialogConfirmarCambioRegistro } from "../../ui/components/DialogConfirmarCambioRegistro";
+import { BotonFlotanteDescargarEstracto } from "../components/BotonFlotanteDescargarEstracto";
+import { BotonFlotanteDescargarEvidencias } from "../components/BotonFlotanteDescargarEvidencias";
 
 export const RegistrosPage = () => {
   const [files, setFiles] = useState([]);
@@ -300,7 +302,7 @@ export const RegistrosPage = () => {
         />
       </div>
       <div className="overflow-x-auto">
-        <div className="my-6 mx-4 xl:mx-20">
+        <div className="my-4 mx-4 xl:mx-20">
           <TableRegistros
             onDelete={handleDelete}
             onEdit={handleEdit}
@@ -477,6 +479,8 @@ export const RegistrosPage = () => {
         />
       )}
       <BotonFlotanteRegresar onClick={handleClickRegresar} />
+      <BotonFlotanteDescargarEstracto listaRegistros={listaRegistros}/>
+      <BotonFlotanteDescargarEvidencias />
     </>
   );
 };

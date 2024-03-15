@@ -414,7 +414,7 @@ const RegistrosForm = ({
                     </div>
                   )}
                 </div>
-                      {console.log(listaCampos)}
+                      
                 <div className="mt-8 mx-4 flex flex-col">
                   {listaCampos.length === 0 ? (
                     <div></div>
@@ -464,7 +464,7 @@ const RegistrosForm = ({
                     </div>
                   )}
                 </div>
-                {console.log(listaValores)}
+                
                 <div className="mt-8 mx-4 flex flex-col">
                   {listaValores.length === 0 ? (
                     <div></div>
@@ -529,7 +529,7 @@ const RegistrosForm = ({
                   className="hover:shadow-slate-600 border h-10 px-4 bg-[#245A95] text-white text-lg font-bold rounded-full shadow-md duration-150 ease-in-out focus:outline-none active:scale-[1.20] transition-all hover:bg-sky-600"
                   onClick={() => handleDataProyecto()}
                 >
-                  <ion-icon name="eye" className="mr-2 text-2xl"></ion-icon>{" "}
+                  <ion-icon name="add-circle"></ion-icon>{" "}
                   Nuevo registro
                 </button>
               </div>

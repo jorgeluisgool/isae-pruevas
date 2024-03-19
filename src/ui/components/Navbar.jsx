@@ -20,10 +20,17 @@ export const Navbar = () => {
   //     });
   // }
   const location = useLocation();
+
   const [open, setOpen] = useState(false);
-  const [selectedOption, setSelectedOption] = useState(location.pathname);
+  const [selectedOption, setSelectedOption] = useState('');
+
+  useEffect(() => {
+    const normalizedPathname = location.pathname.toLowerCase(); // Convertir a minúsculas
+    setSelectedOption(normalizedPathname);
+  }, [location.pathname]);
 
   console.log(location.pathname)
+  console.log(selectedOption)
 
   const navigate = useNavigate();
   const navbarRef = useRef(null);
@@ -88,12 +95,12 @@ export const Navbar = () => {
               open ? "top-20" : "top-[-520px]"
             } `}
           >
-            <li className={`nav-item transition duration-500 ease-in-out transform hover:-translate-y-3 hover:shadow-2xl mr-3 ${selectedOption === '/Proyectos' ? '-translate-y-3 text-white underline shadow-2xl' : 'text-[#d9d9d9]'}`}
+            <li className={`nav-item transition duration-500 ease-in-out transform hover:-translate-y-3 hover:shadow-2xl mr-3 ${selectedOption === '/proyectos' ? '-translate-y-3 text-white underline shadow-2xl' : 'text-[#d9d9d9]'}`}
             >
               <Link
                 className="flex p-2 items-center px-0 rounded-lg text-lg font-semibold hover:text-white"
                 to="/proyectos"
-                onClick={() => handleOptionClick('/Proyectos')}
+                onClick={() => handleOptionClick('/proyectos')}
               >
                 <div className="xl:hidden">
                   <div className="bg-white rounded-full h-10 w-10 flex items-center justify-center shadow-lg drop-shadow-md text-[#245A95] text-3xl">

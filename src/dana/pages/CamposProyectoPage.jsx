@@ -58,11 +58,12 @@ const CamposProyectoPage = () => {
   }
 
   const onSubmit = () => {
-    setModaAceptarlAbrirCerrar(false);
-    setVentanaDeCarga(true);
+     setModaAceptarlAbrirCerrar(false);
+     setVentanaDeCarga(true);
   
-    //  console.log(dataArchivoExcel)
-    //  console.log(dataCrearProyecto.tipo.name);
+    console.log(dataArchivoExcel)
+    console.log(dataCrearProyecto.proyecto);
+    console.log(dataCrearProyecto.tipo.name);
      fetch(`${api}/crear/proyecto/${dataCrearProyecto.proyecto}/${dataCrearProyecto.tipo.name}`, {
        method: 'POST',
        headers: {
@@ -130,7 +131,7 @@ const CamposProyectoPage = () => {
       <BotonFlotanteGuardar setModaAceptarlAbrirCerrar={setModaAceptarlAbrirCerrar} />
       <BotonFlotanteRegresar onClick={handleClickRegresar}/>
 
-      <Dialog
+        <Dialog
           visible={showDialog}
           onHide={() => setShowDialog(false)}
           footer={<button onClick={handleDialogClose} className="ml-auto object-cover active:scale-[.98] py-3 bg-transparent hover:bg-[#245A95] hover:text-white text-[#245A95] text-sm font-bold inline-block rounded-full bg-primary p-2 uppercase leading-normal shadow-md transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] mt-4" >Cerrar</button>}

@@ -3,22 +3,6 @@ import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useLocation } from 'react-router-dom';
 
 export const Navbar = () => {
-  // funcionamiento del estado del Menu
-  // let [open,setOpen]=useState(false);
-
-  //Hoock para Cerrrar Sesión
-  // const navigate = useNavigate();
-
-  //Funcion Boton Cerrar sesión
-  // const onLogout = () => {
-
-  //   localStorage.removeItem('token');
-  //   localStorage.removeItem('user');
-
-  //     navigate('/login', {
-  //         replace: true
-  //     });
-  // }
   const location = useLocation();
 
   const [open, setOpen] = useState(false);
@@ -84,10 +68,12 @@ export const Navbar = () => {
             </Link>
           </div>
           <div
-            onClick={() => setOpen(!open)}
+            onClick={() => setOpen(prevOpen => !prevOpen)}
             className="text-4xl absolute right-7 top-3 cursor-pointer text-slate-50 xl:hidden"
           >
-            <ion-icon name={open ? "close" : "menu"}></ion-icon>
+            <div>
+              <ion-icon name={open ? "close" : "menu"}></ion-icon>
+            </div>
           </div>
           <ul
             ref={navbarRef}

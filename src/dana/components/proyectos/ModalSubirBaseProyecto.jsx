@@ -3,16 +3,21 @@ import { Dropdown } from 'primereact/dropdown'
 import React, { useState } from 'react'
 import { useFetchUsers } from '../../hooks/useFetchUsers';
 import { api } from '../../helpers/variablesGlobales';
+import { DialogFoliosRepetidos } from '../../../ui/components/DialogFoliosRepetidos';
+import { DialogRegistroGuardado } from '../../../ui/components/DialogRegistroGuardado';
 
 export const ModalSubirBaseProyecto = ({modalBase, setModalBase, proyectoSeleccionado}) => {
 
   const { data: listaUsuarios, loading: loadingUsuarios } = useFetchUsers(); 
   const [usuarioSeleccionado, setUsuarioSeleccionado] = useState({});
-  const [arregloBytesExcel, setArregloBytesExcel] = useState([])
+  const [arregloBytesExcel, setArregloBytesExcel] = useState([]);
+  const [modalFoliosRep, setModalFoliosRep] = useState(false);
+  const [foliosRepetidosArreglo, setFoliosRepetidosArreglo] = useState([]);
+  const [modalRegistroGuardado, setModalRegistroGuardado] = useState(false)
 
-  console.log(arregloBytesExcel)
-  console.log(usuarioSeleccionado.idusuario)
-  console.log(proyectoSeleccionado.idproyecto)
+  // console.log(arregloBytesExcel)
+  // console.log(usuarioSeleccionado.idusuario)
+  // console.log(proyectoSeleccionado.idproyecto)
   // console.log(proyectoSeleccionado)
 
   const handleFileUpload = (event) => {
@@ -35,40 +40,57 @@ export const ModalSubirBaseProyecto = ({modalBase, setModalBase, proyectoSelecci
     }
   };
 
-  const handleClimb = () => {
+   const handleClimb = () => {
   
-    console.log(usuarioSeleccionado.idusuario);
-    console.log(proyectoSeleccionado.idproyecto);
+     console.log(usuarioSeleccionado.idusuario);
+     console.log(proyectoSeleccionado.idproyecto);
 
-    // Convertir Uint8Array a un arreglo de enteros
-    const arregloEnteros = Array.from(arregloBytesExcel, byte => byte);
+     // Convertir Uint8Array a un arreglo de enteros
+     const arregloEnteros = Array.from(arregloBytesExcel, byte => byte);
 
-    fetch(`${api}/obtener/excel/datos/proyecto/${usuarioSeleccionado.idusuario}/${proyectoSeleccionado.idproyecto}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(arregloEnteros)
-    })
-      .then(response => response.json())
-      .then(responseData => {
-        //  setModalCrearEditarUsuario(false);
-        // setVentanaCarga(false);
-        // setFormularioState(false);
+     fetch(`${api}/obtener/excel/datos/proyecto/${usuarioSeleccionado.idusuario}/${proyectoSeleccionado.idproyecto}`, {
+       method: 'POST',
+       headers: {
+         'Content-Type': 'application/json',
+       },
+       body: JSON.stringify(arregloEnteros)
+     })
+       .then(response => response.text())
+       .then(responseData => {
+          if (responseData.includes("Folios Repetidos")) {
+            setModalBase(false);
+            setModalFoliosRep(true);
 
-      console.log('Respuesta de la API:', responseData);
-        return 'Correcto';
-    })
-    .catch(error =>{ 
-        console.log(error);
-        return 'Error';
-    }
-    );
-  };
+            // Busca la posición del primer carácter '>'
+            const primerMayorIndex = responseData.indexOf('>');
+            // Extrae la subcadena que contiene los folios repetidos
+            const foliosRepetidos = responseData.substring(primerMayorIndex + 1);
+            // Separa los folios repetidos en un array utilizando el carácter '>'
+            const foliosArray = foliosRepetidos.split('>');
+
+            setFoliosRepetidosArreglo(foliosArray);
+            setUsuarioSeleccionado({});
+
+          } else if (responseData.includes("correcto")) {
+            setModalRegistroGuardado(true);
+            setModalBase(false);
+            setUsuarioSeleccionado({});
+          }
+
+       console.log('Respuesta de la API:', responseData);
+         // return 'Correcto';
+     })
+     .catch(error =>{ 
+         console.log(error);
+         return 'Error';
+     }
+     );
+   };
   
 
   return (
-        <Dialog header={`SUBIR REGISTROS A: ${proyectoSeleccionado.proyecto}`} visible={modalBase} baseZIndex={-1} onHide={() => setModalBase(false)} className='xl:mt-0 mx-3 b-6 sm:w-3/4 md:w-3/4 lg:w-3/4'>
+    <>
+        <Dialog header={`SUBIR REGISTROS A: ${proyectoSeleccionado.proyecto}`} visible={modalBase} baseZIndex={-1} onHide={() => setModalBase(false)} className='xl:mt-0 sm:w-3/4 md:w-3/4 lg:w-3/4'>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4 mb-10"> 
                 <div className="">
                     <h1 className="text-base font-black text-[#245A95]">1. Selecciona un usuario</h1> 
@@ -132,5 +154,18 @@ export const ModalSubirBaseProyecto = ({modalBase, setModalBase, proyectoSelecci
               </button>
             </div>
         </Dialog>
+
+        <DialogFoliosRepetidos 
+          modalFoliosRep={modalFoliosRep}
+          setModalFoliosRep={setModalFoliosRep}
+          foliosRepetidosArreglo={foliosRepetidosArreglo}
+        />
+
+        <DialogRegistroGuardado 
+          modalRegistroGuardado={modalRegistroGuardado}
+          setModalRegistroGuardado={setModalRegistroGuardado}
+          dataMensajeRegistroGuardado='Se han subido los registros satisfactoriamente.'
+        />
+        </>
   )
 }

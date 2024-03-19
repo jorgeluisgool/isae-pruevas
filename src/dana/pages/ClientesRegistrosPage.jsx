@@ -83,36 +83,53 @@ export const ClientesRegistrosPage = () => {
           </label>
         </span>
       </div>
-        <div className="grid grid-cols-2 xl:grid-cols-3 gap-8 m-4 text-center">
-          {filterClientes.map((cliente, index) => (
-            <Link
-              key={index}
-              to="/registros"
-              onClick={() => setClienteSeleccionado(cliente)}
-            >
-              <div className="max-w-xs overflow-hidden rounded-lg shadow-lg w-full bg-white hover:shadow-xl transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-105 cursor-pointer">
-                <div className="px-3 bg-[#E2E2E2]">
-                  <div className="font-bold text-sm xl:text-2xl mb-2 text-[#245A95]">
-                    {cliente.cliente}
-                  </div>
-                </div>
-                <div className="relative h-20 lg:h-40">
-                  {cliente.urllogo ? (
-                    <img
-                      className="absolute inset-0 w-full h-full object-contain transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-75"
-                      src={cliente.urllogo}
-                      alt="Random image"
-                    />
-                  ) : (
-                    <div className="flex items-center justify-center absolute inset-0 w-full h-full text-[#245A95] font-bold text-3xl">
-                      {cliente.cliente}
-                    </div>
-                  )}
+      {
+        filterClientes.length != 0 ?
+        <div className="grid grid-cols-2 xl:grid-cols-4 gap-8 m-4 text-center">
+        {filterClientes.map((cliente, index) => (
+          <Link
+            key={index}
+            to="/registros"
+            onClick={() => setClienteSeleccionado(cliente)}
+          >
+            <div className="max-w-xs overflow-hidden rounded-lg shadow-lg w-full bg-white hover:shadow-xl transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-105 cursor-pointer">
+              <div className="px-3 bg-[#E2E2E2]">
+                <div className="font-bold text-sm xl:text-lg mb-2 text-[#245A95]">
+                  {cliente.cliente}
                 </div>
               </div>
-            </Link>
-          ))}
+              <div className="relative h-20 lg:h-40">
+                {cliente.urllogo ? (
+                  <img
+                    className="absolute inset-0 w-full h-full object-contain transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-75"
+                    src={cliente.urllogo}
+                    alt="Random image"
+                  />
+                ) : (
+                  <div className="flex items-center justify-center absolute inset-0 w-full h-full text-[#245A95] font-bold text-3xl">
+                    {cliente.cliente}
+                  </div>
+                )}
+              </div>
+            </div>
+          </Link>
+        ))}
+      </div>
+      : 
+      <div className="grid grid-cols-2 xl:grid-cols-4 gap-8 m-4 text-center">
+        <div className="max-w-xs overflow-hidden rounded-lg shadow-lg w-full bg-white hover:shadow-xl transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-105 cursor-pointer">
+          <div className="px-3 bg-[#E2E2E2]">
+            <div className="font-bold text-sm xl:text-lg mb-2 text-[#245A95]">
+              Cargando...
+            </div>
+          </div>
+          <div className="relative h-20 lg:h-40">
+            {/* Agrega clases de animación o apariencia de carga aquí */}
+            <div className="animate-pulse bg-gray-300 h-full w-full"></div>
+          </div>
         </div>
+      </div>
+      }   
       </div>
     </>
   );

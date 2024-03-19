@@ -10,6 +10,7 @@ import { InputText } from "primereact/inputtext";
 import { ModalSubirBaseProyecto } from "../components/proyectos/ModalSubirBaseProyecto";
 import { ModalFormularioNuevoProyecto } from "../components/proyectos/ModalFormularioNuevoProyecto";
 import { DialogRegistroGuardado } from "../../ui/components/DialogRegistroGuardado";
+import { DialogConfirmacionDescarga } from "../../ui/components/DialogConfirmacionDescarga";
 
 
 const ProyectosPage = () => {
@@ -20,7 +21,7 @@ const ProyectosPage = () => {
   const [modalBase, setModalBase] = useState(false);
   const [proyectoSeleccionado, setProyectoSeleccionado] = useState([]);
   const [formularioState, setFormularioState] = useState(false);
-  // const [modalRegistroGuardado, setModalRegistroGuardado] = useState(false);
+  const [modaAceptarlAbrirCerrar, setModaAceptarlAbrirCerrar] = useState(false);
 
   useEffect(() => {
     const loggedInUser = localStorage.getItem("user");
@@ -32,7 +33,7 @@ const ProyectosPage = () => {
     }
   }, []);
 
-  const { data: proyectos, loading } = useFetchProjects();
+  const { data: proyectos, loading } = useFetchProjects(userAuth, setModaAceptarlAbrirCerrar);
 
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
@@ -103,14 +104,14 @@ const ProyectosPage = () => {
                 >
                   <ion-icon name="person-add"></ion-icon> Nuevo proyecto
                 </button>
-                <div className="mt-2 flex items-center gap-x-4">
+                <div className="flex items-center gap-x-4">
                   <button 
                     onClick={handleDownloadPlantilla} 
-                    className="shadow-md bg-transparent hover:bg-[#245A95] hover:text-white text-[#245A95] scroll-ml-5 w-14 h-14 active:scale-[.98] transition-all py-3 rounded-xl bg-[#245A95] text-4xl font-bold"
+                    className="shadow-md bg-transparent hover:bg-[#245A95] hover:text-white text-[#245A95] scroll-ml-5 w-14 h-14 active:scale-[.98] transition-all rounded-xl bg-[#245A95] text-4xl font-bold"
                   >
                     <ion-icon name="document-text"></ion-icon>
                   </button>
-                  <h1 className='text-xs text-[#245A95] font-semibold'>
+                  <h1 className='hidden lg:block text-xs text-[#245A95] font-semibold'>
                     Plantilla de campos para generar proyecto 
                   </h1>
                 </div>
@@ -128,6 +129,7 @@ const ProyectosPage = () => {
                     searchTerm = {searchTerm}
                     setModalBase = {setModalBase}
                     setProyectoSeleccionado = {setProyectoSeleccionado}
+                    setModaAceptarlAbrirCerrar={setModaAceptarlAbrirCerrar}
                   />
                 </div> 
               </div> 
@@ -141,6 +143,12 @@ const ProyectosPage = () => {
                 modalBase = {modalBase}
                 setModalBase = {setModalBase}
                 proyectoSeleccionado = {proyectoSeleccionado}
+              />
+
+              <DialogConfirmacionDescarga 
+                mensaje={'Seguro que desea descargar la plantilla'}
+                modaAceptarlAbrirCerrar={modaAceptarlAbrirCerrar}
+                setModaAceptarlAbrirCerrar={setModaAceptarlAbrirCerrar}
               />
               </div> 
           </div> 

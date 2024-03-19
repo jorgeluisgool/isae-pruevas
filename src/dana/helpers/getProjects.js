@@ -1,5 +1,8 @@
-export const getProyectos = async (api)=>{
-    const url = `${api}/obtener/proyectos`;
+export const getProyectos = async (api, userAuth)=>{
+
+    // console.log(userAuth[0].idusuario);
+
+    const url = `${api}/obtener/proyectos/asignados/${userAuth[0].idusuario}`;
     const options = {
         method: "GET",
         cache: "no-cache",

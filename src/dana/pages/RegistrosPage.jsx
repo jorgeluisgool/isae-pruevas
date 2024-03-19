@@ -19,6 +19,9 @@ import {
   newRegister,
   updateRegister,
 } from "../components/functions/Functions";
+import { DialogConfirmarCambioRegistro } from "../../ui/components/DialogConfirmarCambioRegistro";
+import { BotonFlotanteDescargarEstracto } from "../components/BotonFlotanteDescargarEstracto";
+import { BotonFlotanteDescargarEvidencias } from "../components/BotonFlotanteDescargarEvidencias";
 
 export const RegistrosPage = () => {
   const [files, setFiles] = useState([]);
@@ -49,7 +52,9 @@ export const RegistrosPage = () => {
   const [ventanaCarga, setVentanaCarga] = useState(false);
 
 
-  console.log(proyectoSeleccionado);
+  const [longitudCampoAlfanumerico, setLongitudCampoAlfanumerico] = useState('');
+
+  console.log(dataProyectoSeleccionado);
 
   const projectSelected = {
     idproyecto: proyectoSeleccionado?.proyecto?.idproyecto || "",
@@ -279,7 +284,7 @@ export const RegistrosPage = () => {
           </div>
         </div>
       )}
-      <h1 className="pt-6 pl-3 xl:pl-20 text-4xl font-black text-[#245A95]">
+      <h1 className="pl-3 xl:pl-20 text-4xl font-black text-[#245A95]">
         Registros
       </h1>
       <div className="container mx-auto">
@@ -297,7 +302,7 @@ export const RegistrosPage = () => {
         />
       </div>
       <div className="overflow-x-auto">
-        <div className="my-6 mx-4 xl:mx-20">
+        <div className="my-4 mx-4 xl:mx-20">
           <TableRegistros
             onDelete={handleDelete}
             onEdit={handleEdit}
@@ -318,14 +323,14 @@ export const RegistrosPage = () => {
         header={`PROYECTO: ${proyectoSeleccionado?.proyecto?.proyecto}`}
         visible={modalAbrirCerrar}
         baseZIndex={-1}
-        style={{
-          width: "90vw",
-          maxWidth: "800px",
-          height: "80vh",
-          maxHeight: "600px",
-        }}
+        // style={{
+        //   width: "90vw",
+        //   maxWidth: "900px",
+        //   height: "80vh",
+        //   maxHeight: "600px",
+        // }}
         onHide={() => setModalAbrirCerrar(false)}
-        className="mt-16"
+        className="className='xl:mt-0 sm:w-3/4 md:w-3/4 lg:w-3/4' pt-12"
       >
         <h1 className="xl:text-lg font-bold xl:mx-36">
           Registro:{" "}
@@ -333,14 +338,14 @@ export const RegistrosPage = () => {
         </h1>
         <Formik initialValues={{}} onSubmit={handleMensajeAceptar}>
           {({ values }) => (
-            <Form>
+            <Form className="mb-10">
               {dataProyectoSeleccionado.listaAgrupaciones &&
                 dataProyectoSeleccionado.listaAgrupaciones.length > 0 &&
                 dataProyectoSeleccionado.listaAgrupaciones.map(
                   (itemagrupacion, indexAgrupacion) => (
                     <div
                       key={indexAgrupacion}
-                      className="bg-[#e2e2e2] rounded-md hs-accordion mt-4 xl:mx-36"
+                      className="bg-[#e2e2e2] rounded-md hs-accordion mt-4 xl:mx-10"
                     >
                       {/* {console.log(dataProyectoSeleccionado)} */}
                       <div
@@ -368,21 +373,25 @@ export const RegistrosPage = () => {
                       {showAcordion === indexAgrupacion && (
                         <div className="px-2 xl:px-10 py-3">
                           {itemagrupacion.campos.map((item, indexCampo) => (
+                            <div className="pr-10">
+                              {
+                                console.log(item)
+                              }
+                            
                             <div key={item.idCampo} className="mt-3">
-                              <span className="p-float-label">
-                                <div className="grid xl:grid-cols-5 sm:grid-cols-1 ">
-                                  <div className="col-span-2">
-                                    <p className="text-sm text-[#245A95] font-semibold xl:text-right sm:text-left pr-5">
-                                      {item.nombreCampo}:
-                                    </p>
-                                  </div>
-                                  <div className="col-span-3">
+                            <span className="p-float-label">
+                              <div className="grid xl:grid-cols-6 sm:grid-cols-1">
+                                <div className="col-span-2">
+                                  <p className="text-sm lg:text-base text-[#245A95] font-semibold xl:text-right sm:text-left pr-5">
+                                    {item.nombreCampo}:
+                                  </p>
+                                </div>
+                                <div className="col-span-4 overflow-x-auto">
+                                  
                                     <ComponentTipoCampo
-                                    actualizarDataProyecto={actualizarDataProyecto}
-                                      dataProyectoSeleccionado={
-                                        dataProyectoSeleccionado
-                                      }
-                                      projectSelected ={projectSelected}
+                                      actualizarDataProyecto={actualizarDataProyecto}
+                                      dataProyectoSeleccionado={dataProyectoSeleccionado}
+                                      projectSelected={projectSelected}
                                       itemagrupacion={itemagrupacion}
                                       campo={item}
                                       indexAgrupacion={indexAgrupacion}
@@ -394,11 +403,16 @@ export const RegistrosPage = () => {
                                       setSignatures={setSignatures}
                                       photos={photos}
                                       setPhotos={setPhotos}
+                                      setLongitudCampoAlfanumerico={setLongitudCampoAlfanumerico}
+                                      longitudCampoAlfanumerico={longitudCampoAlfanumerico}
                                     />
-                                  </div>
+                                  
                                 </div>
-                              </span>
-                            </div>
+                              </div>
+                            </span>
+                            
+                            </div>   
+                            </div>                      
                           ))}
                         </div>
                       )}
@@ -436,7 +450,7 @@ export const RegistrosPage = () => {
                   </button>
                 </div>
               </div>
-              <DialogConfirmacion
+              <DialogConfirmarCambioRegistro
                 handleMensajeAceptar={handleMensajeAceptar}
                 modaAceptarlAbrirCerrar={modalAceptarAbrirCerrar}
                 setModaAceptarlAbrirCerrar={setModaAceptarlAbrirCerrar}
@@ -465,6 +479,8 @@ export const RegistrosPage = () => {
         />
       )}
       <BotonFlotanteRegresar onClick={handleClickRegresar} />
+      <BotonFlotanteDescargarEstracto listaRegistros={listaRegistros}/>
+      <BotonFlotanteDescargarEvidencias />
     </>
   );
 };

@@ -85,7 +85,7 @@ export const CrearProyectoForm = ({setFormularioState}) => {
                   id: '1',
                   nombreCampo: 'FOLIO',
                   tipoCampo: 'ALFANUMERICO',
-                  restriccion: '[N/A]',
+                  restriccion: 'N/A',
                   longitud: 10
                 }
               ]
@@ -99,7 +99,7 @@ export const CrearProyectoForm = ({setFormularioState}) => {
                   id: '1',
                   nombreCampo: 'FIRMA',
                   tipoCampo: 'FIRMA',
-                  restriccion: '[N/A]',
+                  restriccion: 'N/A',
                   longitud: 10
                 }
               ]

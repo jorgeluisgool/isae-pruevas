@@ -35,6 +35,7 @@ const ProyectosPage = () => {
 
   const { data: proyectos, loading } = useFetchProjects(userAuth, setModaAceptarlAbrirCerrar);
 
+  // console.log(proyectos)
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
   };

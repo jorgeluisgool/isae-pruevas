@@ -51,10 +51,12 @@ export const RegistrosPage = () => {
   const [showAcordion, setShowAcordion] = useState(null);
   const [ventanaCarga, setVentanaCarga] = useState(false);
 
+  const [proyectosSeleccionados, setProyectosSeleccionados] = useState([]);
+
 
   const [longitudCampoAlfanumerico, setLongitudCampoAlfanumerico] = useState('');
 
-  console.log(dataProyectoSeleccionado);
+  // console.log(proyectoSeleccionado);
 
   const projectSelected = {
     idproyecto: proyectoSeleccionado?.proyecto?.idproyecto || "",
@@ -299,24 +301,31 @@ export const RegistrosPage = () => {
           setDataProyectoSeleccionado={setDataProyectoSeleccionado}
           setModalAbrirCerrar={setModalAbrirCerrar}
           setProyectoSeleccionado={setProyectoSeleccionado}
+          proyectoSeleccionado={proyectoSeleccionado}
         />
       </div>
-      <div className="overflow-x-auto">
-        <div className="my-4 mx-4 xl:mx-20">
-          <TableRegistros
-            onDelete={handleDelete}
-            onEdit={handleEdit}
-            isSelected={isSelected}
-            selectedRows={selectedRows}
-            onSelectedRow={handleSelectedRow}
-            setModalAbrirCerrar={setModalAbrirCerrar}
-            listaRegistros={listaRegistros}
-            setProyectoSeleccionado={setProyectoSeleccionado}
-            setDataProyectoSeleccionado={setDataProyectoSeleccionado}
-            usuariosSeleccionados={usuariosSeleccionados}
-          />
-        </div>
-      </div>
+      {
+        proyectoSeleccionado && (
+          <div className="overflow-x-auto">
+            <div className="my-4 mx-4 xl:mx-20">
+              <TableRegistros
+                onDelete={handleDelete}
+                onEdit={handleEdit}
+                isSelected={isSelected}
+                selectedRows={selectedRows}
+                onSelectedRow={handleSelectedRow}
+                setModalAbrirCerrar={setModalAbrirCerrar}
+                listaRegistros={listaRegistros}
+                setProyectoSeleccionado={setProyectoSeleccionado}
+                setDataProyectoSeleccionado={setDataProyectoSeleccionado}
+                usuariosSeleccionados={usuariosSeleccionados}
+                setSelectedRows={setSelectedRows}
+              />
+            </div>
+          </div>
+        )
+      }
+      
 
       {/* MODAL DE SELECCION DEL PROYECTO */}
       <Dialog
@@ -479,8 +488,16 @@ export const RegistrosPage = () => {
         />
       )}
       <BotonFlotanteRegresar onClick={handleClickRegresar} />
-      <BotonFlotanteDescargarEstracto listaRegistros={listaRegistros}/>
-      <BotonFlotanteDescargarEvidencias />
+      {
+        proyectoSeleccionado && (
+          <BotonFlotanteDescargarEstracto listaRegistros={listaRegistros}/>
+        )
+      }
+      {
+        proyectoSeleccionado && (
+          <BotonFlotanteDescargarEvidencias selectedRows={selectedRows} />
+        )
+      }
     </>
   );
 };

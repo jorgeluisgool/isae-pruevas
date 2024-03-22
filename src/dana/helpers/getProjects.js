@@ -1,6 +1,6 @@
 export const getProyectos = async (api, userAuth)=>{
 
-    // console.log(userAuth[0].idusuario);
+    console.log(userAuth[0].idusuario);
 
     const url = `${api}/obtener/proyectos/asignados/${userAuth[0].idusuario}`;
     const options = {

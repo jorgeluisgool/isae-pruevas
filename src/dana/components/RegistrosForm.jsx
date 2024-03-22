@@ -22,6 +22,7 @@ const RegistrosForm = ({
   setDataProyectoSeleccionado,
   setModalAbrirCerrar,
   setProyectoSeleccionado,
+  proyectoSeleccionado,
 }) => {
   const [listaRegistrosValor, setListaRegistrosValor] = useState([]);
   const [listaProyectos, setListaProyectos] = useState([]);
@@ -510,29 +511,33 @@ const RegistrosForm = ({
                   )}
                 </div>
               </div>
-              <div className="flex py-2 mt-6 justify-end">
-                <button
-                  type="submit"
-                  // disabled={!formik.dirty || formik.isSubmitting}
-                  className="hover:shadow-slate-600 border h-10 px-4 bg-[#245A95] text-white text-lg font-bold rounded-full shadow-md duration-150 ease-in-out focus:outline-none active:scale-[1.20] transition-all hover:bg-sky-600"
-                  onClick={() => {
-                    //console.log(listaRegistrosValor);
-                    setListaRegistros(listaRegistrosValor);
-                  }}
-                >
-                  <ion-icon name="eye" className="mr-2 text-2xl"></ion-icon> Ver
-                  todos
-                </button>
-                <button
-                  type="button"
-                  // disabled={!formik.dirty || formik.isSubmitting}
-                  className="hover:shadow-slate-600 border h-10 px-4 bg-[#245A95] text-white text-lg font-bold rounded-full shadow-md duration-150 ease-in-out focus:outline-none active:scale-[1.20] transition-all hover:bg-sky-600"
-                  onClick={() => handleDataProyecto()}
-                >
-                  <ion-icon name="add-circle"></ion-icon>{" "}
-                  Nuevo registro
-                </button>
-              </div>
+              {
+                proyectoSeleccionado && (
+                  <div className="flex py-2 mt-6 justify-end">
+                    <button
+                      type="submit"
+                      // disabled={!formik.dirty || formik.isSubmitting}
+                      className="hover:shadow-slate-600 border h-10 px-4 bg-[#245A95] text-white text-lg font-bold rounded-full shadow-md duration-150 ease-in-out focus:outline-none active:scale-[1.20] transition-all hover:bg-sky-600"
+                      onClick={() => {
+                        //console.log(listaRegistrosValor);
+                        setListaRegistros(listaRegistrosValor);
+                      }}
+                    >
+                      <ion-icon name="eye" className="mr-2 text-2xl"></ion-icon> Ver
+                      todos
+                    </button>
+                    <button
+                      type="button"
+                      // disabled={!formik.dirty || formik.isSubmitting}
+                      className="hover:shadow-slate-600 border h-10 px-4 bg-[#245A95] text-white text-lg font-bold rounded-full shadow-md duration-150 ease-in-out focus:outline-none active:scale-[1.20] transition-all hover:bg-sky-600"
+                      onClick={() => handleDataProyecto()}
+                    >
+                      <ion-icon name="add-circle"></ion-icon>{" "}
+                      Nuevo registro
+                    </button>
+                  </div>
+                )
+              }
 
               {/* <div className="flex">
                         <button type="submit" disabled={!formik.dirty || formik.isSubmitting} className="ml-auto w-14 h-14 object-cover active:scale-[.98] py-3 bg-transparent hover:bg-[#245A95] hover:text-white text-[#245A95] text-2xl font-bold inline-block rounded-full bg-primary p-2 uppercase leading-normal shadow-md transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] mt-4">

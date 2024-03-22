@@ -428,13 +428,25 @@ export const ComponentTipoCampo = ({
     };
 
     // Iterar sobre las URLs y descargar los archivos
-    await Promise.all(
-      dataProyectoSeleccionado.respuestaCheckboxEvidencia.map((evidence) => {
-        downloadAndCreateFile(evidence.url, evidence.idfoto);
-        //console.log(evidence.url);
-        cont++;
-      })
-    );
+    // await Promise.all(
+    //   dataProyectoSeleccionado.respuestaCheckboxEvidencia.map((evidence) => {
+    //     downloadAndCreateFile(evidence.url, evidence.idfoto);
+    //     //console.log(evidence.url);
+    //     cont++;
+    //   })
+    // );
+    if (dataProyectoSeleccionado && dataProyectoSeleccionado.respuestaCheckboxEvidencia) {
+      await Promise.all(
+        dataProyectoSeleccionado.respuestaCheckboxEvidencia.map((evidence) => {
+          downloadAndCreateFile(evidence.url, evidence.idfoto);
+          //console.log(evidence.url);
+          cont++;
+        })
+      );
+    } else {
+      console.log('No hay proyecto seleccionado o evidencia disponible.');
+    }
+    
 
     // Ahora filesArray contiene objetos File descargados desde las URLs
     console.log(filesArray);

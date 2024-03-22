@@ -10,6 +10,7 @@ const TableRegistros = ({
   selectedRows,
   isSelected,
   onSelectedRow,
+  setSelectedRows,
   setModalAbrirCerrar,
   listaRegistros,
   setProyectoSeleccionado,
@@ -28,7 +29,7 @@ const TableRegistros = ({
   const totalRows = listaRegistros.length;
   const totalPages = Math.ceil(totalRows / rowsPerPage);
 
-  console.log(listaRegistros)
+  // console.log(listaRegistros)
 
   // Obtener índice del último registro en la página actual
   const indexOfLastRow = currentPage * rowsPerPage;
@@ -159,6 +160,56 @@ const TableRegistros = ({
     }, 1500);
   };
 
+  
+
+  // const handleHeaderCheckboxChange = (event) => {
+
+  //   console.log('Checkbox Header clicked')
+  //   const checkboxes = document.querySelectorAll('input[type="checkbox"]:not(.checkbox_header)');
+  //   const selectedIndexes = [];
+
+  //   checkboxes.forEach((checkbox, index) => {
+  //     checkbox.checked = event.target.checked;
+  //     if (event.target.checked) {
+  //       selectedIndexes.push(index);
+  //     }
+  //   });
+
+  //   setSelectedRows(selectedIndexes);
+  // };
+
+  const handleHeaderCheckboxChange = (event) => {
+    const checkboxes = document.querySelectorAll('input[type="checkbox"]:not(.checkbox_header)');
+    const selectedIds = [];
+    
+    checkboxes.forEach((checkbox) => {
+      checkbox.checked = event.target.checked;
+      const id = checkbox.dataset.idinventario; // Obtener el idinventario del atributo de datos
+      if (id) {
+        selectedIds.push(id);
+      }
+    });
+    
+    setSelectedRows(selectedIds);
+  };
+  
+  const handleRowCheckboxChange = (idinventario) => {
+
+    const selectedIndex = selectedRows.indexOf(idinventario);
+    const updatedSelectedRows = [...selectedRows];
+  
+    if (selectedIndex === -1) {
+      updatedSelectedRows.push(idinventario);
+    } else {
+      updatedSelectedRows.splice(selectedIndex, 1);
+    }
+  
+    setSelectedRows(updatedSelectedRows);
+  };
+  
+
+  console.log(selectedRows)
+
   return (
     <>
       {cargando && (
@@ -191,9 +242,9 @@ const TableRegistros = ({
             <th scope="col" className="relative px-6 py-3">
               <input
                 type="checkbox"
-                className="absolute h-4 w-4 top-3 left-3"
-                onChange={() => {}}
-                // checked={selectedRows.length === data.length}
+                className="absolute h-4 w-4 top-3 cursor-pointer  text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                onChange={handleHeaderCheckboxChange}
+                // checked={selectedRows?.length === data?.length}
               />
               <div className="items-center pl-12">
                 <span>Proyecto</span>
@@ -230,35 +281,32 @@ const TableRegistros = ({
           {currentRows.map((registro, index) => (
             <tr
               key={index}
-              onClick={() => {
-                setProyectoSeleccionado(registro);
-                setCargando(true); // Mostrar ventana de carga
-
-                fetch(
-                  `${api}/obtener/datoscompletos/registro/${
-                    registro.idinventario
-                  }/${registro.proyecto.idproyecto}/${
-                    usuariosSeleccionados[0] == null
-                      ? 0
-                      : usuariosSeleccionados[0].idusuario
-                  }`,
-                  {
-                    method: "GET",
-                    headers: {
-                      "Content-Type": "application/json",
-                    },
-                  }
-                )
-                  .then((response) => response.json())
-                  .then((responseData) => {
-                    setDataProyectoSeleccionado(responseData);
-                    setCargando(false); // Ocultar ventana de carga
-                    setModalAbrirCerrar(true);
-                  })
-                  .catch((error) => {
-                    console.log(error);
-                    setCargando(false); // Ocultar ventana de carga en caso de error
-                  });
+              onClick={(event) => {
+                if (event.target.type !== 'checkbox') {
+                  setProyectoSeleccionado(registro);
+                  setCargando(true);
+                  fetch(
+                    `${api}/obtener/datoscompletos/registro/${registro.idinventario}/${registro.proyecto.idproyecto}/${
+                      usuariosSeleccionados[0] == null ? 0 : usuariosSeleccionados[0].idusuario
+                    }`,
+                    {
+                      method: 'GET',
+                      headers: {
+                        'Content-Type': 'application/json',
+                      },
+                    }
+                  )
+                    .then((response) => response.json())
+                    .then((responseData) => {
+                      setDataProyectoSeleccionado(responseData);
+                      setCargando(false);
+                      setModalAbrirCerrar(true);
+                    })
+                    .catch((error) => {
+                      console.log(error);
+                      setCargando(false);
+                    });
+                }
               }}
               className="cursor-pointer hover:bg-[#E2E2E2]"
             >
@@ -267,9 +315,10 @@ const TableRegistros = ({
                   <div className="flex-shrink-0 h-4 w-4">
                     <input
                       type="checkbox"
-                      className=" top-3 left-3 p-2"
-                      checked={isSelected(index)}
-                      onChange={() => onSelectedRow(index)}
+                      className=" top-3 left-3 p-2 cursor-pointer  h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                      onChange={(e) => {
+                        handleRowCheckboxChange(registro.idinventario, e)
+                      }}
                     />
                   </div>
                   {/* <div className="flex-shrink-0 h-10 w-10">

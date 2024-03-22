@@ -1,6 +1,6 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as XLSX from "xlsx"
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ExampleContex } from "../context/ExampleContext";
 import { InputText } from 'primereact/inputtext';
@@ -10,6 +10,7 @@ import useAuth from "../hooks/useAuth";
 import { Dialog } from "primereact/dialog";
 import { Button } from "primereact/button";
 import { Player } from "@lottiefiles/react-lottie-player";
+import { api } from "../helpers/variablesGlobales";
 
 const tipoProyecto = [
     { name: 'MIGRACIONES', code: 'migraciones' },
@@ -22,9 +23,10 @@ const tipoProyecto = [
 export const CrearProyectoForm = ({setFormularioState}) => {
 
     const { dataArchivoExcel, setDataArchivoExcel } = useContext(ExampleContex);
-    const { data: proyectos, loading } = useFetchProjects();
+    // const { data: proyectos, loading } = useFetchProjects();
     const [showDialog, setShowDialog] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
+    const [proyectos, setProyectos] = useState('');
 
 
     const showDialogFunc = (message) => {
@@ -36,7 +38,21 @@ export const CrearProyectoForm = ({setFormularioState}) => {
       setShowDialog(false);
     };
 
+    // OBTENER TODOS LOS PROYECTOS
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`${api}/obtener/proyectos`);
+        const jsonData = await response.json();
+        // console.log(jsonData)
+        setProyectos(jsonData);
+      } catch (error) {
+        console.log("Error:", error);
+      }
+    };
 
+    fetchData();
+  }, []);
 
     const handleFileUpload = (event) => {
         const file = event.target.files[0];
@@ -124,6 +140,7 @@ export const CrearProyectoForm = ({setFormularioState}) => {
         navigate('/camposproyecto');
     }
 
+    // console.log(proyectos)
     
     return (
         <>

@@ -1,7 +1,7 @@
 import React from 'react'
 import { api } from '../helpers/variablesGlobales';
-import * as XLSX from 'xlsx';
-import { saveAs } from 'file-saver';
+// import * as XLSX from 'xlsx';
+// import { saveAs } from 'file-saver';
 
 export const BotonFlotanteDescargarEstracto = ({listaRegistros}) => {
 

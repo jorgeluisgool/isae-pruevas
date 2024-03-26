@@ -5,6 +5,7 @@ import { useFetchUsers } from '../../hooks/useFetchUsers';
 import { api } from '../../helpers/variablesGlobales';
 import { DialogFoliosRepetidos } from '../../../ui/components/DialogFoliosRepetidos';
 import { DialogRegistroGuardado } from '../../../ui/components/DialogRegistroGuardado';
+import { ModalMensajeCamposVacios } from './ModalMensajeCamposVacios';
 
 export const ModalSubirBaseProyecto = ({modalBase, setModalBase, proyectoSeleccionado}) => {
 
@@ -13,7 +14,8 @@ export const ModalSubirBaseProyecto = ({modalBase, setModalBase, proyectoSelecci
   const [arregloBytesExcel, setArregloBytesExcel] = useState([]);
   const [modalFoliosRep, setModalFoliosRep] = useState(false);
   const [foliosRepetidosArreglo, setFoliosRepetidosArreglo] = useState([]);
-  const [modalRegistroGuardado, setModalRegistroGuardado] = useState(false)
+  const [modalRegistroGuardado, setModalRegistroGuardado] = useState(false);
+  const [modalCampoRepetido, setModalCampoRepetido] = useState(false);
 
   // console.log(arregloBytesExcel)
   // console.log(usuarioSeleccionado.idusuario)
@@ -73,6 +75,10 @@ export const ModalSubirBaseProyecto = ({modalBase, setModalBase, proyectoSelecci
 
           } else if (responseData.includes("correcto")) {
             setModalRegistroGuardado(true);
+            setModalBase(false);
+            setUsuarioSeleccionado({});
+          } else if (responseData.includes("Error, Existe uno o mas campos vacios, ingrese informacion o de los contrario un '-' para evitar errores en la carga de la informacion")) {
+            setModalCampoRepetido(true);
             setModalBase(false);
             setUsuarioSeleccionado({});
           }
@@ -165,6 +171,12 @@ export const ModalSubirBaseProyecto = ({modalBase, setModalBase, proyectoSelecci
           modalRegistroGuardado={modalRegistroGuardado}
           setModalRegistroGuardado={setModalRegistroGuardado}
           dataMensajeRegistroGuardado='Se han subido los registros satisfactoriamente.'
+        />
+
+        <ModalMensajeCamposVacios 
+          setModalCampoRepetido={setModalCampoRepetido}
+          modalCampoRepetido={modalCampoRepetido}
+          dataMensajeRegistroGuardado="Error al subir registros, existe uno o mas campos vacios, ingrese información o de los contrario un guión bajo ( - ) para evitar errores en la carga de la información"
         />
         </>
   )

@@ -4,6 +4,7 @@ import useAuth from '../../dana/hooks/useAuth';
 import { Password } from 'primereact/password';
 import { InputText } from 'primereact/inputtext';
 import DialogUsuarioOContrasenaInvalidos from '../../ui/components/DialogUsuarioOContrasenaInvalidos';
+import { api } from '../../dana/helpers/variablesGlobales';
 
 
 export const FormLogin = () => {
@@ -31,7 +32,7 @@ export const FormLogin = () => {
 
     const getValidation = async (user) =>{
 
-        const url =`https://www.danae.com.mx:8443/web-0.0.1-SNAPSHOT/obtener/usuario`;
+        const url =`${api}/obtener/usuario`;
         const options = {
             method: "POST",
             cache: "no-cache",
